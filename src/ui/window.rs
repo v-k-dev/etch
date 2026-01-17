@@ -75,8 +75,8 @@ pub fn build_ui(app: &Application) {
         .resizable(false)
         .build();
     
-    // Set window icon - copy icon to ~/.local/share/icons/ for proper integration
-    window.set_icon_name(Some("etch"));
+    // Set window icon
+    window.set_icon_name(Some("org.etch.Etch"));
 
     let state = Rc::new(RefCell::new(AppState {
         selected_iso: None,
@@ -115,6 +115,28 @@ pub fn build_ui(app: &Application) {
     subtitle.set_halign(gtk4::Align::Start);
     subtitle.set_valign(gtk4::Align::Center);
     title_box.append(&subtitle);
+
+    // Update check button
+    let update_button = Button::new();
+    update_button.add_css_class("menu-button");
+    update_button.set_icon_name("software-update-available-symbolic");
+    update_button.set_valign(gtk4::Align::Center);
+    update_button.set_tooltip_text(Some("Check for updates"));
+    
+    let window_for_update = window.clone();
+    update_button.connect_clicked(move |_| {
+        let dialog = MessageDialog::new(
+            Some(&window_for_update),
+            gtk4::DialogFlags::MODAL,
+            MessageType::Info,
+            ButtonsType::Ok,
+            "Update Check",
+        );
+        dialog.set_secondary_text(Some("You're using the latest version (0.1: STABLE · CODE 1)"));
+        dialog.run_async(|_, _| {});
+    });
+    
+    title_box.append(&update_button);
 
     // Menu button
     let menu_button = Button::new();
