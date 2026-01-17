@@ -18,7 +18,7 @@ makedepends=(
   'pkg-config'
   'libxcb'
 )
-source=("git+${url}.git#tag=v${pkgver}")
+source=("git+${url}.git#branch=main-stable")
 sha256sums=('SKIP')
 
 build() {

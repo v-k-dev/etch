@@ -70,14 +70,16 @@ cargo run --release
 
 ### Arch Linux (and derivatives)
 
-**With yay/paru (AUR - recommended):**
+**With yay/paru (AUR):** *(Coming soon)*
 ```bash
 yay -S etch
 # or
 paru -S etch
 ```
 
-**Manual from AUR:**
+The AUR package is in preparation. Check back soon or [open an issue](https://github.com/v-k-dev/etch/issues) to be notified.
+
+**Manual from AUR:** *(Coming soon)*
 ```bash
 git clone https://aur.archlinux.org/etch.git
 cd etch
@@ -95,12 +97,21 @@ sudo install -Dm755 target/release/etch-helper /usr/local/bin/
 
 ### Flatpak (Universal - all distributions)
 
+**Install from Flathub:** *(Coming soon)*
 ```bash
 flatpak install flathub org.etch.Etch
 flatpak run org.etch.Etch
 ```
 
-Or install from [Flathub](https://flathub.org/apps/org.etch.Etch)
+Submission to [Flathub](https://flathub.org) is in progress.
+
+**Or build from source:**
+```bash
+git clone https://github.com/v-k-dev/etch.git
+cd etch
+flatpak-builder --user --install build org.etch.Etch.yml
+flatpak run org.etch.Etch
+```
 
 ### Other distributions
 
