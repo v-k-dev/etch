@@ -1,8 +1,8 @@
 /* Etch - Nothing OS inspired - Slim, Functional, Clean */
 
 window {
-    background: #0a0a0a;
-    color: #f4f4f4;
+    background: #161616;
+    color: #d0d0d0;
     font-family: "Nothing Dot", "Inter", "SF Pro Text", "Segoe UI", sans-serif;
 }
 
@@ -27,7 +27,7 @@ window {
 .app-title {
     font-size: 16px;
     font-weight: 700;
-    color: #ffffff;
+    color: #b5b5b5;
     letter-spacing: 3.5px;
 }
 
@@ -106,7 +106,7 @@ window {
 }
 
 .file-label-compact {
-    color: #f4f4f4;
+    color: #a8a8a8;
     font-size: 12px;
     font-family: "JetBrains Mono", "Fira Code", monospace;
     padding: 10px 0;
@@ -118,7 +118,7 @@ window {
 
 .button-compact {
     background: transparent;
-    color: #f4f4f4;
+    color: #a8a8a8;
     border: none;
     border-bottom: 1px solid #333333;
     border-radius: 0;
@@ -146,10 +146,10 @@ window {
 }
 
 .write-button-compact {
-    background: #f4f4f4;
+    background: #a0a0a0;
     color: #0a0a0a;
     border: none;
-    border-bottom: 1px solid #f4f4f4;
+    border-bottom: 1px solid #a0a0a0;
     border-radius: 0;
     font-weight: 600;
     padding: 4px 12px;
@@ -161,8 +161,8 @@ window {
 }
 
 .write-button-compact:hover:not(:disabled) {
-    background: #ffffff;
-    border-bottom-color: #ffffff;
+    background: #b0b0b0;
+    border-bottom-color: #b0b0b0;
 }
 
 .write-button-compact:disabled {
@@ -191,7 +191,7 @@ window {
 }
 
 .button-icon {
-    color: #f4f4f4;
+    color: #a8a8a8;
     -gtk-icon-size: 11px;
 }
 
@@ -210,7 +210,7 @@ window {
     border-radius: 0;
     border: none;
     border-bottom: 1px solid #333333;
-    color: #f4f4f4;
+    color: #a8a8a8;
     min-height: 32px;
     font-size: 11px;
     font-weight: 500;
