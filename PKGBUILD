@@ -34,10 +34,13 @@ package() {
   install -Dm755 target/release/etch-helper "$pkgdir/usr/bin/etch-helper"
   
   # Desktop entry
-  install -Dm644 org.etch.Etch.desktop "$pkgdir/usr/share/applications/org.etch.Etch.desktop" || true
+  install -Dm644 org.etch.Etch.desktop "$pkgdir/usr/share/applications/org.etch.Etch.desktop"
   
-  # AppData
-  install -Dm644 org.etch.Etch.appdata.xml "$pkgdir/usr/share/metainfo/org.etch.Etch.appdata.xml" || true
+  # AppData metadata
+  install -Dm644 org.etch.Etch.appdata.xml "$pkgdir/usr/share/metainfo/org.etch.Etch.appdata.xml"
+  
+  # Icon (1024x1024 PNG)
+  install -Dm644 org.etch.Etch.png "$pkgdir/usr/share/icons/hicolor/1024x1024/apps/org.etch.Etch.png"
   
   # License
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE" || true
