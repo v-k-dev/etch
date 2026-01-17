@@ -132,7 +132,11 @@ pub fn build_ui(app: &Application) {
             ButtonsType::Ok,
             "Update Check",
         );
-        dialog.set_secondary_text(Some("You're using the latest version (0.1: STABLE · CODE 1)"));
+        dialog.set_secondary_text(Some(&format!(
+            "You're using the latest version ({} · CODE {})",
+            crate::VERSION,
+            crate::VERSION_CODE
+        )));
         dialog.connect_response(|dialog, _| {
             dialog.close();
         });
