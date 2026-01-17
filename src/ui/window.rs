@@ -133,7 +133,10 @@ pub fn build_ui(app: &Application) {
             "Update Check",
         );
         dialog.set_secondary_text(Some("You're using the latest version (0.1: STABLE · CODE 1)"));
-        dialog.run_async(|_, _| {});
+        dialog.connect_response(|dialog, _| {
+            dialog.close();
+        });
+        dialog.show();
     });
     
     title_box.append(&update_button);
