@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6bc3f4eb-f075-4448-9971-ac02c6c5a8d3"
        alt="ETCH logo"
-       width="180" />
+       width="360" />
 </p>
 
 
@@ -17,7 +17,7 @@ Etch is a native GTK4 application written in Rust that writes ISO images to USB 
   <img
     src="https://github.com/user-attachments/assets/47e5244d-28d6-4718-a82a-61e89d1ee52f"
     alt="image"
-    width="688"
+    width="720"
   />
 </p>
 
