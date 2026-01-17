@@ -232,6 +232,40 @@ where
     Ok(())
 }
 
+/// Write ISO with automatic retry on transient failures
+/// Useful for unreliable USB connections or temporary I/O errors
+#[allow(dead_code)]
+pub fn write_iso_with_retry<F>(
+    source_iso: &Path,
+    target_device: &Path,
+    progress_callback: F,
+    max_retries: u32,
+) -> Result<()>
+where
+    F: Fn(u64, u64, u64) + Copy,
+{
+    let mut last_error = None;
+    
+    for attempt in 1..=max_retries {
+        eprintln!("Write attempt {}/{}", attempt, max_retries);
+        
+        match write_iso(source_iso, target_device, progress_callback) {
+            Ok(_) => return Ok(()),
+            Err(e) => {
+                last_error = Some(e);
+                if attempt < max_retries {
+                    // Exponential backoff: 100ms, 200ms, 400ms, etc.
+                    let backoff_ms = 100u64 * 2_u64.saturating_pow(attempt - 1);
+                    eprintln!("Write failed, retrying after {}ms...", backoff_ms);
+                    std::thread::sleep(std::time::Duration::from_millis(backoff_ms));
+                }
+            }
+        }
+    }
+    
+    Err(last_error.unwrap_or_else(|| anyhow::anyhow!("Write failed after {} attempts", max_retries)))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

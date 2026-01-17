@@ -3,6 +3,20 @@
 
 use std::path::Path;
 
+/// Strategy for verifying written data
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]  // Part of public API for future use
+pub enum VerificationStrategy {
+    /// Read entire image back and compare byte-by-byte
+    FullByteCheck,
+    /// Compare checksums/hashes
+    ChecksumOnly,
+    /// Verify boot sector and critical sections
+    BootSectorCheck,
+    /// Verify firmware-specific structures
+    FirmwareCheck,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Platform {
     // OS Images
@@ -18,7 +32,8 @@ pub enum Platform {
     ESP32,
     Arduino,
     
-    // Other
+    // Other - intentionally kept for exhaustiveness and future expansion
+    #[allow(dead_code)]
     Unknown,
 }
 
@@ -78,11 +93,71 @@ impl Platform {
     }
     
     /// Check if special handling is needed
+    #[allow(dead_code)]  // Part of public API for platform detection
     pub fn requires_special_handling(&self) -> bool {
         matches!(
             self,
             Platform::RaspberryPi | Platform::OrangePi | Platform::ESP32 | Platform::Arduino
         )
+    }
+    
+    /// Get recommended write speed optimization for this platform
+    /// Returns (buffer_size_mb, optimal_chunk_size_kb)
+    #[allow(dead_code)]  // Part of public API for platform-specific optimization
+    pub fn write_optimization(&self) -> (usize, usize) {
+        match self {
+            // Standard ISO images - optimize for throughput
+            Platform::WindowsISO | Platform::LinuxISO | Platform::GenericISO => (16, 4096),
+            
+            // Raspberry Pi - sensitive to large buffers, use smaller chunks
+            Platform::RaspberryPi => (4, 512),
+            
+            // Orange Pi - similar to RPi but slightly better specs
+            Platform::OrangePi => (8, 1024),
+            
+            // Microcontrollers - very small buffer, sequential write
+            Platform::ESP32 | Platform::Arduino => (1, 64),
+            
+            // Unknown platform - conservative settings
+            Platform::Unknown => (4, 512),
+        }
+    }
+    
+    /// Get verification strategy for this platform
+    #[allow(dead_code)]  // Part of public API for verification control
+    pub fn verification_strategy(&self) -> VerificationStrategy {
+        match self {
+            // Standard images - byte-by-byte verification
+            Platform::WindowsISO | Platform::LinuxISO => VerificationStrategy::FullByteCheck,
+            
+            // Generic ISO - optional verification
+            Platform::GenericISO => VerificationStrategy::ChecksumOnly,
+            
+            // SBC images - verify boot sector and first blocks
+            Platform::RaspberryPi | Platform::OrangePi => VerificationStrategy::BootSectorCheck,
+            
+            // Firmware - verify magic bytes and checksum
+            Platform::ESP32 | Platform::Arduino => VerificationStrategy::FirmwareCheck,
+            
+            Platform::Unknown => VerificationStrategy::ChecksumOnly,
+        }
+    }
+    
+    /// Get device speed class recommendation
+    #[allow(dead_code)]  // Part of public API for device recommendations
+    pub fn recommended_speed(&self) -> &'static str {
+        match self {
+            // Standard ISOs work on any USB
+            Platform::WindowsISO | Platform::LinuxISO | Platform::GenericISO => "USB 2.0+",
+            
+            // SBC images benefit from USB 3.0+
+            Platform::RaspberryPi | Platform::OrangePi => "USB 3.0+ (20+ MB/s)",
+            
+            // Firmware - USB 2.0 sufficient but 3.0 preferred
+            Platform::ESP32 | Platform::Arduino => "USB 2.0+",
+            
+            Platform::Unknown => "USB 2.0+",
+        }
     }
     
     // Detection helpers
@@ -118,6 +193,7 @@ impl Platform {
             || filename.contains("gentoo")
             || filename.contains("opensuse")
             || filename.contains("linux")
+            || filename.contains(".iso")
     }
 }
 
@@ -163,5 +239,35 @@ mod tests {
             Platform::from_iso_path(Path::new("arduino-firmware.hex")),
             Platform::Arduino
         );
+    }
+    
+    #[test]
+    fn test_write_optimizations() {
+        // Verify Windows ISO gets standard settings
+        let (buf, chunk) = Platform::WindowsISO.write_optimization();
+        assert!(buf >= 4 && chunk >= 512, "Reasonable buffer and chunk sizes");
+        
+        // Verify RPi gets smaller buffers
+        let (buf_rpi, _chunk_rpi) = Platform::RaspberryPi.write_optimization();
+        assert!(buf_rpi < buf, "RPi should have smaller buffer");
+    }
+    
+    #[test]
+    fn test_verification_strategies() {
+        assert_eq!(
+            Platform::WindowsISO.verification_strategy(),
+            VerificationStrategy::FullByteCheck
+        );
+        assert_eq!(
+            Platform::ESP32.verification_strategy(),
+            VerificationStrategy::FirmwareCheck
+        );
+    }
+    
+    #[test]
+    fn test_special_handling_required() {
+        assert!(Platform::RaspberryPi.requires_special_handling());
+        assert!(Platform::ESP32.requires_special_handling());
+        assert!(!Platform::WindowsISO.requires_special_handling());
     }
 }
