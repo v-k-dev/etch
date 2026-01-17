@@ -13,7 +13,13 @@ A minimal, fast, and reliable USB/ISO writer for Linux.
 
 Etch is a native GTK4 application written in Rust that writes ISO images to USB drives with verification. Built for correctness, transparency, and simplicity.
 
-<img width="688" height="463" alt="image" src="https://github.com/user-attachments/assets/47e5244d-28d6-4718-a82a-61e89d1ee52f" />
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/47e5244d-28d6-4718-a82a-61e89d1ee52f"
+    alt="image"
+    width="688"
+  />
+</p>
 
 ## Status
 
