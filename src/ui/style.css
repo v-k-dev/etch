@@ -1,0 +1,342 @@
+/* Etch - Nothing OS inspired - Slim, Functional, Clean */
+
+window {
+    background: #0a0a0a;
+    color: #f4f4f4;
+    font-family: "Nothing Dot", "Inter", "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+.main-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 16px;
+}
+
+.main-container:backdrop {
+    background: transparent;
+}
+
+/* Title Section */
+.title-section {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.app-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 3.5px;
+}
+
+.app-subtitle {
+    font-size: 8px;
+    color: #7c7c7c;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+/* Menu Button */
+.menu-button {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 4px;
+}
+
+.menu-button:hover {
+    background: #1a1a1a;
+}
+
+.menu-button .button-icon {
+    -gtk-icon-size: 16px;
+}
+
+/* Warning */
+.warning-compact {
+    font-size: 9px;
+    color: #ff6b6b;
+    font-weight: 500;
+    padding: 0;
+    margin-bottom: 14px;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+}
+
+/* Sections - Minimal blocks */
+.section-compact {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.section-title-compact {
+    font-size: 8px;
+    font-weight: 600;
+    color: #666666;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+.file-label-compact {
+    color: #f4f4f4;
+    font-size: 12px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    padding: 10px 0;
+    font-weight: 500;
+    min-height: 24px;
+}
+
+/* Buttons - Minimal */
+button {
+    border-radius: 0;
+    padding: 6px 0;
+    font-weight: 600;
+    font-size: 10px;
+    border: none;
+    border-bottom: 1px solid #333333;
+    transition: all 0.2s ease;
+    min-height: 28px;
+    letter-spacing: 0.3px;
+    background: transparent;
+}
+
+button:hover:not(:disabled) {
+    border-bottom-color: #555555;
+}
+
+button:active:not(:disabled) {
+    opacity: 0.7;
+}
+
+.button-compact {
+    background: transparent;
+    color: #f4f4f4;
+    border-bottom: 1px solid #333333;
+}
+
+.button-compact:hover:not(:disabled) {
+    border-bottom-color: #666666;
+}
+
+button.write-button-compact {
+    background: #f4f4f4;
+    color: #0a0a0a;
+    border: none;
+    border-bottom: none;
+    border-radius: 6px;
+    font-weight: 700;
+    padding: 5px 10px;
+    min-height: 26px;
+}
+
+button.write-button-compact:hover:not(:disabled) {
+    background: #ffffff;
+    padding: 5px 10px;
+    min-height: 26px;
+}
+
+button.write-button-compact:disabled {
+    background: #1a1a1a;
+    color: #444444;
+    border: none;
+    border-bottom: none;
+    padding: 5px 10px;
+    min-height: 26px;
+}
+
+button.write-button-compact:active:not(:disabled) {
+    background: #e0e0e0;
+    padding: 5px 10px;
+    min-height: 26px;
+    opacity: 1;
+}
+
+.button-icon {
+    color: #f4f4f4;
+    -gtk-icon-size: 11px;
+}
+
+.write-button-compact .button-icon {
+    color: #0a0a0a;
+}
+
+.button-label {
+    font-size: 9px;
+    font-weight: 600;
+}
+
+/* Dropdown */
+.dropdown-compact {
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #333333;
+    color: #f4f4f4;
+    min-height: 32px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0;
+}
+
+.dropdown-compact:hover {
+    border-bottom-color: #666666;
+}
+
+/* Progress */
+.progress-label-compact {
+    color: #b0b0b0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.speed-label-compact {
+    color: #6f6f6f;
+    font-size: 9px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-weight: 500;
+    margin-top: 6px;
+}
+
+.progress-compact,
+progressbar {
+    min-height: 6px;
+    border-radius: 6px;
+    background: #0a0a0a;
+}
+
+progressbar progress {
+    background: linear-gradient(90deg, #ffffff 0%, #d0d0d0 50%, #ffffff 100%);
+    border-radius: 6px;
+}
+
+progressbar trough {
+    background: #0a0a0a;
+    border-radius: 6px;
+}
+
+progressbar text {
+    font-weight: 700;
+    font-size: 9px;
+    color: #ffffff;
+    text-shadow: 0 0 2px #000000;
+}
+
+/* Status */
+.success-text {
+    color: #35d27a;
+}
+
+.error-text {
+    color: #ff6b6b;
+}
+
+/* Status Dot - Activity Indicator */
+.status-dot {
+    min-width: 6px;
+    min-height: 6px;
+    border-radius: 50%;
+    background: #ff3b30;
+    margin-right: 8px;
+}
+
+.status-dot.idle {
+    background: #333333;
+    opacity: 0.3;
+}
+
+.status-dot.active {
+    background: #ff3b30;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-dot.success {
+    background: #30d158;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Fix GtkGizmo slider warnings - ensure positive dimensions */
+/* Must use higher values and cover all scrollbar states */
+scrollbar {
+    min-width: 12px;
+    min-height: 12px;
+}
+
+scrollbar slider {
+    min-width: 10px;
+    min-height: 10px;
+    margin: 1px;
+}
+
+scrollbar trough {
+    min-width: 12px;
+    min-height: 12px;
+}
+
+scrollbar.horizontal {
+    min-height: 12px;
+}
+
+scrollbar.horizontal slider {
+    min-height: 10px;
+}
+
+scrollbar.vertical {
+    min-width: 12px;
+}
+
+scrollbar.vertical slider {
+    min-width: 10px;
+}
+
+/* Message Log */
+.message-box-compact {
+    background: #0f0f0f;
+    color: #b0b0b0;
+    font-family: "JetBrains Mono", "Fira Code", "SF Mono", monospace;
+    font-size: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #1a1a1a;
+    caret-color: transparent;
+}
+
+.message-box-compact text {
+    background: transparent;
+}
+
+.message-scroll {
+    min-height: 120px;
+    margin-top: 12px;
+    border-radius: 6px;
+}
+
+.message-scroll scrollbar {
+    background: transparent;
+}
+
+.message-scroll scrollbar slider {
+    background: #2a2a2a;
+    border-radius: 4px;
+}
+
+.message-scroll scrollbar slider:hover {
+    background: #3a3a3a;
+}
