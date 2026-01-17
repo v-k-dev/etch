@@ -1,4 +1,10 @@
-# ETCH <img width="1024" height="1024" alt="main-logo-file" src="https://github.com/user-attachments/assets/6bc3f4eb-f075-4448-9971-ac02c6c5a8d3" />
+# ETCH
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6bc3f4eb-f075-4448-9971-ac02c6c5a8d3"
+       alt="ETCH logo"
+       width="180" />
+</p>
 
 
 
