@@ -1,4 +1,4 @@
-/* Etch - Monochrome Card UI (Nothing-like, no branding) */
+/* Etch - Minimal GTK4 UI - Clean, Aligned, Professional */
 
 window {
     background: #090909;
@@ -8,9 +8,9 @@ window {
 
 .main-container {
     background: #111111;
-    border-radius: 18px;
+    border-radius: 16px;
     border: 1px solid #1e1e1e;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     padding: 24px;
 }
 
@@ -20,20 +20,20 @@ window {
 
 /* Title Section */
 .title-section {
-    margin-bottom: 16px;
-    padding-bottom: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
     border-bottom: 1px solid #1a1a1a;
 }
 
 .app-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: 6px;
+    letter-spacing: 5px;
 }
 
 .app-subtitle {
-    font-size: 11px;
+    font-size: 10px;
     color: #7c7c7c;
     font-weight: 500;
     letter-spacing: 0.8px;
@@ -42,13 +42,13 @@ window {
 
 /* Warning */
 .warning-compact {
-    font-size: 10px;
+    font-size: 11px;
     color: #ff6b6b;
     font-weight: 500;
-    padding: 8px 12px;
-    margin-bottom: 16px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
     background: rgba(255, 107, 107, 0.08);
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #2b1b1b;
 }
 
@@ -56,7 +56,7 @@ window {
 .section-compact {
     background: #141414;
     border-radius: 12px;
-    padding: 14px;
+    padding: 16px;
     border: 1px solid #1f1f1f;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
@@ -67,36 +67,36 @@ window {
     color: #9a9a9a;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .file-label-compact {
     color: #f4f4f4;
-    font-size: 12px;
+    font-size: 13px;
     font-family: "JetBrains Mono", "Fira Code", monospace;
-    padding: 8px 0;
+    padding: 10px 0;
     font-weight: 500;
-    min-height: 22px;
+    min-height: 24px;
 }
 
 /* Buttons */
 button {
     border-radius: 10px;
-    padding: 10px 16px;
+    padding: 11px 18px;
     font-weight: 600;
     font-size: 12px;
     border: none;
     transition: all 0.2s ease;
-    min-height: 38px;
-    letter-spacing: 0.6px;
+    min-height: 40px;
+    letter-spacing: 0.5px;
 }
 
 button:hover:not(:disabled) {
-    opacity: 0.85;
+    opacity: 0.88;
 }
 
 button:active:not(:disabled) {
-    opacity: 0.65;
+    opacity: 0.7;
     transition: all 0.05s;
 }
 
@@ -148,10 +148,10 @@ button:active:not(:disabled) {
     border-radius: 10px;
     border: 1px solid #2a2a2a;
     color: #f4f4f4;
-    min-height: 38px;
-    font-size: 12px;
+    min-height: 40px;
+    font-size: 13px;
     font-weight: 500;
-    padding: 0 12px;
+    padding: 0 14px;
 }
 
 .dropdown-compact:hover {
@@ -166,6 +166,7 @@ button:active:not(:disabled) {
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
+    margin-bottom: 6px;
 }
 
 .speed-label-compact {
@@ -173,24 +174,24 @@ button:active:not(:disabled) {
     font-size: 10px;
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-weight: 500;
-    margin-top: 6px;
+    margin-top: 8px;
 }
 
 .progress-compact,
 progressbar {
-    min-height: 8px;
-    border-radius: 8px;
+    min-height: 10px;
+    border-radius: 10px;
     background: #1a1a1a;
 }
 
 progressbar progress {
-    background: linear-gradient(90deg, #ffffff 0%, #cccccc 50%, #ffffff 100%);
-    border-radius: 8px;
+    background: linear-gradient(90deg, #ffffff 0%, #d0d0d0 50%, #ffffff 100%);
+    border-radius: 10px;
 }
 
 progressbar trough {
     background: #1a1a1a;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 progressbar text {
