@@ -1,0 +1,31 @@
+app-id: org.etch.Etch
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
+  env:
+    CARGO_HOME: /run/build/etch/cargo
+
+modules:
+  - name: etch
+    buildsystem: cargo
+    sources:
+      - type: git
+        url: https://github.com/v-k-dev/etch.git
+        branch: main-stable
+    post-install:
+      - install -Dm755 target/release/etch /app/bin/etch
+      - install -Dm755 target/release/etch-helper /app/bin/etch-helper
+      - install -Dm644 org.etch.Etch.appdata.xml /app/share/appdata/org.etch.Etch.appdata.xml
+      - install -Dm644 org.etch.Etch.desktop /app/share/applications/org.etch.Etch.desktop
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=all
+  - --system-talk-name=org.freedesktop.PolicyKit1

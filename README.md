@@ -23,9 +23,11 @@ Etch is a native GTK4 application written in Rust that writes ISO images to USB 
 
 ## Status
 
-**Version 0.1: ALPHA** · CODE 1
+**Version 0.1: NIGHTLY** · CODE 2
 
-Live development - actively updated. This project is under active development. Features are being added, tested, and refined regularly.
+**Live development - actively updated**
+
+This is the nightly development branch. For stable releases, see [releases](https://github.com/v-k-dev/etch/releases) or checkout `main-stable` branch.
 
 ## Features
 
@@ -68,11 +70,48 @@ cargo run --release
 
 ### Arch Linux (and derivatives)
 
-Build from source for now. AUR package coming soon.
+**With yay/paru (AUR - recommended):**
+```bash
+yay -S etch
+# or
+paru -S etch
+```
+
+**Manual from AUR:**
+```bash
+git clone https://aur.archlinux.org/etch.git
+cd etch
+makepkg -si
+```
+
+**Build from source:**
+```bash
+git clone https://github.com/v-k-dev/etch.git
+cd etch
+cargo build --release
+sudo install -Dm755 target/release/etch /usr/local/bin/
+sudo install -Dm755 target/release/etch-helper /usr/local/bin/
+```
+
+### Flatpak (Universal - all distributions)
+
+```bash
+flatpak install flathub org.etch.Etch
+flatpak run org.etch.Etch
+```
+
+Or install from [Flathub](https://flathub.org/apps/org.etch.Etch)
 
 ### Other distributions
 
-Build from source using the instructions above.
+Build from source:
+```bash
+git clone https://github.com/v-k-dev/etch.git
+cd etch
+cargo build --release
+sudo install -Dm755 target/release/etch /usr/local/bin/etch
+sudo install -Dm755 target/release/etch-helper /usr/local/bin/etch-helper
+```
 
 ## Support
 

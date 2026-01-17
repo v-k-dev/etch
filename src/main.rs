@@ -6,9 +6,9 @@ use gtk4::prelude::*;
 use gtk4::Application;
 
 const APP_ID: &str = "org.etch.Etch";
-const VERSION: &str = "0.1: ALPHA";
+const VERSION: &str = "0.1: NIGHTLY";
 #[allow(dead_code)]
-const VERSION_CODE: &str = "1";
+const VERSION_CODE: &str = "2";
 
 fn main() -> anyhow::Result<()> {
     // Use memory-only GSettings backend to prevent dconf permission errors
