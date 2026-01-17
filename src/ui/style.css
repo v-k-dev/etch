@@ -532,3 +532,40 @@ textview text {
 .about-close-button:active {
     transform: scale(0.95);
 }
+/* Platform Detection Display */
+.platform-icon {
+    color: #4a9eff;
+    transition: color 200ms ease-out;
+}
+
+.platform-label {
+    font-size: 10px;
+    color: #7c7c7c;
+    font-weight: 500;
+    transition: color 200ms ease-out;
+}
+
+/* Platform-specific colors */
+.platform-windows .platform-icon {
+    color: #00a4ef;
+}
+
+.platform-linux .platform-icon {
+    color: #fcc624;
+}
+
+.platform-raspberrypi .platform-icon {
+    color: #c51a4a;
+}
+
+.platform-orangepi .platform-icon {
+    color: #ff7f00;
+}
+
+.platform-esp32 .platform-icon {
+    color: #ea7c3b;
+}
+
+.platform-arduino .platform-icon {
+    color: #00979d;
+}

@@ -269,6 +269,22 @@ pub fn build_ui(app: &Application) {
     iso_label.set_valign(gtk4::Align::Start);
     iso_section.append(&iso_label);
 
+    // Platform detection display
+    let platform_box = GtkBox::new(Orientation::Horizontal, 8);
+    platform_box.set_halign(gtk4::Align::Start);
+    
+    let platform_icon = Image::new();
+    platform_icon.set_icon_name(Some("help-faq-symbolic"));
+    platform_icon.set_pixel_size(24);
+    platform_icon.add_css_class("platform-icon");
+    platform_box.append(&platform_icon);
+    
+    let platform_label = Label::new(Some("Select an ISO image"));
+    platform_label.add_css_class("platform-label");
+    platform_box.append(&platform_label);
+    
+    iso_section.append(&platform_box);
+
     let iso_button = build_icon_button("Choose File", "document-open-symbolic", "button-compact");
     iso_section.append(&iso_button);
 
@@ -585,6 +601,8 @@ pub fn build_ui(app: &Application) {
     let progress_bar_clone = progress_bar.clone();
     let speed_label_clone = speed_label.clone();
     let status_dot_clone = status_dot.clone();
+    let platform_icon_clone = platform_icon.clone();
+    let platform_label_clone = platform_label.clone();
 
     iso_button.connect_clicked(move |button| {
         let window = button.root().and_downcast::<ApplicationWindow>().unwrap();
@@ -606,6 +624,8 @@ pub fn build_ui(app: &Application) {
         let progress_bar = progress_bar_clone.clone();
         let speed_label = speed_label_clone.clone();
         let status_dot = status_dot_clone.clone();
+        let platform_icon = platform_icon_clone.clone();
+        let platform_label = platform_label_clone.clone();
 
         dialog.connect_response(move |dialog, response| {
             if response == ResponseType::Accept {
@@ -616,6 +636,12 @@ pub fn build_ui(app: &Application) {
                             .and_then(|n| n.to_str())
                             .unwrap_or("Unknown");
                         iso_label.set_text(filename);
+                        
+                        // Detect platform and update UI
+                        let platform = crate::core::platforms::Platform::from_iso_path(&path);
+                        platform_icon.set_icon_name(Some(platform.icon_name()));
+                        platform_label.set_text(platform.display_name());
+                        
                         let mut state_ref = state.borrow_mut();
                         state_ref.selected_iso = Some(path);
                         recompute_action_state(&mut state_ref);
