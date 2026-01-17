@@ -747,45 +747,10 @@ pub fn build_ui(app: &Application) {
         );
     });
 
-    // Add close confirmation handler
-    window.connect_close_request(move |window| {
-        let mut state_ref = state_for_close.borrow_mut();
-        
-        // If working, check attempt count
-        if state_ref.is_working {
-            state_ref.close_attempt_count += 1;
-            
-            if state_ref.close_attempt_count >= 2 {
-                // Allow close after 2 attempts
-                drop(state_ref);
-                glib::Propagation::Proceed
-            } else {
-                // First attempt - show warning
-                let attempt = state_ref.close_attempt_count;
-                drop(state_ref); // Release borrow before showing dialog
-                
-                let dialog = MessageDialog::new(
-                    Some(window),
-                    gtk4::DialogFlags::MODAL | gtk4::DialogFlags::DESTROY_WITH_PARENT,
-                    MessageType::Warning,
-                    ButtonsType::Ok,
-                    "Operation in Progress",
-                );
-                dialog.set_decorated(true);
-                dialog.set_secondary_text(Some(&format!(
-                    "A write or verification operation is currently running.\\n\\n\
-                     Closing now could leave the USB device in an inconsistent state.\\n\\n\
-                     Attempt {}/2. Click close again to force quit.",
-                    attempt
-                )));
-                dialog.connect_response(|dialog, _| dialog.close());
-                dialog.show();
-                
-                glib::Propagation::Stop
-            }
-        } else {
-            glib::Propagation::Proceed
-        }
+    // Add close request handler - ALWAYS allow close, no blocking
+    window.connect_close_request(move |_window| {
+        // Always allow window to close
+        glib::Propagation::Proceed
     });
 
     window.present();
@@ -848,7 +813,6 @@ fn show_confirmation_dialog(
     dialog.connect_response(move |dialog, response| {
         if response == ResponseType::Accept {
             append_message(&ui.message_buffer, "✓ User confirmed destructive operation");
-            dialog.close();
 
             // Spawn worker thread for device validation to prevent UI freeze
             let device_path = device.path.clone();
@@ -926,10 +890,11 @@ fn show_confirmation_dialog(
                     glib::ControlFlow::Break
                 }
             });
-        }
-        if response == ResponseType::Cancel {
+        } else if response == ResponseType::Cancel {
             append_message(&ui.message_buffer, "Operation cancelled by user");
         }
+        // Close dialog after handling response
+        dialog.close();
     });
 
     dialog.show();
