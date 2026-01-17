@@ -1,0 +1,30 @@
+/* Minimal CSS to prevent GTK warnings - no theming, only critical fixes */
+
+/* Fix GtkGizmo slider min-size warnings by ensuring positive dimensions */
+scrollbar slider {
+    min-width: 4px;
+    min-height: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+scrollbar {
+    min-width: 4px;
+    min-height: 4px;
+}
+
+scrollbar trough {
+    min-width: 4px;
+    min-height: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Prevent negative sizes from content calculations */
+scrollbar.horizontal slider {
+    min-height: 4px;
+}
+
+scrollbar.vertical slider {
+    min-width: 4px;
+}

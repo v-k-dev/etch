@@ -1,0 +1,243 @@
+/* Etch - Monochrome Card UI (Nothing-like, no branding) */
+
+window {
+    background: #090909;
+    color: #f4f4f4;
+    font-family: "Inter", "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+.main-container {
+    background: #111111;
+    border-radius: 18px;
+    border: 1px solid #1e1e1e;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    padding: 24px;
+}
+
+.main-container:backdrop {
+    background: #0f0f0f;
+}
+
+/* Title Section */
+.title-section {
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.app-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 6px;
+}
+
+.app-subtitle {
+    font-size: 11px;
+    color: #7c7c7c;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+/* Warning */
+.warning-compact {
+    font-size: 10px;
+    color: #ff6b6b;
+    font-weight: 500;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    background: rgba(255, 107, 107, 0.08);
+    border-radius: 8px;
+    border: 1px solid #2b1b1b;
+}
+
+/* Sections - Card Blocks */
+.section-compact {
+    background: #141414;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid #1f1f1f;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.section-title-compact {
+    font-size: 9px;
+    font-weight: 700;
+    color: #9a9a9a;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.file-label-compact {
+    color: #f4f4f4;
+    font-size: 12px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    padding: 8px 0;
+    font-weight: 500;
+    min-height: 22px;
+}
+
+/* Buttons */
+button {
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    border: none;
+    transition: all 0.2s ease;
+    min-height: 38px;
+    letter-spacing: 0.6px;
+}
+
+button:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+button:active:not(:disabled) {
+    opacity: 0.65;
+    transition: all 0.05s;
+}
+
+.button-compact {
+    background: #1b1b1b;
+    color: #f4f4f4;
+    border: 1px solid #2a2a2a;
+}
+
+.button-compact:hover:not(:disabled) {
+    background: #222222;
+    border-color: #343434;
+}
+
+.write-button-compact {
+    background: #f4f4f4;
+    color: #0a0a0a;
+    border: 1px solid #f4f4f4;
+    font-weight: 700;
+}
+
+.write-button-compact:hover:not(:disabled) {
+    background: #ffffff;
+}
+
+.write-button-compact:disabled {
+    background: #262626;
+    color: #666666;
+    border-color: #262626;
+}
+
+.button-icon {
+    color: #f4f4f4;
+    -gtk-icon-size: 16px;
+}
+
+.write-button-compact .button-icon {
+    color: #0a0a0a;
+}
+
+.button-label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Dropdown */
+.dropdown-compact {
+    background: #141414;
+    border-radius: 10px;
+    border: 1px solid #2a2a2a;
+    color: #f4f4f4;
+    min-height: 38px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 0 12px;
+}
+
+.dropdown-compact:hover {
+    border-color: #3a3a3a;
+    background: #1a1a1a;
+}
+
+/* Progress */
+.progress-label-compact {
+    color: #b0b0b0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.speed-label-compact {
+    color: #6f6f6f;
+    font-size: 10px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-weight: 500;
+    margin-top: 6px;
+}
+
+.progress-compact,
+progressbar {
+    min-height: 8px;
+    border-radius: 8px;
+    background: #1a1a1a;
+}
+
+progressbar progress {
+    background: linear-gradient(90deg, #ffffff 0%, #cccccc 50%, #ffffff 100%);
+    border-radius: 8px;
+}
+
+progressbar trough {
+    background: #1a1a1a;
+    border-radius: 8px;
+}
+
+progressbar text {
+    font-weight: 700;
+    font-size: 9px;
+    color: #0a0a0a;
+}
+
+/* Status */
+.success-text {
+    color: #35d27a;
+}
+
+.error-text {
+    color: #ff6b6b;
+}
+
+/* Fix GtkGizmo slider warnings - ensure positive dimensions */
+/* Must use higher values and cover all scrollbar states */
+scrollbar {
+    min-width: 12px;
+    min-height: 12px;
+}
+
+scrollbar slider {
+    min-width: 10px;
+    min-height: 10px;
+    margin: 1px;
+}
+
+scrollbar trough {
+    min-width: 12px;
+    min-height: 12px;
+}
+
+scrollbar.horizontal {
+    min-height: 12px;
+}
+
+scrollbar.horizontal slider {
+    min-height: 10px;
+}
+
+scrollbar.vertical {
+    min-width: 12px;
+}
+
+scrollbar.vertical slider {
+    min-width: 10px;
+}
