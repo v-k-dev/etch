@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 const CHUNK_SIZE: usize = 1024 * 1024;
+const VERSION: &str = "1.0.0";
 
 fn main() {
     if let Err(err) = run() {
@@ -174,6 +175,13 @@ fn run() -> Result<()> {
     }
 
     println!("VERIFY_DONE");
+    io::stdout().flush().ok();
+
+    // Output final metrics
+    let total_elapsed = Instant::now().duration_since(start_time).as_secs_f64();
+    let avg_write_speed = (total_size as f64 / total_elapsed) / 1_000_000.0;
+    println!("METRICS total_time={:.2}s avg_speed={:.2}MB/s total_bytes={} version={}", 
+             total_elapsed, avg_write_speed, total_size, VERSION);
     io::stdout().flush().ok();
 
     Ok(())

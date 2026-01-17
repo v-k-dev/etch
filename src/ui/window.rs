@@ -5,6 +5,7 @@ use gtk4::{
     FileChooserAction, FileChooserDialog, Image, Label, MessageDialog, MessageType, Orientation,
     PolicyType, ProgressBar, ResponseType, ScrolledWindow, TextBuffer, TextView,
 };
+use gtk4::gdk_pixbuf::Pixbuf;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
@@ -17,6 +18,7 @@ struct AppState {
     selected_device_path: Option<String>,
     is_working: bool,
     action_state: ActionAreaState,
+    close_attempt_count: u32,
 }
 
 #[derive(Clone)]
@@ -29,6 +31,7 @@ struct UIComponents {
     iso_button: Button,
     device_dropdown: DropDown,
     message_buffer: TextBuffer,
+    refresh_fn: Rc<dyn Fn(bool)>,
 }
 
 #[derive(Debug, Clone)]
@@ -71,12 +74,16 @@ pub fn build_ui(app: &Application) {
         .default_height(440)
         .resizable(false)
         .build();
+    
+    // Set window icon - copy icon to ~/.local/share/icons/ for proper integration
+    window.set_icon_name(Some("etch"));
 
     let state = Rc::new(RefCell::new(AppState {
         selected_iso: None,
         selected_device_path: None,
         is_working: false,
         action_state: ActionAreaState::Idle,
+        close_attempt_count: 0,
     }));
 
     let main_box = GtkBox::new(Orientation::Vertical, 0);
@@ -117,29 +124,92 @@ pub fn build_ui(app: &Application) {
     
     let window_for_menu = window.clone();
     menu_button.connect_clicked(move |_| {
-        let dialog = MessageDialog::new(
-            Some(&window_for_menu),
-            gtk4::DialogFlags::MODAL,
-            MessageType::Info,
-            ButtonsType::Ok,
-            "Etch v0.1.0",
-        );
-        dialog.set_secondary_text(Some(
-            "A minimal ISO to USB writer with verification.\n\n\
-             Features:\n\
-             • Direct block device writing via pkexec (polkit)\n\
-             • Automatic byte-by-byte verification after write\n\
-             • Removable device detection and validation\n\
-             • Real-time progress tracking with speed metrics\n\
-             • Nothing OS inspired minimalist design\n\n\
-             Technology Stack:\n\
-             • Rust for safety and performance\n\
-             • GTK4 for modern native UI\n\
-             • Separate privileged helper binary (etch-helper)\n\n\
-             GitHub: github.com/yourusername/etch\n\
-             License: MIT"
+        // Create custom about dialog with logo
+        let dialog = gtk4::Window::builder()
+            .transient_for(&window_for_menu)
+            .modal(true)
+            .decorated(false)
+            .resizable(false)
+            .default_width(320)
+            .default_height(380)
+            .build();
+        
+        dialog.add_css_class("about-dialog");
+        
+        // Main overlay container
+        let overlay = gtk4::Overlay::new();
+        
+        // Content box
+        let content = GtkBox::new(Orientation::Vertical, 3);
+        content.set_margin_top(12);
+        content.set_margin_bottom(12);
+        content.set_margin_start(16);
+        content.set_margin_end(16);
+        content.set_halign(gtk4::Align::Center);
+        content.set_valign(gtk4::Align::Center);
+        
+        // Add main logo - 200px
+        if let Ok(pixbuf) = Pixbuf::from_file("src/ui/all-icons/macOS/Icon-1024.png") {
+            let scaled = pixbuf.scale_simple(200, 200, gtk4::gdk_pixbuf::InterpType::Bilinear).unwrap();
+            let logo = Image::from_pixbuf(Some(&scaled));
+            logo.set_pixel_size(200);
+            logo.set_margin_bottom(6);
+            logo.add_css_class("about-logo");
+            content.append(&logo);
+        }
+        
+        // App name
+        let title = Label::new(Some("ETCH"));
+        title.add_css_class("about-title");
+        content.append(&title);
+        
+        // Version badge
+        let version = Label::new(Some(&format!("Version {}", crate::VERSION)));
+        version.add_css_class("about-version");
+        version.set_margin_bottom(8);
+        content.append(&version);
+        
+        // Tagline
+        let tagline = Label::new(Some("ISO to USB Writer"));
+        tagline.add_css_class("about-tagline");
+        tagline.set_margin_bottom(6);
+        content.append(&tagline);
+        
+        // Key facts
+        let facts = Label::new(Some(
+            "Polkit/pkexec privilege escalation\n\
+             Byte-by-byte verification\n\
+             Real-time speed metrics"
         ));
-        dialog.connect_response(|dialog, _| dialog.close());
+        facts.add_css_class("about-facts");
+        facts.set_justify(gtk4::Justification::Center);
+        content.append(&facts);
+        
+        // Footer
+        let footer = Label::new(Some("Rust · GTK4 · MIT License"));
+        footer.add_css_class("about-footer");
+        footer.set_margin_top(6);
+        content.append(&footer);
+        
+        overlay.set_child(Some(&content));
+        
+        // Close button overlay (top-right)
+        let close_button = Button::new();
+        close_button.set_icon_name("window-close-symbolic");
+        close_button.add_css_class("about-close-button");
+        close_button.set_halign(gtk4::Align::End);
+        close_button.set_valign(gtk4::Align::Start);
+        close_button.set_margin_top(8);
+        close_button.set_margin_end(8);
+        
+        let dialog_clone = dialog.clone();
+        close_button.connect_clicked(move |_| {
+            dialog_clone.close();
+        });
+        
+        overlay.add_overlay(&close_button);
+        
+        dialog.set_child(Some(&overlay));
         dialog.show();
     });
     
@@ -187,10 +257,22 @@ pub fn build_ui(app: &Application) {
     device_section.add_css_class("section-compact");
     device_section.set_vexpand(true);
 
+    let target_header_box = GtkBox::new(Orientation::Horizontal, 8);
+    target_header_box.set_halign(gtk4::Align::Fill);
+    
     let device_section_title = Label::new(Some("TARGET"));
     device_section_title.add_css_class("section-title-compact");
+    device_section_title.set_hexpand(true);
     device_section_title.set_halign(gtk4::Align::Start);
-    device_section.append(&device_section_title);
+    target_header_box.append(&device_section_title);
+    
+    let refresh_button = Button::new();
+    refresh_button.set_icon_name("view-refresh-symbolic");
+    refresh_button.add_css_class("refresh-button");
+    refresh_button.set_tooltip_text(Some("Refresh device list"));
+    target_header_box.append(&refresh_button);
+    
+    device_section.append(&target_header_box);
 
     let device_label = Label::new(None);
     device_label.add_css_class("file-label-compact");
@@ -201,17 +283,20 @@ pub fn build_ui(app: &Application) {
     device_label.set_valign(gtk4::Align::Start);
     device_section.append(&device_label);
 
-    let devices = Rc::new(crate::io::devices::list_removable_devices().unwrap_or_default());
+    let devices = Rc::new(RefCell::new(crate::io::devices::list_removable_devices().unwrap_or_default()));
     let device_store = ListStore::new::<glib::BoxedAnyObject>();
 
-    if devices.is_empty() {
-        device_label.set_text("No removable devices detected");
-    } else {
-        for device in devices.iter() {
-            let obj = glib::BoxedAnyObject::new(device.path.clone());
-            device_store.append(&obj);
+    {
+        let devices_borrow = devices.borrow();
+        if devices_borrow.is_empty() {
+            device_label.set_text("No removable devices detected");
+        } else {
+            for device in devices_borrow.iter() {
+                let obj = glib::BoxedAnyObject::new(device.path.clone());
+                device_store.append(&obj);
+            }
+            device_label.set_text("Select device");
         }
-        device_label.set_text("Select device");
     }
 
     let factory = gtk4::SignalListItemFactory::new();
@@ -227,15 +312,17 @@ pub fn build_ui(app: &Application) {
         let path: PathBuf = obj.borrow::<PathBuf>().clone();
 
         let display = devices_for_factory
+            .borrow()
             .iter()
             .find(|d| d.path == path)
             .map(|d| {
                 format!(
-                    "{} · {} {} · {}",
+                    "{} · {} {} · {} · {}",
                     d.path.display(),
                     d.vendor,
                     d.model,
-                    d.capacity_human()
+                    d.capacity_human(),
+                    d.connection_type.as_str()
                 )
             })
             .unwrap_or_else(|| path.display().to_string());
@@ -251,7 +338,7 @@ pub fn build_ui(app: &Application) {
         None::<gtk4::Expression>,
     );
     device_dropdown.set_factory(Some(&factory));
-    device_dropdown.set_sensitive(!devices.is_empty());
+    device_dropdown.set_sensitive(!devices.borrow().is_empty());
     device_dropdown.add_css_class("dropdown-compact");
     device_section.append(&device_dropdown);
 
@@ -264,7 +351,6 @@ pub fn build_ui(app: &Application) {
 
     let write_button = build_icon_button("Write", "media-floppy-symbolic", "write-button-compact");
     write_button.set_sensitive(false);
-    write_button.set_size_request(75, 26);
     action_box.append(&write_button);
 
     // Progress Section - Compact
@@ -341,6 +427,117 @@ pub fn build_ui(app: &Application) {
     let progress_bar_for_selection = progress_bar.clone();
     let speed_label_for_selection = speed_label.clone();
     let status_dot_for_selection = status_dot.clone();
+
+    // Helper function to refresh device list
+    let refresh_device_list = {
+        let devices_rc = Rc::clone(&devices);
+        let device_store_rc = device_store.clone();
+        let device_label_rc = device_label.clone();
+        let device_dropdown_rc = device_dropdown.clone();
+        let message_buffer_rc = message_buffer.clone();
+        let selection_model_rc = selection_model.clone();
+        let state_rc = state.clone();
+        let write_button_rc = write_button.clone();
+        let progress_label_rc = progress_label.clone();
+        let progress_bar_rc = progress_bar.clone();
+        let speed_label_rc = speed_label.clone();
+        let status_dot_rc = status_dot.clone();
+        
+        move |silent: bool| {
+            if !silent {
+                append_message(&message_buffer_rc, "Refreshing device list...");
+            }
+            
+            // Get previous device paths
+            let old_paths: Vec<String> = devices_rc
+                .borrow()
+                .iter()
+                .map(|d| d.path.to_string_lossy().to_string())
+                .collect();
+            
+            // Rescan devices
+            let new_devices = crate::io::devices::list_removable_devices().unwrap_or_default();
+            let device_count = new_devices.len();
+            
+            // Get new device paths
+            let new_paths: Vec<String> = new_devices
+                .iter()
+                .map(|d| d.path.to_string_lossy().to_string())
+                .collect();
+            
+            // Check if anything changed
+            let changed = old_paths != new_paths;
+            
+            if changed || !silent {
+                // Update devices Rc
+                *devices_rc.borrow_mut() = new_devices;
+                
+                // Clear and repopulate store
+                device_store_rc.remove_all();
+                
+                let devices_borrow = devices_rc.borrow();
+                if devices_borrow.is_empty() {
+                    device_label_rc.set_text("No devices detected");
+                    device_dropdown_rc.set_sensitive(false);
+                    if !silent {
+                        append_message(&message_buffer_rc, "No devices found");
+                    }
+                } else {
+                    for device in devices_borrow.iter() {
+                        let obj = glib::BoxedAnyObject::new(device.path.clone());
+                        device_store_rc.append(&obj);
+                    }
+                    device_label_rc.set_text("Select device");
+                    device_dropdown_rc.set_sensitive(true);
+                    if !silent {
+                        append_message(&message_buffer_rc, &format!("✓ Found {} device(s)", device_count));
+                    } else if changed {
+                        append_message(&message_buffer_rc, &format!("Device change detected: {} device(s) available", device_count));
+                    }
+                }
+                drop(devices_borrow);
+                
+                // Reset selection if device list changed
+                if changed {
+                    selection_model_rc.set_selected(gtk4::INVALID_LIST_POSITION);
+                    
+                    // Update UI state
+                    let mut state_ref = state_rc.borrow_mut();
+                    state_ref.selected_device_path = None;
+                    recompute_action_state(&mut state_ref);
+                    let action_state = state_ref.action_state.clone();
+                    drop(state_ref);
+                    
+                    update_action_area(
+                        &action_state,
+                        &write_button_rc,
+                        &progress_label_rc,
+                        &progress_bar_rc,
+                        &speed_label_rc,
+                        &status_dot_rc,
+                    );
+                }
+            }
+        }
+    };
+    
+    // Connect manual refresh button
+    let refresh_fn_for_button = refresh_device_list.clone();
+    refresh_button.connect_clicked(move |_| {
+        refresh_fn_for_button(false);
+    });
+    
+    // Auto-detect device changes every 3 seconds
+    let refresh_fn_for_timer = refresh_device_list.clone();
+    let state_for_timer = state.clone();
+    glib::timeout_add_seconds_local(3, move || {
+        // Only auto-refresh when not working
+        let is_working = state_for_timer.borrow().is_working;
+        if !is_working {
+            refresh_fn_for_timer(true);
+        }
+        glib::ControlFlow::Continue
+    });
 
     selection_model.connect_selected_notify(move |model| {
         sync_device_selection(
@@ -422,7 +619,8 @@ pub fn build_ui(app: &Application) {
     // Connect device dropdown handled via selection model above
 
     // Connect write button
-    let state_clone = state;
+    let state_clone = state.clone();
+    let state_for_close = state;
     let window_clone = window.clone();
     let status_dot_clone = status_dot;
     let progress_label_clone = progress_label;
@@ -461,12 +659,14 @@ pub fn build_ui(app: &Application) {
             (Some(iso), Some(device_path)) => {
                 let requested_path = Path::new(&device_path);
                 let device = devices_for_write
+                    .borrow()
                     .iter()
-                    .find(|d| d.path.as_path() == requested_path);
+                    .find(|d| d.path.as_path() == requested_path)
+                    .cloned();
                 match device {
-                    Some(device) => (iso, device.clone()),
+                    Some(device) => (iso, device),
                     None => {
-                        append_message(&message_buffer_clone, "BLOCKED: select ISO and target");
+        append_message(&message_buffer_clone, "⚠ Please select both ISO file and target device");
                         return;
                     }
                 }
@@ -479,6 +679,7 @@ pub fn build_ui(app: &Application) {
 
         append_message(&message_buffer_clone, "Starting write…");
 
+        let refresh_for_write = refresh_device_list.clone();
         show_confirmation_dialog(
             &window_clone,
             iso,
@@ -493,8 +694,50 @@ pub fn build_ui(app: &Application) {
                 iso_button: iso_button_clone.clone(),
                 device_dropdown: device_dropdown_clone.clone(),
                 message_buffer: message_buffer_clone.clone(),
+                refresh_fn: Rc::new(refresh_for_write),
             },
         );
+    });
+
+    // Add close confirmation handler
+    window.connect_close_request(move |window| {
+        let mut state_ref = state_for_close.borrow_mut();
+        
+        // If working, check attempt count
+        if state_ref.is_working {
+            state_ref.close_attempt_count += 1;
+            
+            if state_ref.close_attempt_count >= 2 {
+                // Allow close after 2 attempts
+                drop(state_ref);
+                glib::Propagation::Proceed
+            } else {
+                // First attempt - show warning
+                let attempt = state_ref.close_attempt_count;
+                drop(state_ref); // Release borrow before showing dialog
+                
+                let dialog = MessageDialog::new(
+                    Some(window),
+                    gtk4::DialogFlags::MODAL | gtk4::DialogFlags::DESTROY_WITH_PARENT,
+                    MessageType::Warning,
+                    ButtonsType::Ok,
+                    "Operation in Progress",
+                );
+                dialog.set_decorated(true);
+                dialog.set_secondary_text(Some(&format!(
+                    "A write or verification operation is currently running.\\n\\n\
+                     Closing now could leave the USB device in an inconsistent state.\\n\\n\
+                     Attempt {}/2. Click close again to force quit.",
+                    attempt
+                )));
+                dialog.connect_response(|dialog, _| dialog.close());
+                dialog.show();
+                
+                glib::Propagation::Stop
+            }
+        } else {
+            glib::Propagation::Proceed
+        }
     });
 
     window.present();
@@ -543,11 +786,12 @@ fn show_confirmation_dialog(
 
     let dialog = MessageDialog::new(
         Some(window),
-        gtk4::DialogFlags::MODAL,
+        gtk4::DialogFlags::MODAL | gtk4::DialogFlags::DESTROY_WITH_PARENT,
         MessageType::Warning,
         ButtonsType::None,
         "Confirm Destructive Operation",
     );
+    dialog.set_decorated(true);
 
     dialog.set_secondary_text(Some(&message));
     dialog.add_button("Cancel", ResponseType::Cancel);
@@ -555,7 +799,7 @@ fn show_confirmation_dialog(
 
     dialog.connect_response(move |dialog, response| {
         if response == ResponseType::Accept {
-            append_message(&ui.message_buffer, "User confirmed operation");
+            append_message(&ui.message_buffer, "✓ User confirmed destructive operation");
             dialog.close();
 
             // Spawn worker thread for device validation to prevent UI freeze
@@ -735,6 +979,10 @@ fn start_write_operation(
                     }
                     break;
                 }
+                Some("METRICS") => {
+                    // Log performance metrics
+                    eprintln!("Performance metrics: {}", parts[1..].join(" "));
+                }
                 Some("ERROR") => {
                     let error_msg = parts[1..].join(" ");
                     let _ = tx.send(WorkMessage::Error(format!("Helper error: {error_msg}")));
@@ -748,11 +996,9 @@ fn start_write_operation(
         match child.wait() {
             Ok(status) if !status.success() => {
                 let _ = tx.send(WorkMessage::Error(format!("Helper exited with status: {status}")));
-                return;
             }
             Err(e) => {
                 let _ = tx.send(WorkMessage::Error(format!("Failed to wait for helper: {e}")));
-                return;
             }
             _ => {}
         }
@@ -779,14 +1025,24 @@ fn start_write_operation(
                         let mb_written = bytes as f64 / 1_000_000.0;
                         #[allow(clippy::cast_precision_loss)]
                         let mb_total = total as f64 / 1_000_000.0;
+                        
+                        let remaining_bytes = total.saturating_sub(bytes);
+                        let eta_secs = if bps > 0 {
+                            remaining_bytes as f64 / bps as f64
+                        } else {
+                            0.0
+                        };
+                        let eta_mins = (eta_secs / 60.0) as u32;
+                        let eta_secs_remainder = (eta_secs % 60.0) as u32;
+                        
                         ui.speed_label.set_text(&format!(
-                            "{mb_written:.0}/{mb_total:.0} MB · {mb_per_sec:.1} MB/s"
+                            "{mb_written:.0}/{mb_total:.0} MB · {mb_per_sec:.1} MB/s · ETA {eta_mins}:{eta_secs_remainder:02}"
                         ));
                     }
                     Ok(WorkMessage::WriteComplete) => {
                         append_message(
                             &ui.message_buffer,
-                            "Write phase complete, starting verification",
+                            "✓ Write complete - Starting data verification",
                         );
                         {
                             let mut state_ref = state.borrow_mut();
@@ -816,12 +1072,22 @@ fn start_write_operation(
                         let mb_verified = bytes as f64 / 1_000_000.0;
                         #[allow(clippy::cast_precision_loss)]
                         let mb_total = total as f64 / 1_000_000.0;
+                        
+                        let remaining_bytes = total.saturating_sub(bytes);
+                        let eta_secs = if bps > 0 {
+                            remaining_bytes as f64 / bps as f64
+                        } else {
+                            0.0
+                        };
+                        let eta_mins = (eta_secs / 60.0) as u32;
+                        let eta_secs_remainder = (eta_secs % 60.0) as u32;
+                        
                         ui.speed_label.set_text(&format!(
-                            "{mb_verified:.0}/{mb_total:.0} MB · {mb_per_sec:.1} MB/s"
+                            "{mb_verified:.0}/{mb_total:.0} MB · {mb_per_sec:.1} MB/s · ETA {eta_mins}:{eta_secs_remainder:02}"
                         ));
                     }
                     Ok(WorkMessage::VerifyComplete) => {
-                        append_message(&ui.message_buffer, "Verification complete");
+                        append_message(&ui.message_buffer, "✓ Verification complete - All data matches perfectly!");
                         let action_state = {
                             let mut state_ref = state.borrow_mut();
                             state_ref.is_working = false;
@@ -840,11 +1106,28 @@ fn start_write_operation(
                         ui.progress_bar.set_text(Some("100%"));
                         ui.iso_button.set_sensitive(true);
                         ui.device_dropdown.set_sensitive(true);
+                        
+                        // Auto-refresh device list after completion
+                        (ui.refresh_fn)(true);
+                        
                         rx_opt = None;
                         *rx_holder.borrow_mut() = rx_opt;
                         return glib::ControlFlow::Break;
                     }
                     Ok(WorkMessage::Error(err)) => {
+                        // Categorize error for user-friendly messages
+                        let error_msg = if err.contains("permission") || err.contains("pkexec") {
+                            format!("⚠ USER ERROR: Permission denied\\nDetails: {err}\\nSolution: Ensure polkit is configured correctly")
+                        } else if err.contains("mounted") {
+                            format!("⚠ USER ERROR: Device is mounted\\nDetails: {err}\\nSolution: Unmount all partitions first")
+                        } else if err.contains("space") || err.contains("full") {
+                            format!("⚠ USER ERROR: Insufficient space\\nDetails: {err}\\nSolution: Use a larger device")
+                        } else if err.contains("Verification failed") || err.contains("mismatch") {
+                            format!("✗ VERIFICATION ERROR: Data mismatch detected\\nDetails: {err}\\nCause: Device may be faulty or write operation interrupted")
+                        } else {
+                            format!("✗ ERROR: {err}")
+                        };
+                        
                         let action_state = {
                             let mut state_ref = state.borrow_mut();
                             state_ref.is_working = false;
@@ -859,7 +1142,7 @@ fn start_write_operation(
                             &ui.speed_label,
                             &ui.status_dot,
                         );
-                        append_message(&ui.message_buffer, &format!("✗ {err}"));
+                        append_message(&ui.message_buffer, &error_msg);
                         ui.iso_button.set_sensitive(true);
                         ui.device_dropdown.set_sensitive(true);
                         rx_opt = None;
@@ -895,25 +1178,101 @@ fn show_error_dialog(parent: &impl IsA<gtk4::Window>, message: &str) {
     dialog.connect_response(|dialog, _| dialog.close());
     dialog.show();
 }
-
 fn append_message(buffer: &TextBuffer, message: &str) {
+    // Auto-detect message type from content
+    let message_type = if message.contains("✓") || message.contains("complete") || message.contains("success") {
+        "success"
+    } else if message.contains("✗") || message.contains("ERROR") || message.contains("failed") {
+        "error"
+    } else if message.contains("⚠") || message.contains("WARNING") {
+        "warning"
+    } else if message.starts_with("DEV_") || message.starts_with("ISO=") || message.starts_with("DEV=") {
+        "metadata"
+    } else if message.contains("Starting") || message.contains("INFO:") {
+        "info"
+    } else {
+        "default"
+    };
+    append_message_with_type(buffer, message, message_type)
+}
+
+fn append_message_with_type(buffer: &TextBuffer, message: &str, message_type: &str) {
     let mut end_iter = buffer.end_iter();
+    
+    // Add newline if buffer isn't empty
     if buffer.char_count() > 0 {
         buffer.insert(&mut end_iter, "\n");
         end_iter = buffer.end_iter();
     }
-    buffer.insert(&mut end_iter, message);
+    
+    // Create or get text tags for styling
+    let tag_table = buffer.tag_table();
+    
+    // Success tag (green)
+    if tag_table.lookup("success").is_none() {
+        let tag = gtk4::TextTag::new(Some("success"));
+        tag.set_foreground(Some("#4ade80"));
+        tag.set_weight(700);
+        tag_table.add(&tag);
+    }
+    
+    // Error tag (red)
+    if tag_table.lookup("error").is_none() {
+        let tag = gtk4::TextTag::new(Some("error"));
+        tag.set_foreground(Some("#ff4444"));
+        tag.set_weight(700);
+        tag_table.add(&tag);
+    }
+    
+    // Warning tag (yellow)
+    if tag_table.lookup("warning").is_none() {
+        let tag = gtk4::TextTag::new(Some("warning"));
+        tag.set_foreground(Some("#fbbf24"));
+        tag.set_weight(600);
+        tag_table.add(&tag);
+    }
+    
+    // Info tag (white)
+    if tag_table.lookup("info").is_none() {
+        let tag = gtk4::TextTag::new(Some("info"));
+        tag.set_foreground(Some("#ffffff"));
+        tag_table.add(&tag);
+    }
+    
+    // Metadata tag (grey)
+    if tag_table.lookup("metadata").is_none() {
+        let tag = gtk4::TextTag::new(Some("metadata"));
+        tag.set_foreground(Some("#909090"));
+        tag.set_weight(500);
+        tag_table.add(&tag);
+    }
+    
+    // Format message based on type
+    let (formatted_message, tag_name) = match message_type {
+        "success" => (format!("✓ {}", message.replace("✓", "").trim()), "success"),
+        "error" => (format!("✗ {}", message.replace("✗", "").trim()), "error"),
+        "warning" => (format!("⚠ {}", message.replace("⚠", "").trim()), "warning"),
+        "info" => (format!("● {}", message.replace("INFO:", "").trim()), "info"),
+        "metadata" => (format!("  {}", message), "metadata"),
+        _ => (message.to_string(), ""),
+    };
+    
+    // Insert message with tag
+    let start_offset = end_iter.offset();
+    buffer.insert(&mut end_iter, &formatted_message);
+    
+    // Apply tag to the inserted text
+    if !tag_name.is_empty() {
+        if let Some(tag) = tag_table.lookup(tag_name) {
+            let start_iter = buffer.iter_at_offset(start_offset);
+            let end_iter = buffer.end_iter();
+            buffer.apply_tag(&tag, &start_iter, &end_iter);
+        }
+    }
+    
+    // Scroll to end
     let final_iter = buffer.end_iter();
     buffer.place_cursor(&final_iter);
-
-    if let Ok(mut file) = std::fs::OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open("/tmp/etch-ui.log")
-    {
-        use std::io::Write;
-        let _ = writeln!(file, "{message}");
-    }
 }
 
 fn recompute_action_state(state: &mut AppState) {
@@ -1008,7 +1367,7 @@ fn update_action_area(
 fn sync_device_selection(
     selection_model: &gtk4::SingleSelection,
     state: &Rc<RefCell<AppState>>,
-    devices: &Rc<Vec<crate::core::models::BlockDevice>>,
+    devices: &Rc<RefCell<Vec<crate::core::models::BlockDevice>>>,
     device_label: &Label,
     message_buffer: &TextBuffer,
     write_button: &Button,
@@ -1019,8 +1378,10 @@ fn sync_device_selection(
     emit_log: bool,
 ) {
     let index = selection_model.selected();
+    
+    let devices_borrow = devices.borrow();
 
-    let mut label_text = if devices.is_empty() {
+    let mut label_text = if devices_borrow.is_empty() {
         "No removable devices detected".to_string()
     } else {
         "Select device".to_string()
@@ -1028,24 +1389,34 @@ fn sync_device_selection(
     let mut current_path: Option<String> = None;
 
     if index != gtk4::INVALID_LIST_POSITION {
-        if let Some(device) = devices.get(index as usize) {
+        if let Some(device) = devices_borrow.get(index as usize) {
             label_text = format!(
-                "{} · {} {} · {}",
+                "{} · {} {} · {} · {}",
                 device.path.display(),
                 device.vendor,
                 device.model,
-                device.capacity_human()
+                device.capacity_human(),
+                device.connection_type.as_str()
             );
             current_path = Some(device.path.to_string_lossy().into_owned());
         }
     }
 
+    drop(devices_borrow);
+    
     let mut state_ref = state.borrow_mut();
     let selection_changed = state_ref.selected_device_path != current_path;
+    let had_device = state_ref.selected_device_path.is_some();
     state_ref.selected_device_path = current_path.clone();
     recompute_action_state(&mut state_ref);
     let action_state = state_ref.action_state.clone();
+    let has_iso = state_ref.selected_iso.is_some();
     drop(state_ref);
+    
+    // Force write button update if we now have both ISO and device
+    if has_iso && current_path.is_some() && !had_device {
+        write_button.set_sensitive(true);
+    }
 
     device_label.set_text(&label_text);
     update_action_area(

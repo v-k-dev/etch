@@ -32,10 +32,10 @@ window {
 }
 
 .app-subtitle {
-    font-size: 8px;
+    font-size: 10px;
     color: #7c7c7c;
     font-weight: 500;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
@@ -47,6 +47,24 @@ window {
     min-width: 32px;
     min-height: 32px;
     border-radius: 4px;
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.refresh-button {
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    padding: 3px 7px;
+    min-width: 28px;
+    min-height: 28px;
+    border-radius: 4px;
+    color: #7c7c7c;
+    transition: background 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out;
+}
+
+.refresh-button:hover {
+    background: #1a1a1a;
+    border-color: #3a3a3a;
+    color: #ffffff;
 }
 
 .menu-button:hover {
@@ -96,69 +114,80 @@ window {
     min-height: 24px;
 }
 
-/* Buttons - Minimal */
-button {
-    border-radius: 0;
-    padding: 6px 0;
-    font-weight: 600;
-    font-size: 10px;
-    border: none;
-    border-bottom: 1px solid #333333;
-    transition: all 0.2s ease;
-    min-height: 28px;
-    letter-spacing: 0.3px;
-    background: transparent;
-}
-
-button:hover:not(:disabled) {
-    border-bottom-color: #555555;
-}
-
-button:active:not(:disabled) {
-    opacity: 0.7;
-}
+/* Buttons - NO BASE RULE */
 
 .button-compact {
     background: transparent;
     color: #f4f4f4;
+    border: none;
     border-bottom: 1px solid #333333;
+    border-radius: 0;
+    font-weight: 600;
+    padding: 4px 12px;
+    min-height: 24px;
+    min-width: 0;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    transition: border-bottom-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .button-compact:hover:not(:disabled) {
     border-bottom-color: #666666;
 }
 
-button.write-button-compact {
+.button-compact:active:not(:disabled) {
+    opacity: 0.7;
+    transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-compact:focus {
+    outline: 1px solid #555555;
+    outline-offset: 2px;
+}
+
+.write-button-compact {
     background: #f4f4f4;
     color: #0a0a0a;
     border: none;
-    border-bottom: none;
-    border-radius: 6px;
-    font-weight: 700;
-    padding: 5px 10px;
-    min-height: 26px;
+    border-bottom: 1px solid #f4f4f4;
+    border-radius: 0;
+    font-weight: 600;
+    padding: 4px 12px;
+    min-height: 24px;
+    min-width: 0;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1), border-bottom-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button.write-button-compact:hover:not(:disabled) {
+.write-button-compact:hover:not(:disabled) {
     background: #ffffff;
-    padding: 5px 10px;
-    min-height: 26px;
+    border-bottom-color: #ffffff;
 }
 
-button.write-button-compact:disabled {
-    background: #1a1a1a;
-    color: #444444;
+.write-button-compact:disabled {
+    background: #252525;
+    color: #555555;
     border: none;
-    border-bottom: none;
-    padding: 5px 10px;
-    min-height: 26px;
+    border-bottom: 1px solid #555555;
+    border-radius: 0;
+    font-weight: 600;
+    padding: 4px 12px;
+    min-height: 24px;
+    min-width: 0;
+    font-size: 10px;
+    letter-spacing: 0.3px;
 }
 
-button.write-button-compact:active:not(:disabled) {
+.write-button-compact:active:not(:disabled) {
     background: #e0e0e0;
-    padding: 5px 10px;
-    min-height: 26px;
-    opacity: 1;
+    opacity: 0.7;
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.write-button-compact:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
 }
 
 .button-icon {
@@ -186,10 +215,16 @@ button.write-button-compact:active:not(:disabled) {
     font-size: 11px;
     font-weight: 500;
     padding: 0;
+    transition: border-bottom-color 200ms ease-out;
 }
 
 .dropdown-compact:hover {
     border-bottom-color: #666666;
+}
+
+.dropdown-compact:focus {
+    outline: 1px solid #555555;
+    outline-offset: 2px;
 }
 
 /* Progress */
@@ -208,6 +243,7 @@ button.write-button-compact:active:not(:disabled) {
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-weight: 500;
     margin-top: 6px;
+    letter-spacing: 0.3px;
 }
 
 .progress-compact,
@@ -215,16 +251,23 @@ progressbar {
     min-height: 6px;
     border-radius: 6px;
     background: #0a0a0a;
+    border: none;
+    outline: none;
 }
 
 progressbar progress {
-    background: linear-gradient(90deg, #ffffff 0%, #d0d0d0 50%, #ffffff 100%);
+    background: linear-gradient(90deg, #ff4444 0%, #ff6666 50%, #ff4444 100%);
     border-radius: 6px;
+    border: none;
+    outline: none;
+    transition: all 300ms ease-out;
 }
 
 progressbar trough {
     background: #0a0a0a;
     border-radius: 6px;
+    border: none;
+    outline: none;
 }
 
 progressbar text {
@@ -250,6 +293,7 @@ progressbar text {
     border-radius: 50%;
     background: #ff3b30;
     margin-right: 8px;
+    transition: background 300ms ease-in-out, opacity 300ms ease-in-out;
 }
 
 .status-dot.idle {
@@ -260,11 +304,13 @@ progressbar text {
 .status-dot.active {
     background: #ff3b30;
     animation: pulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(255, 59, 48, 0.6);
 }
 
 .status-dot.success {
     background: #30d158;
     animation: none;
+    box-shadow: 0 0 6px rgba(48, 209, 88, 0.5);
 }
 
 @keyframes pulse {
@@ -311,8 +357,9 @@ scrollbar.vertical slider {
     background: #0f0f0f;
     color: #b0b0b0;
     font-family: "JetBrains Mono", "Fira Code", "SF Mono", monospace;
-    font-size: 10px;
-    padding: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 12px 15px;
     border-radius: 6px;
     border: 1px solid #1a1a1a;
     caret-color: transparent;
@@ -320,6 +367,77 @@ scrollbar.vertical slider {
 
 .message-box-compact text {
     background: transparent;
+}
+
+textview {
+    background: #0f0f0f;
+}
+
+textview text {
+    background: #0f0f0f;
+    color: #b0b0b0;
+}
+
+/* Message type styling */
+.message-info {
+    color: #b0b0b0;
+}
+
+.message-success {
+    color: #35d27a;
+}
+
+.message-warning {
+    color: #ffcc00;
+}
+
+.message-error {
+    color: #ff6b6b;
+}
+
+.message-progress {
+    color: #4da6ff;
+}
+
+/* Message spacing */
+.message-item {
+    margin-bottom: 4px;
+}
+
+.message-item:last-child {
+    margin-bottom: 0;
+}
+
+.message-error {
+    color: #ff6b6b;
+}
+
+.message-success {
+    color: #35d27a;
+}
+
+/* Message animations */
+@keyframes pulse-success {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes pulse-error {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes pulse-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+}
+
+.message-warning {
+    color: #ffa500;
+}
+
+.message-info {
+    color: #4a9eff;
 }
 
 .message-scroll {
@@ -330,13 +448,87 @@ scrollbar.vertical slider {
 
 .message-scroll scrollbar {
     background: transparent;
+    transition: opacity 200ms ease-out;
 }
 
 .message-scroll scrollbar slider {
     background: #2a2a2a;
     border-radius: 4px;
+    transition: background 200ms ease-out;
 }
 
 .message-scroll scrollbar slider:hover {
     background: #3a3a3a;
+}
+
+/* About Dialog - Frameless with Glassmorphism */
+.about-dialog {
+    background: #0a0a0a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+
+.about-logo {
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.about-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 5px;
+}
+
+.about-version {
+    font-size: 10px;
+    color: #888888;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.about-tagline {
+    font-size: 10px;
+    color: #a0a0a0;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.about-facts {
+    font-size: 10px;
+    color: #c8c8c8;
+    line-height: 1.8;
+    font-weight: 400;
+}
+
+.about-footer {
+    font-size: 9px;
+    color: #666666;
+    letter-spacing: 0.5px;
+}
+
+.about-close-button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+    color: #ffffff;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.about-close-button:hover {
+    background: rgba(255, 68, 68, 0.15);
+    border-color: rgba(255, 68, 68, 0.3);
+    transform: scale(1.05);
+}
+
+.about-close-button:active {
+    transform: scale(0.95);
 }

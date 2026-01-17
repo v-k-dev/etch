@@ -23,9 +23,9 @@ Etch is a native GTK4 application written in Rust that writes ISO images to USB 
 
 ## Status
 
-**Live development - actively updated**
+**Version 0.1: ALPHA** · CODE 1
 
-This project is under active development. Features are being added, tested, and refined regularly.
+Live development - actively updated. This project is under active development. Features are being added, tested, and refined regularly.
 
 ## Features
 
@@ -73,6 +73,14 @@ Build from source for now. AUR package coming soon.
 ### Other distributions
 
 Build from source using the instructions above.
+
+## Support
+
+If you find Etch useful, consider supporting development:
+
+- ☕ [Buy me a coffee](https://ko-fi.com) (Coming soon)
+- ⭐ Star this repository
+- 🐛 Report bugs and suggest features
 
 ## Usage
 

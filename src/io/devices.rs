@@ -1,10 +1,81 @@
-use crate::core::models::BlockDevice;
+use crate::core::models::{BlockDevice, DeviceConnectionType};
 use anyhow::{Context, Result};
 use rayon::prelude::*;
 use std::fs;
 use std::path::PathBuf;
 
-/// Enumerate all removable block devices on the system
+/// Detect device connection type (Internal, USB, USB Hub)
+fn detect_connection_type(device_path: &std::path::Path) -> DeviceConnectionType {
+    let device_name = device_path
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("");
+    
+    // Check if device is connected via USB by walking up sysfs path
+    let sys_path = PathBuf::from("/sys/block").join(device_name);
+    
+    // Read the device path to find USB indicators
+    if let Ok(device_link) = fs::read_link(sys_path) {
+        let path_str = device_link.to_string_lossy();
+        
+        // Check for USB indicators in the device path
+        if path_str.contains("/usb") {
+            // Count USB interfaces to detect hub
+            // If path contains multiple /usb segments, it's likely through a hub
+            let usb_count = path_str.matches("/usb").count();
+            if usb_count > 1 {
+                return DeviceConnectionType::UsbHub;
+            }
+            return DeviceConnectionType::Usb;
+        }
+        
+        // Check for internal connection types
+        if path_str.contains("/ata") || path_str.contains("/nvme") || path_str.contains("/virtio") {
+            return DeviceConnectionType::Internal;
+        }
+    }
+    
+    // Fallback: check removable flag
+    let removable_path = PathBuf::from("/sys/block").join(device_name).join("removable");
+    if let Ok(removable) = fs::read_to_string(&removable_path) {
+        if removable.trim() == "1" {
+            return DeviceConnectionType::Usb;
+        }
+    }
+    
+    DeviceConnectionType::Unknown
+}
+
+/// Get the device that hosts the root filesystem
+fn get_root_device() -> Option<String> {
+    // Read /proc/mounts to find root filesystem
+    let mounts = fs::read_to_string("/proc/mounts").ok()?;
+    
+    // Find the device mounted as /
+    for line in mounts.lines() {
+        let parts: Vec<&str> = line.split_whitespace().collect();
+        if parts.len() >= 2 && parts[1] == "/" {
+            let dev_path = PathBuf::from(parts[0]);
+            let device_name = dev_path.file_name()?.to_str()?;
+            
+            // Extract base device name (e.g., /dev/sda1 -> sda, /dev/nvme0n1p1 -> nvme0n1)
+            let base_name = if device_name.contains("nvme") {
+                // NVMe devices: nvme0n1p1 -> nvme0n1
+                device_name.trim_end_matches(|c: char| c.is_numeric() || c == 'p')
+            } else {
+                // Traditional devices: sda1 -> sda
+                device_name.trim_end_matches(char::is_numeric)
+            };
+            
+            return Some(base_name.to_string());
+        }
+    }
+    
+    None
+}
+
+/// Enumerate all writable block devices on the system (USB, NVMe, SATA, etc.)
+/// Excludes loop devices, RAM disks, and system boot disk
 #[allow(dead_code)]
 pub fn list_removable_devices() -> Result<Vec<BlockDevice>> {
     let sys_block = PathBuf::from("/sys/block");
@@ -12,6 +83,9 @@ pub fn list_removable_devices() -> Result<Vec<BlockDevice>> {
     if !sys_block.exists() {
         return Ok(Vec::new());
     }
+    
+    // Get root device to exclude it
+    let root_device = get_root_device();
 
     // Collect all entries first to enable parallel processing
     let entries: Vec<_> = fs::read_dir(&sys_block)
@@ -24,21 +98,54 @@ pub fn list_removable_devices() -> Result<Vec<BlockDevice>> {
         .into_par_iter()
         .filter_map(|entry| {
             let device_name = entry.file_name();
+            let device_name_str = device_name.to_string_lossy();
             let device_path = entry.path();
 
-            // Check if device is removable
-            let removable_path = device_path.join("removable");
-            if !removable_path.exists() {
+            // CRITICAL: Skip root device to prevent system destruction
+            if let Some(ref root_dev) = root_device {
+                if device_name_str.as_ref() == root_dev {
+                    eprintln!("INFO: Skipping root device: {}", device_name_str);
+                    return None;
+                }
+            }
+
+            // Skip loop devices, RAM disks, and other virtual devices
+            if device_name_str.starts_with("loop")
+                || device_name_str.starts_with("ram")
+                || device_name_str.starts_with("dm-")
+                || device_name_str.starts_with("sr")
+            {
                 return None;
             }
 
-            let removable = fs::read_to_string(&removable_path)
-                .unwrap_or_default()
-                .trim()
-                .parse::<u8>()
-                .unwrap_or(0);
-
-            if removable != 1 {
+            // Check if device is removable (USB flag)
+            let removable_path = device_path.join("removable");
+            let is_removable = if removable_path.exists() {
+                fs::read_to_string(&removable_path)
+                    .unwrap_or_default()
+                    .trim()
+                    .parse::<u8>()
+                    .unwrap_or(0)
+                    == 1
+            } else {
+                false
+            };
+            
+            // SAFETY: Only accept devices that are either:
+            // 1. Marked as removable (USB devices)
+            // 2. Connected via USB (detected by connection type)
+            let dev_path_temp = PathBuf::from("/dev").join(&device_name);
+            let connection_type = detect_connection_type(&dev_path_temp);
+            
+            // Skip internal drives (ATA, NVMe, Virtio) - only show USB devices
+            if !is_removable && connection_type == DeviceConnectionType::Internal {
+                eprintln!("INFO: Skipping internal device: {} ({})", device_name_str, connection_type.as_str());
+                return None;
+            }
+            
+            // Skip unknown connection types for safety
+            if !is_removable && connection_type == DeviceConnectionType::Unknown {
+                eprintln!("INFO: Skipping unknown device: {}", device_name_str);
                 return None;
             }
 
@@ -65,7 +172,8 @@ pub fn list_removable_devices() -> Result<Vec<BlockDevice>> {
                 model: model.trim().to_string(),
                 vendor: vendor.trim().to_string(),
                 capacity_bytes,
-                is_removable: true,
+                is_removable,
+                connection_type,
             })
         })
         .collect();

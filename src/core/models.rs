@@ -1,5 +1,24 @@
 use std::path::PathBuf;
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum DeviceConnectionType {
+    Internal,
+    Usb,
+    UsbHub,
+    Unknown,
+}
+
+impl DeviceConnectionType {
+    pub fn as_str(&self) -> &str {
+        match self {
+            DeviceConnectionType::Internal => "Internal",
+            DeviceConnectionType::Usb => "USB",
+            DeviceConnectionType::UsbHub => "USB Hub",
+            DeviceConnectionType::Unknown => "Unknown",
+        }
+    }
+}
+
 /// Represents a block device suitable for ISO writing
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
@@ -9,6 +28,7 @@ pub struct BlockDevice {
     pub vendor: String,
     pub capacity_bytes: u64,
     pub is_removable: bool,
+    pub connection_type: DeviceConnectionType,
 }
 
 #[allow(dead_code)]
