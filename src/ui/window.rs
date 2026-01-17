@@ -19,6 +19,7 @@ struct AppState {
 
 #[derive(Clone)]
 struct UIComponents {
+    status_dot: GtkBox,
     progress_label: Label,
     progress_bar: ProgressBar,
     speed_label: Label,
@@ -69,10 +70,17 @@ pub fn build_ui(app: &Application) {
     main_box.set_margin_start(24);
     main_box.set_margin_end(24);
 
-    // Title Section - Horizontal Layout
-    let title_box = GtkBox::new(Orientation::Horizontal, 16);
+    // Title Section - Horizontal Layout with Status Dot
+    let title_box = GtkBox::new(Orientation::Horizontal, 12);
     title_box.add_css_class("title-section");
     title_box.set_halign(gtk4::Align::Fill);
+
+    // Status Dot
+    let status_dot = GtkBox::new(Orientation::Horizontal, 0);
+    status_dot.add_css_class("status-dot");
+    status_dot.add_css_class("idle");
+    status_dot.set_valign(gtk4::Align::Center);
+    title_box.append(&status_dot);
 
     let title = Label::new(Some("ETCH"));
     title.add_css_class("app-title");
@@ -82,6 +90,7 @@ pub fn build_ui(app: &Application) {
     subtitle.add_css_class("app-subtitle");
     subtitle.set_hexpand(true);
     subtitle.set_halign(gtk4::Align::Start);
+    subtitle.set_valign(gtk4::Align::Center);
     title_box.append(&subtitle);
 
     main_box.append(&title_box);
@@ -93,12 +102,14 @@ pub fn build_ui(app: &Application) {
     main_box.append(&warning);
 
     // Main Content - Horizontal Layout
-    let content_box = GtkBox::new(Orientation::Horizontal, 16);
+    let content_box = GtkBox::new(Orientation::Horizontal, 32);
     content_box.set_homogeneous(true);
+    content_box.set_hexpand(true);
 
     // ISO Selection Section
-    let iso_section = GtkBox::new(Orientation::Vertical, 6);
+    let iso_section = GtkBox::new(Orientation::Vertical, 8);
     iso_section.add_css_class("section-compact");
+    iso_section.set_vexpand(true);
 
     let iso_section_title = Label::new(Some("SOURCE"));
     iso_section_title.add_css_class("section-title-compact");
@@ -110,6 +121,8 @@ pub fn build_ui(app: &Application) {
     iso_label.set_halign(gtk4::Align::Start);
     iso_label.set_ellipsize(gtk4::pango::EllipsizeMode::Middle);
     iso_label.set_max_width_chars(30);
+    iso_label.set_vexpand(true);
+    iso_label.set_valign(gtk4::Align::Start);
     iso_section.append(&iso_label);
 
     let iso_button = build_icon_button("Choose File", "document-open-symbolic", "button-compact");
@@ -118,8 +131,9 @@ pub fn build_ui(app: &Application) {
     content_box.append(&iso_section);
 
     // Device Selection Section
-    let device_section = GtkBox::new(Orientation::Vertical, 6);
+    let device_section = GtkBox::new(Orientation::Vertical, 8);
     device_section.add_css_class("section-compact");
+    device_section.set_vexpand(true);
 
     let device_section_title = Label::new(Some("TARGET"));
     device_section_title.add_css_class("section-title-compact");
@@ -257,6 +271,7 @@ pub fn build_ui(app: &Application) {
     // Connect write button
     let state_clone = state;
     let window_clone = window.clone();
+    let status_dot_clone = status_dot;
     let progress_label_clone = progress_label;
     let progress_bar_clone = progress_bar;
     let speed_label_clone = speed_label;
@@ -277,6 +292,7 @@ pub fn build_ui(app: &Application) {
                 device,
                 state_clone.clone(),
                 UIComponents {
+                    status_dot: status_dot_clone.clone(),
                     progress_label: progress_label_clone.clone(),
                     progress_bar: progress_bar_clone.clone(),
                     speed_label: speed_label_clone.clone(),
@@ -357,6 +373,10 @@ fn show_confirmation_dialog(
             ui.write_button.set_sensitive(false);
             ui.iso_button.set_sensitive(false);
             ui.device_dropdown.set_sensitive(false);
+            
+            // Activate status dot
+            ui.status_dot.remove_css_class("idle");
+            ui.status_dot.add_css_class("active");
 
             start_write_operation(iso.clone(), device.clone(), state.clone(), ui.clone());
         }
@@ -477,6 +497,10 @@ fn start_write_operation(
                     ui.progress_label.set_text("Complete");
                     ui.progress_label.add_css_class("success-text");
                     ui.speed_label.set_text("");
+                    
+                    // Success status dot
+                    ui.status_dot.remove_css_class("active");
+                    ui.status_dot.add_css_class("success");
 
                     state.borrow_mut().is_working = false;
                     ui.write_button.set_sensitive(true);
@@ -489,6 +513,10 @@ fn start_write_operation(
                     ui.progress_label.add_css_class("error-text");
                     ui.progress_bar.set_fraction(0.0);
                     ui.speed_label.set_text("");
+                    
+                    // Error status - back to idle
+                    ui.status_dot.remove_css_class("active");
+                    ui.status_dot.add_css_class("idle");
 
                     state.borrow_mut().is_working = false;
                     ui.write_button.set_sensitive(true);

@@ -1,39 +1,38 @@
-/* Etch - Minimal GTK4 UI - Clean, Aligned, Professional */
+/* Etch - Nothing OS inspired - Slim, Functional, Clean */
 
 window {
-    background: #090909;
+    background: #0a0a0a;
     color: #f4f4f4;
     font-family: "Inter", "SF Pro Text", "Segoe UI", sans-serif;
 }
 
 .main-container {
-    background: #111111;
-    border-radius: 16px;
-    border: 1px solid #1e1e1e;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    background: transparent;
+    border: none;
+    box-shadow: none;
     padding: 24px;
 }
 
 .main-container:backdrop {
-    background: #0f0f0f;
+    background: transparent;
 }
 
 /* Title Section */
 .title-section {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 1px solid #1a1a1a;
 }
 
 .app-title {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: 5px;
+    letter-spacing: 4px;
 }
 
 .app-subtitle {
-    font-size: 10px;
+    font-size: 9px;
     color: #7c7c7c;
     font-weight: 500;
     letter-spacing: 0.8px;
@@ -42,80 +41,82 @@ window {
 
 /* Warning */
 .warning-compact {
-    font-size: 11px;
+    font-size: 10px;
     color: #ff6b6b;
     font-weight: 500;
-    padding: 10px 14px;
+    padding: 0;
     margin-bottom: 20px;
-    background: rgba(255, 107, 107, 0.08);
-    border-radius: 10px;
-    border: 1px solid #2b1b1b;
+    background: transparent;
+    border-radius: 0;
+    border: none;
 }
 
-/* Sections - Card Blocks */
+/* Sections - Minimal blocks */
 .section-compact {
-    background: #141414;
-    border-radius: 12px;
-    padding: 16px;
-    border: 1px solid #1f1f1f;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
 }
 
 .section-title-compact {
     font-size: 9px;
-    font-weight: 700;
-    color: #9a9a9a;
+    font-weight: 600;
+    color: #666666;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
 }
 
 .file-label-compact {
     color: #f4f4f4;
-    font-size: 13px;
+    font-size: 12px;
     font-family: "JetBrains Mono", "Fira Code", monospace;
-    padding: 10px 0;
+    padding: 8px 0;
     font-weight: 500;
-    min-height: 24px;
+    min-height: 20px;
 }
 
-/* Buttons */
+/* Buttons - Minimal */
 button {
-    border-radius: 10px;
-    padding: 11px 18px;
+    border-radius: 0;
+    padding: 10px 0;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
     border: none;
+    border-bottom: 1px solid #333333;
     transition: all 0.2s ease;
-    min-height: 40px;
-    letter-spacing: 0.5px;
+    min-height: 36px;
+    letter-spacing: 0.3px;
+    background: transparent;
 }
 
 button:hover:not(:disabled) {
-    opacity: 0.88;
+    border-bottom-color: #555555;
 }
 
 button:active:not(:disabled) {
     opacity: 0.7;
-    transition: all 0.05s;
 }
 
 .button-compact {
-    background: #1b1b1b;
+    background: transparent;
     color: #f4f4f4;
-    border: 1px solid #2a2a2a;
+    border-bottom: 1px solid #333333;
 }
 
 .button-compact:hover:not(:disabled) {
-    background: #222222;
-    border-color: #343434;
+    border-bottom-color: #666666;
 }
 
 .write-button-compact {
     background: #f4f4f4;
     color: #0a0a0a;
-    border: 1px solid #f4f4f4;
+    border: none;
+    border-radius: 6px;
     font-weight: 700;
+    padding: 10px 20px;
 }
 
 .write-button-compact:hover:not(:disabled) {
@@ -123,14 +124,14 @@ button:active:not(:disabled) {
 }
 
 .write-button-compact:disabled {
-    background: #262626;
-    color: #666666;
-    border-color: #262626;
+    background: #1a1a1a;
+    color: #444444;
+    border: none;
 }
 
 .button-icon {
     color: #f4f4f4;
-    -gtk-icon-size: 16px;
+    -gtk-icon-size: 14px;
 }
 
 .write-button-compact .button-icon {
@@ -138,65 +139,65 @@ button:active:not(:disabled) {
 }
 
 .button-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
 }
 
 /* Dropdown */
 .dropdown-compact {
-    background: #141414;
-    border-radius: 10px;
-    border: 1px solid #2a2a2a;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #333333;
     color: #f4f4f4;
-    min-height: 40px;
-    font-size: 13px;
+    min-height: 36px;
+    font-size: 12px;
     font-weight: 500;
-    padding: 0 14px;
+    padding: 0;
 }
 
 .dropdown-compact:hover {
-    border-color: #3a3a3a;
-    background: #1a1a1a;
+    border-bottom-color: #666666;
 }
 
 /* Progress */
 .progress-label-compact {
     color: #b0b0b0;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .speed-label-compact {
     color: #6f6f6f;
-    font-size: 10px;
+    font-size: 9px;
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-weight: 500;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .progress-compact,
 progressbar {
-    min-height: 10px;
-    border-radius: 10px;
+    min-height: 6px;
+    border-radius: 6px;
     background: #1a1a1a;
 }
 
 progressbar progress {
     background: linear-gradient(90deg, #ffffff 0%, #d0d0d0 50%, #ffffff 100%);
-    border-radius: 10px;
+    border-radius: 6px;
 }
 
 progressbar trough {
     background: #1a1a1a;
-    border-radius: 10px;
+    border-radius: 6px;
 }
 
 progressbar text {
     font-weight: 700;
-    font-size: 9px;
+    font-size: 8px;
     color: #0a0a0a;
 }
 
@@ -207,6 +208,35 @@ progressbar text {
 
 .error-text {
     color: #ff6b6b;
+}
+
+/* Status Dot - Activity Indicator */
+.status-dot {
+    min-width: 6px;
+    min-height: 6px;
+    border-radius: 50%;
+    background: #ff3b30;
+    margin-right: 8px;
+}
+
+.status-dot.idle {
+    background: #333333;
+    opacity: 0.3;
+}
+
+.status-dot.active {
+    background: #ff3b30;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-dot.success {
+    background: #30d158;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
 }
 
 /* Fix GtkGizmo slider warnings - ensure positive dimensions */
