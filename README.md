@@ -1,4 +1,5 @@
 # Etch
+<img width="688" height="463" alt="image" src="https://github.com/user-attachments/assets/47e5244d-28d6-4718-a82a-61e89d1ee52f" />
 
 A minimal, fast, and reliable USB/ISO writer for Linux.
 
