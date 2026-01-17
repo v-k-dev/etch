@@ -23,11 +23,11 @@ Etch is a native GTK4 application written in Rust that writes ISO images to USB 
 
 ## Status
 
-**Version 0.1: STABLE** · CODE 1
+**Version 0.1: NIGHTLY** · CODE 2
 
-**Stable release branch**
+**Live development - actively updated**
 
-This is the stable release branch for production use. For cutting-edge development, see the [nightly branch](https://github.com/v-k-dev/etch/tree/main-nightly).
+This is the nightly development branch with latest features. For stable releases, see the [stable branch](https://github.com/v-k-dev/etch/tree/main-stable).
 
 ## Features
 
