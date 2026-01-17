@@ -20,8 +20,9 @@ modules:
     post-install:
       - install -Dm755 target/release/etch /app/bin/etch
       - install -Dm755 target/release/etch-helper /app/bin/etch-helper
-      - install -Dm644 org.etch.Etch.appdata.xml /app/share/appdata/org.etch.Etch.appdata.xml
+      - install -Dm644 org.etch.Etch.appdata.xml /app/share/metainfo/org.etch.Etch.appdata.xml
       - install -Dm644 org.etch.Etch.desktop /app/share/applications/org.etch.Etch.desktop
+      - install -Dm644 org.etch.Etch.png /app/share/icons/hicolor/1024x1024/apps/org.etch.Etch.png
 
 finish-args:
   - --share=ipc

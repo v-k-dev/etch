@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Etch
+Comment=Minimal ISO to USB writer with verification
+Exec=etch
+Icon=org.etch.Etch
+Type=Application
+Categories=Utility;System;
+Terminal=false
+NoDisplay=false
+X-Desktop-File-Install-Version=0.24
+Keywords=iso;usb;write;verify;disk;
+
+[Desktop Action About]
+Name=About
+Exec=etch --about

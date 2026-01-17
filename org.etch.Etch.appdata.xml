@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.etch.Etch</id>
+  <name>Etch</name>
+  <summary>Minimal ISO to USB writer with verification</summary>
+  <description>
+    <p>
+      Etch is a minimal, fast, and reliable USB/ISO writer for Linux. 
+      Built with correctness, transparency, and simplicity in mind.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Write ISO images to removable USB drives</li>
+      <li>Verify written data for integrity</li>
+      <li>Real-time progress reporting with speed metrics</li>
+      <li>Clean, minimal interface following modern Linux design</li>
+      <li>PolicyKit integration for privilege elevation</li>
+      <li>No root required until write operation</li>
+    </ul>
+  </description>
+  
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT OR Apache-2.0</project_license>
+  <project>https://github.com/v-k-dev/etch</project>
+  <url type="homepage">https://github.com/v-k-dev/etch</url>
+  <url type="bugtracker">https://github.com/v-k-dev/etch/issues</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image type="source" width="720" height="440">
+        https://github.com/user-attachments/assets/47e5244d-28d6-4718-a82a-61e89d1ee52f
+      </image>
+      <caption>Main application window</caption>
+    </screenshot>
+  </screenshots>
+
+  <icon type="remote" width="1024" height="1024">
+    https://github.com/user-attachments/assets/6bc3f4eb-f075-4448-9971-ac02c6c5a8d3
+  </icon>
+
+  <releases>
+    <release version="0.1" date="2026-01-17">
+      <description>
+        <p>Initial release: Core ISO to USB writing functionality with verification.</p>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1" />
+
+  <developer id="v-k-dev">
+    <name>V-K Development</name>
+  </developer>
+
+  <categories>
+    <category>Utility</category>
+    <category>System</category>
+  </categories>
+
+  <keywords>
+    <keyword>iso</keyword>
+    <keyword>usb</keyword>
+    <keyword>write</keyword>
+    <keyword>verify</keyword>
+    <keyword>disk</keyword>
+  </keywords>
+</component>
