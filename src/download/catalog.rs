@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 /// Remote catalog URL - points to GitHub-hosted catalog
 pub const CATALOG_URL: &str = 
-    "https://raw.githubusercontent.com/v-k-dev/etch/main/catalog.json";
+    "https://raw.githubusercontent.com/v-k-dev/etch/main-nightly-wings/catalog.json";
 
 /// A single distribution entry in the catalog
 #[derive(Debug, Clone, Serialize, Deserialize)]

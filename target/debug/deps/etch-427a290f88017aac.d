@@ -15,7 +15,7 @@ src/ui/window.rs:
 src/ui/style.css:
 src/ui/../../org.etch.Etch.png:
 
-# env-dep:AUTO_VERSION=0.2.0
-# env-dep:AUTO_VERSION_CODE=36
+# env-dep:AUTO_VERSION=0.1.2
+# env-dep:AUTO_VERSION_CODE=0
 # env-dep:GIT_BRANCH=main-nightly-wings
-# env-dep:GIT_HASH=15fd2b3
+# env-dep:GIT_HASH=3eaf934
