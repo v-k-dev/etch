@@ -1,4 +1,5 @@
 mod core;
+mod download;
 mod io;
 mod ui;
 

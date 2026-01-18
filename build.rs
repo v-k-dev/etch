@@ -42,16 +42,28 @@ fn generate_version() -> (String, String) {
         .args(&["describe", "--tags", "--abbrev=0"])
         .output();
     
-    let base_version = if let Ok(output) = tag_output {
+    let (base_version, latest_tag) = if let Ok(ref output) = tag_output {
         let tag = String::from_utf8_lossy(&output.stdout).trim().to_string();
-        if tag.starts_with('v') {
+        let version = if tag.starts_with('v') {
             tag[1..].to_string()
         } else {
-            tag
-        }
+            tag.clone()
+        };
+        (version, tag)
     } else {
-        "0.1.0".to_string()
+        ("0.1.0".to_string(), String::new())
     };
+    
+    // Check if we're exactly on a tag
+    let on_exact_tag = Command::new("git")
+        .args(&["describe", "--exact-match", "--tags", "HEAD"])
+        .output()
+        .is_ok();
+    
+    // If we're on a tag, just use that version
+    if on_exact_tag {
+        return (base_version, "0".to_string());
+    }
     
     // Count commits since last tag (or all commits if no tag)
     let commit_count_output = Command::new("git")
@@ -65,15 +77,21 @@ fn generate_version() -> (String, String) {
     };
     
     // Get commits since last tag to determine version bump
-    let commits_since_tag = Command::new("git")
-        .args(&["log", "--oneline", "--format=%s"])
-        .output();
+    let commits_since_tag = if !latest_tag.is_empty() {
+        Command::new("git")
+            .args(&["log", &format!("{}..HEAD", latest_tag), "--oneline", "--format=%s"])
+            .output()
+    } else {
+        Command::new("git")
+            .args(&["log", "--oneline", "--format=%s"])
+            .output()
+    };
     
     let (major_bump, minor_bump, patch_bump) = if let Ok(output) = commits_since_tag {
         let commits = String::from_utf8_lossy(&output.stdout);
         analyze_commits(&commits)
     } else {
-        (0, 0, 1)
+        (0, 0, 0)
     };
     
     // Parse base version
@@ -87,8 +105,11 @@ fn generate_version() -> (String, String) {
         format!("{}.0.0", major + major_bump)
     } else if minor_bump > 0 {
         format!("{}.{}.0", major, minor + minor_bump)
-    } else {
+    } else if patch_bump > 0 {
         format!("{}.{}.{}", major, minor, patch + patch_bump)
+    } else {
+        // No commits since tag - use tag version
+        base_version.clone()
     };
     
     (new_version, commit_count)
@@ -126,9 +147,18 @@ fn analyze_commits(commits: &str) -> (u32, u32, u32) {
         }
     }
     
-    // Default to patch bump if nothing specific found
+    // Default to no bump if at a tagged commit
     if major == 0 && minor == 0 && patch == 0 {
-        patch = 1;
+        // Check if we're exactly on a tag
+        let on_tag = Command::new("git")
+            .args(&["describe", "--exact-match", "--tags", "HEAD"])
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false);
+        
+        if !on_tag {
+            patch = 1;
+        }
     }
     
     (major, minor, patch)

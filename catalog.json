@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "last_updated": "2026-01-18",
+  "distros": [
+    {
+      "id": "ubuntu-24.04-lts-desktop",
+      "name": "Ubuntu 24.04 LTS Desktop",
+      "version": "24.04 LTS",
+      "category": "ubuntu",
+      "download_url": "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 6100000000,
+      "size_human": "5.7 GB",
+      "description": "Long-term support release with GNOME desktop",
+      "verified": true
+    },
+    {
+      "id": "ubuntu-24.10-desktop",
+      "name": "Ubuntu 24.10 Desktop",
+      "version": "24.10",
+      "category": "ubuntu",
+      "download_url": "https://releases.ubuntu.com/24.10/ubuntu-24.10-desktop-amd64.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 6200000000,
+      "size_human": "5.8 GB",
+      "description": "Latest stable release with GNOME desktop",
+      "verified": true
+    },
+    {
+      "id": "fedora-41-workstation",
+      "name": "Fedora Workstation 41",
+      "version": "41",
+      "category": "fedora",
+      "download_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.4.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 2100000000,
+      "size_human": "2.0 GB",
+      "description": "Cutting-edge with latest GNOME",
+      "verified": true
+    },
+    {
+      "id": "mint-22-cinnamon",
+      "name": "Linux Mint 22 Cinnamon",
+      "version": "22",
+      "category": "mint",
+      "download_url": "https://mirrors.kernel.org/linuxmint/stable/22/linuxmint-22-cinnamon-64bit.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 2900000000,
+      "size_human": "2.7 GB",
+      "description": "User-friendly desktop based on Ubuntu LTS",
+      "verified": true
+    },
+    {
+      "id": "debian-12-live",
+      "name": "Debian 12 Live",
+      "version": "12",
+      "category": "debian",
+      "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.8.0-amd64-standard.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 500000000,
+      "size_human": "476 MB",
+      "description": "Stable and reliable Linux distribution",
+      "verified": true
+    }
+  ]
+}
