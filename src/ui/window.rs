@@ -480,6 +480,7 @@ pub fn build_ui(app: &Application) {
     // Platform detection display
     let platform_box = GtkBox::new(Orientation::Horizontal, 8);
     platform_box.set_halign(gtk4::Align::Start);
+    platform_box.set_visible(false); // Hidden by default until ISO is selected
     
     let platform_icon = Image::new();
     platform_icon.set_icon_name(Some("help-faq-symbolic"));
@@ -811,6 +812,7 @@ pub fn build_ui(app: &Application) {
     let status_dot_clone = status_dot.clone();
     let platform_icon_clone = platform_icon.clone();
     let platform_label_clone = platform_label.clone();
+    let platform_box_clone = platform_box.clone();
 
     iso_button.connect_clicked(move |button| {
         let window = button.root().and_downcast::<ApplicationWindow>().unwrap();
@@ -834,6 +836,7 @@ pub fn build_ui(app: &Application) {
         let status_dot = status_dot_clone.clone();
         let platform_icon = platform_icon_clone.clone();
         let platform_label = platform_label_clone.clone();
+        let platform_box = platform_box_clone.clone();
 
         dialog.connect_response(move |dialog, response| {
             if response == ResponseType::Accept {
@@ -849,6 +852,7 @@ pub fn build_ui(app: &Application) {
                         let platform = crate::core::platforms::Platform::from_iso_path(&path);
                         platform_icon.set_icon_name(Some(platform.icon_name()));
                         platform_label.set_text(platform.display_name());
+                        platform_box.set_visible(true); // Show platform info when ISO selected
                         
                         let mut state_ref = state.borrow_mut();
                         state_ref.selected_iso = Some(path);
