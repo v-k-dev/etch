@@ -32,12 +32,16 @@ package() {
   # Install binaries
   install -Dm755 target/release/etch "$pkgdir/usr/bin/etch"
   install -Dm755 target/release/etch-helper "$pkgdir/usr/bin/etch-helper"
+  install -Dm755 target/release/etch-updater "$pkgdir/usr/bin/etch-updater"
   
   # Desktop entry
   install -Dm644 org.etch.Etch.desktop "$pkgdir/usr/share/applications/org.etch.Etch.desktop"
   
   # AppData metadata
   install -Dm644 org.etch.Etch.appdata.xml "$pkgdir/usr/share/metainfo/org.etch.Etch.appdata.xml"
+  
+  # Polkit policy
+  install -Dm644 org.etch.Etch.policy "$pkgdir/usr/share/polkit-1/actions/org.etch.Etch.policy"
   
   # Icon (1024x1024 PNG)
   install -Dm644 org.etch.Etch.png "$pkgdir/usr/share/icons/hicolor/1024x1024/apps/org.etch.Etch.png"

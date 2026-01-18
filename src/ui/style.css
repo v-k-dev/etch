@@ -47,7 +47,54 @@ window {
     min-width: 32px;
     min-height: 32px;
     border-radius: 4px;
-    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-button:hover {
+    background: #1f1f1f;
+    transform: scale(1.05);
+}
+
+/* Advanced Menu Styles - Compact and Dark Theme */
+.menu-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #b5b5b5;
+    letter-spacing: 0.5px;
+}
+
+.menu-section {
+    font-size: 9px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    margin-bottom: 3px;
+}
+
+.menu-item {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 3px;
+    font-size: 11px;
+    color: #909090;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-item:hover {
+    background: #1f1f1f;
+    border-color: #3a3a3a;
+    color: #b5b5b5;
+    transform: translateX(2px);
+}
+
+.menu-info {
+    font-size: 9px;
+    color: #555;
+    font-family: monospace;
 }
 
 .refresh-button {

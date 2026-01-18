@@ -5,7 +5,7 @@ use gtk4::{
     FileChooserAction, FileChooserDialog, Image, Label, MessageDialog, MessageType, Orientation,
     PolicyType, ProgressBar, ResponseType, ScrolledWindow, TextBuffer, TextView,
 };
-use gtk4::gdk_pixbuf::Pixbuf;
+use gtk4::gdk_pixbuf::PixbufLoader;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
@@ -18,7 +18,6 @@ struct AppState {
     selected_device_path: Option<String>,
     is_working: bool,
     action_state: ActionAreaState,
-    close_attempt_count: u32,
 }
 
 #[derive(Clone)]
@@ -75,15 +74,22 @@ pub fn build_ui(app: &Application) {
         .resizable(false)
         .build();
     
-    // Set window icon
-    window.set_icon_name(Some("org.etch.Etch"));
+    // Set window icon - embed the PNG directly
+    let loader = PixbufLoader::new();
+    let icon_data = include_bytes!("../../org.etch.Etch.png");
+    if loader.write(icon_data).is_ok() {
+        let _ = loader.close();
+        if let Some(_pixbuf) = loader.pixbuf() {
+            // Icon loaded successfully - GTK will find it via theme or we rely on desktop file
+            window.set_icon_name(Some("org.etch.Etch"));
+        }
+    }
 
     let state = Rc::new(RefCell::new(AppState {
         selected_iso: None,
         selected_device_path: None,
         is_working: false,
         action_state: ActionAreaState::Idle,
-        close_attempt_count: 0,
     }));
 
     let main_box = GtkBox::new(Orientation::Vertical, 0);
@@ -97,6 +103,20 @@ pub fn build_ui(app: &Application) {
     let title_box = GtkBox::new(Orientation::Horizontal, 12);
     title_box.add_css_class("title-section");
     title_box.set_halign(gtk4::Align::Fill);
+
+    // App icon/logo
+    let loader = PixbufLoader::new();
+    let icon_data = include_bytes!("../../org.etch.Etch.png");
+    if loader.write(icon_data).is_ok() {
+        let _ = loader.close();
+        if let Some(icon_pixbuf) = loader.pixbuf() {
+            if let Some(scaled_pixbuf) = icon_pixbuf.scale_simple(32, 32, gtk4::gdk_pixbuf::InterpType::Bilinear) {
+                let app_icon = Image::from_pixbuf(Some(&scaled_pixbuf));
+                app_icon.set_valign(gtk4::Align::Center);
+                title_box.append(&app_icon);
+            }
+        }
+    }
 
     // Status Dot
     let status_dot = GtkBox::new(Orientation::Horizontal, 0);
@@ -125,21 +145,137 @@ pub fn build_ui(app: &Application) {
     
     let window_for_update = window.clone();
     update_button.connect_clicked(move |_| {
+        let window_clone = window_for_update.clone();
+        
+        // Check for updates from GitHub
         let dialog = MessageDialog::new(
             Some(&window_for_update),
             gtk4::DialogFlags::MODAL,
             MessageType::Info,
-            ButtonsType::Ok,
-            "Update Check",
+            ButtonsType::None,
+            "Checking for Updates",
         );
-        dialog.set_secondary_text(Some(&format!(
-            "You're using the latest version ({} · CODE {})",
-            crate::VERSION,
-            crate::VERSION_CODE
-        )));
-        dialog.connect_response(|dialog, _| {
-            dialog.close();
+        dialog.set_secondary_text(Some("Checking GitHub for the latest version..."));
+        
+        let (tx, rx) = mpsc::channel();
+        
+        // Fetch latest release from GitHub in background thread
+        thread::spawn(move || {
+            let result = std::process::Command::new("curl")
+                .args([
+                    "-s",
+                    "-H", "Accept: application/vnd.github+json",
+                    "https://api.github.com/repos/v-k-dev/etch/releases/latest"
+                ])
+                .output();
+            
+            tx.send(result).ok();
         });
+        
+        // Poll for result
+        let dialog_clone = dialog.clone();
+        let rx_holder = Rc::new(RefCell::new(Some(rx)));
+        glib::timeout_add_local(std::time::Duration::from_millis(100), move || {
+            let mut rx_opt = rx_holder.borrow_mut().take();
+            if let Some(rx) = rx_opt.as_mut() {
+                match rx.try_recv() {
+                    Ok(Ok(output)) if output.status.success() => {
+                        dialog_clone.close();
+                        
+                        let response = String::from_utf8_lossy(&output.stdout);
+                        
+                        // Check if response indicates "Not Found" (404)
+                        if response.contains("\"message\"") && response.contains("\"Not Found\"") {
+                            // No releases exist yet
+                            let info_dialog = MessageDialog::new(
+                                Some(&window_clone),
+                                gtk4::DialogFlags::MODAL,
+                                MessageType::Info,
+                                ButtonsType::Ok,
+                                "No Releases Available",
+                            );
+                            info_dialog.set_secondary_text(Some(&format!(
+                                "No releases have been published yet.\n\n\
+                                 Current Version: {}\n\
+                                 Git: {}\n\n\
+                                 You're running the latest development version.",
+                                crate::VERSION, crate::GIT_HASH
+                            )));
+                            info_dialog.connect_response(|d, _| d.close());
+                            info_dialog.show();
+                            return glib::ControlFlow::Break;
+                        }
+                        
+                        // Parse JSON response to get tag_name and download URL
+                        if let Some(tag_start) = response.find("\"tag_name\"") {
+                            if let Some(tag_value_start) = response[tag_start..].find(": \"") {
+                                let tag_search = &response[tag_start + tag_value_start + 3..];
+                                if let Some(tag_end) = tag_search.find('"') {
+                                    let latest_tag = &tag_search[..tag_end];
+                                    let current_version = format!("v{}", crate::VERSION);
+                                    
+                                    if latest_tag != current_version {
+                                        // Update available
+                                        show_update_available_dialog(&window_clone, latest_tag, &response);
+                                    } else {
+                                        // Already up to date
+                                        let info_dialog = MessageDialog::new(
+                                            Some(&window_clone),
+                                            gtk4::DialogFlags::MODAL,
+                                            MessageType::Info,
+                                            ButtonsType::Ok,
+                                            "Up to Date",
+                                        );
+                                        info_dialog.set_secondary_text(Some(&format!(
+                                            "You are using the latest version.\n\nVersion: {}\nGit: {}",
+                                            crate::VERSION, crate::GIT_HASH
+                                        )));
+                                        info_dialog.connect_response(|d, _| d.close());
+                                        info_dialog.show();
+                                    }
+                                } else {
+                                    show_update_error(&window_clone, "Failed to parse release version");
+                                }
+                            } else {
+                                show_update_error(&window_clone, "Invalid GitHub API response format");
+                            }
+                        } else {
+                            // Response succeeded but no tag_name found
+                            show_update_error(&window_clone, "GitHub API returned unexpected format");
+                        }
+                        
+                        return glib::ControlFlow::Break;
+                    }
+                    Ok(Ok(output)) => {
+                        // Non-success status code
+                        dialog_clone.close();
+                        let stderr = String::from_utf8_lossy(&output.stderr);
+                        if stderr.contains("Could not resolve host") {
+                            show_update_error(&window_clone, "No internet connection");
+                        } else {
+                            show_update_error(&window_clone, "Failed to connect to GitHub");
+                        }
+                        return glib::ControlFlow::Break;
+                    }
+                    Ok(Err(_)) => {
+                        dialog_clone.close();
+                        show_update_error(&window_clone, "Failed to execute update check");
+                        return glib::ControlFlow::Break;
+                    }
+                    Err(mpsc::TryRecvError::Empty) => {
+                        *rx_holder.borrow_mut() = rx_opt;
+                        return glib::ControlFlow::Continue;
+                    }
+                    Err(mpsc::TryRecvError::Disconnected) => {
+                        dialog_clone.close();
+                        show_update_error(&window_clone, "Update check failed");
+                        return glib::ControlFlow::Break;
+                    }
+                }
+            }
+            glib::ControlFlow::Break
+        });
+        
         dialog.show();
     });
     
@@ -153,14 +289,14 @@ pub fn build_ui(app: &Application) {
     
     let window_for_menu = window.clone();
     menu_button.connect_clicked(move |_| {
-        // Create custom about dialog with logo
+        // Create advanced formatting options menu - more compact
         let dialog = gtk4::Window::builder()
             .transient_for(&window_for_menu)
             .modal(true)
             .decorated(false)
             .resizable(false)
-            .default_width(320)
-            .default_height(380)
+            .default_width(280)
+            .default_height(360)
             .build();
         
         dialog.add_css_class("about-dialog");
@@ -168,57 +304,77 @@ pub fn build_ui(app: &Application) {
         // Main overlay container
         let overlay = gtk4::Overlay::new();
         
-        // Content box
-        let content = GtkBox::new(Orientation::Vertical, 3);
+        // Content box - reduced spacing
+        let content = GtkBox::new(Orientation::Vertical, 4);
         content.set_margin_top(12);
         content.set_margin_bottom(12);
-        content.set_margin_start(16);
-        content.set_margin_end(16);
-        content.set_halign(gtk4::Align::Center);
-        content.set_valign(gtk4::Align::Center);
+        content.set_margin_start(14);
+        content.set_margin_end(14);
+        content.set_halign(gtk4::Align::Fill);
+        content.set_valign(gtk4::Align::Start);
         
-        // Add main logo - 200px
-        if let Ok(pixbuf) = Pixbuf::from_file("src/ui/all-icons/macOS/Icon-1024.png") {
-            let scaled = pixbuf.scale_simple(200, 200, gtk4::gdk_pixbuf::InterpType::Bilinear).unwrap();
-            let logo = Image::from_pixbuf(Some(&scaled));
-            logo.set_pixel_size(200);
-            logo.set_margin_bottom(6);
-            logo.add_css_class("about-logo");
-            content.append(&logo);
-        }
-        
-        // App name
-        let title = Label::new(Some("ETCH"));
-        title.add_css_class("about-title");
+        // Menu title - more compact
+        let title = Label::new(Some("Advanced"));
+        title.add_css_class("menu-title");
+        title.set_halign(gtk4::Align::Start);
+        title.set_margin_bottom(8);
         content.append(&title);
         
-        // Version badge
-        let version = Label::new(Some(&format!("Version {}", crate::VERSION)));
-        version.add_css_class("about-version");
-        version.set_margin_bottom(8);
-        content.append(&version);
+        // Formatting Speed Options
+        let speed_section = Label::new(Some("Speed"));
+        speed_section.add_css_class("menu-section");
+        speed_section.set_halign(gtk4::Align::Start);
+        content.append(&speed_section);
         
-        // Tagline
-        let tagline = Label::new(Some("ISO to USB Writer"));
-        tagline.add_css_class("about-tagline");
-        tagline.set_margin_bottom(6);
-        content.append(&tagline);
+        let fast_btn = Button::with_label("Fast (Quick)");
+        fast_btn.add_css_class("menu-item");
+        fast_btn.set_halign(gtk4::Align::Fill);
+        content.append(&fast_btn);
         
-        // Key facts
-        let facts = Label::new(Some(
-            "Polkit/pkexec privilege escalation\n\
-             Byte-by-byte verification\n\
-             Real-time speed metrics"
-        ));
-        facts.add_css_class("about-facts");
-        facts.set_justify(gtk4::Justification::Center);
-        content.append(&facts);
+        let medium_btn = Button::with_label("Medium (Balanced)");
+        medium_btn.add_css_class("menu-item");
+        medium_btn.set_halign(gtk4::Align::Fill);
+        content.append(&medium_btn);
         
-        // Footer
-        let footer = Label::new(Some("Rust · GTK4 · MIT License"));
-        footer.add_css_class("about-footer");
-        footer.set_margin_top(6);
-        content.append(&footer);
+        let slow_btn = Button::with_label("Secure (Slow)");
+        slow_btn.add_css_class("menu-item");
+        slow_btn.set_halign(gtk4::Align::Fill);
+        content.append(&slow_btn);
+        
+        // Security Options
+        let security_section = Label::new(Some("Security"));
+        security_section.add_css_class("menu-section");
+        security_section.set_halign(gtk4::Align::Start);
+        security_section.set_margin_top(8);
+        content.append(&security_section);
+        
+        let clean_btn = Button::with_label("Zero Fill");
+        clean_btn.add_css_class("menu-item");
+        clean_btn.set_halign(gtk4::Align::Fill);
+        content.append(&clean_btn);
+        
+        let forensic_btn = Button::with_label("DoD 5220.22-M");
+        forensic_btn.add_css_class("menu-item");
+        forensic_btn.set_halign(gtk4::Align::Fill);
+        content.append(&forensic_btn);
+        
+        let crypto_btn = Button::with_label("AES-256 Shred");
+        crypto_btn.add_css_class("menu-item");
+        crypto_btn.set_halign(gtk4::Align::Fill);
+        content.append(&crypto_btn);
+        
+        // About section
+        let about_section = Label::new(Some("About"));
+        about_section.add_css_class("menu-section");
+        about_section.set_halign(gtk4::Align::Start);
+        about_section.set_margin_top(8);
+        content.append(&about_section);
+        
+        let version_info = Label::new(Some(&format!("v{} · {}", 
+            crate::VERSION, crate::GIT_HASH)));
+        version_info.add_css_class("menu-info");
+        version_info.set_halign(gtk4::Align::Start);
+        content.append(&version_info);
         
         overlay.set_child(Some(&content));
         
@@ -675,7 +831,6 @@ pub fn build_ui(app: &Application) {
 
     // Connect write button
     let state_clone = state.clone();
-    let state_for_close = state;
     let window_clone = window.clone();
     let status_dot_clone = status_dot;
     let progress_label_clone = progress_label;
@@ -1454,4 +1609,208 @@ fn sync_device_selection(
             .unwrap_or_else(|| "DEV_SELECTED=NONE".to_string());
         append_message(message_buffer, &message);
     }
+}
+
+fn show_update_error(window: &ApplicationWindow, message: &str) {
+    let dialog = MessageDialog::new(
+        Some(window),
+        gtk4::DialogFlags::MODAL,
+        MessageType::Error,
+        ButtonsType::Ok,
+        "Update Check Failed",
+    );
+    dialog.set_secondary_text(Some(&format!(
+        "{}\n\nPlease check your internet connection or try again later.\n\
+         You can manually check for updates at:\nhttps://github.com/v-k-dev/etch/releases",
+        message
+    )));
+    dialog.connect_response(|d, _| d.close());
+    dialog.show();
+}
+
+fn show_update_available_dialog(window: &ApplicationWindow, latest_tag: &str, api_response: &str) {
+    let dialog = MessageDialog::new(
+        Some(window),
+        gtk4::DialogFlags::MODAL,
+        MessageType::Question,
+        ButtonsType::None,
+        "Update Available",
+    );
+    dialog.set_secondary_text(Some(&format!(
+        "A new version is available!\n\n\
+         Current: v{}\n\
+         Latest: {}\n\n\
+         This will download and install the update.\n\
+         Authentication will be required.\n\n\
+         Do you want to update now?",
+        crate::VERSION, latest_tag
+    )));
+    dialog.add_button("Cancel", ResponseType::Cancel);
+    dialog.add_button("Update Now", ResponseType::Accept);
+    
+    let window_clone = window.clone();
+    let tag = latest_tag.to_string();
+    let response_data = api_response.to_string();
+    
+    dialog.connect_response(move |dlg, response| {
+        if response == ResponseType::Accept {
+            // Extract download URL from API response
+            if let Some(browser_url) = extract_download_url(&response_data) {
+                start_update_download(&window_clone, &tag, &browser_url);
+            } else {
+                show_update_error(&window_clone, "Could not find download URL in release");
+            }
+        }
+        dlg.close();
+    });
+    
+    dialog.show();
+}
+
+fn extract_download_url(api_response: &str) -> Option<String> {
+    // Look for browser_download_url with x86_64 binary
+    if let Some(assets_start) = api_response.find("\"assets\"") {
+        let assets_section = &api_response[assets_start..];
+        if let Some(url_start) = assets_section.find("\"browser_download_url\"") {
+            if let Some(url_value_start) = assets_section[url_start..].find(": \"") {
+                let url_search = &assets_section[url_start + url_value_start + 3..];
+                if let Some(url_end) = url_search.find('"') {
+                    let url = &url_search[..url_end];
+                    // Prefer x86_64 binary
+                    if url.contains("x86_64") || url.contains("etch") {
+                        return Some(url.to_string());
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
+fn start_update_download(window: &ApplicationWindow, _tag: &str, download_url: &str) {
+    let update_dialog = gtk4::Dialog::new();
+    update_dialog.set_transient_for(Some(window));
+    update_dialog.set_modal(true);
+    update_dialog.set_title(Some("Installing Update"));
+    update_dialog.set_default_size(450, 180);
+    
+    let content = update_dialog.content_area();
+    let vbox = GtkBox::new(Orientation::Vertical, 8);
+    vbox.set_margin_start(16);
+    vbox.set_margin_end(16);
+    vbox.set_margin_top(12);
+    vbox.set_margin_bottom(12);
+    
+    let status_label = Label::new(Some("Downloading update..."));
+    status_label.set_halign(gtk4::Align::Start);
+    vbox.append(&status_label);
+    
+    let progress = ProgressBar::new();
+    progress.set_show_text(true);
+    progress.set_text(Some("Preparing"));
+    vbox.append(&progress);
+    
+    content.append(&vbox);
+    
+    let close_button = update_dialog.add_button("Close", ResponseType::Ok);
+    close_button.set_sensitive(false);
+    
+    // Set up restart handler
+    update_dialog.connect_response(move |_, response| {
+        if response == ResponseType::Ok {
+            // Restart the application
+            let _ = std::process::Command::new("etch").spawn();
+            std::process::exit(0);
+        }
+    });
+    
+    let (tx, rx) = mpsc::channel();
+    let url = download_url.to_string();
+    
+    // Download and install in background thread
+    thread::spawn(move || {
+        // Create temp file for download
+        let temp_file = "/tmp/etch-update";
+        let target_binary = "/usr/bin/etch";
+        
+        let _ = tx.send("DOWNLOAD_START".to_string());
+        
+        // Find etch-updater binary
+        let updater_path = std::env::current_exe()
+            .ok()
+            .and_then(|p| p.parent().map(|p| p.join("etch-updater")))
+            .unwrap_or_else(|| std::path::PathBuf::from("/usr/bin/etch-updater"));
+        
+        // Run updater via pkexec
+        let result = std::process::Command::new("pkexec")
+            .arg(&updater_path)
+            .arg(&url)
+            .arg(temp_file)
+            .arg(target_binary)
+            .output();
+        
+        match result {
+            Ok(output) if output.status.success() => {
+                let _ = tx.send("UPDATE_SUCCESS".to_string());
+            }
+            Ok(output) => {
+                let error = String::from_utf8_lossy(&output.stderr).to_string();
+                let _ = tx.send(format!("ERROR:{}", error));
+            }
+            Err(e) => {
+                let _ = tx.send(format!("ERROR:{}", e));
+            }
+        }
+    });
+    
+    // Poll for progress
+    let progress_clone = progress.clone();
+    let status_clone = status_label.clone();
+    let close_clone = close_button.clone();
+    let dialog_clone = update_dialog.clone();
+    let window_clone = window.clone();
+    
+    let mut step = 0;
+    glib::timeout_add_local(std::time::Duration::from_millis(200), move || {
+        step += 1;
+        
+        match rx.try_recv() {
+            Ok(msg) => {
+                if msg == "DOWNLOAD_START" {
+                    status_clone.set_text("Downloading...");
+                    progress_clone.set_text(Some("Downloading"));
+                } else if msg == "UPDATE_SUCCESS" {
+                    status_clone.set_markup("<span color='#4CAF50'>✓ Update Successful</span>");
+                    progress_clone.set_fraction(1.0);
+                    progress_clone.set_text(Some("Complete"));
+                    close_clone.set_sensitive(true);
+                    close_clone.add_css_class("suggested-action");
+                    return glib::ControlFlow::Break;
+                } else if msg.starts_with("ERROR:") {
+                    dialog_clone.close();
+                    show_update_error(&window_clone, &msg[6..]);
+                    return glib::ControlFlow::Break;
+                }
+            }
+            Err(mpsc::TryRecvError::Empty) => {
+                // Still working - pulse progress
+                if step < 50 {
+                    progress_clone.pulse();
+                } else {
+                    status_clone.set_text("Installing...");
+                    progress_clone.set_text(Some("Installing"));
+                    progress_clone.pulse();
+                }
+            }
+            Err(mpsc::TryRecvError::Disconnected) => {
+                dialog_clone.close();
+                show_update_error(&window_clone, "Update process failed unexpectedly");
+                return glib::ControlFlow::Break;
+            }
+        }
+        
+        glib::ControlFlow::Continue
+    });
+    
+    update_dialog.show();
 }

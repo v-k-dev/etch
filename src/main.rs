@@ -9,6 +9,12 @@ const APP_ID: &str = "org.etch.Etch";
 const VERSION: &str = "0.1: NIGHTLY (Wings)";
 #[allow(dead_code)]
 const VERSION_CODE: &str = "3";
+const GIT_HASH: &str = env!("GIT_HASH");
+const GIT_BRANCH: &str = env!("GIT_BRANCH");
+
+// Simulated remote version for update checking
+const LATEST_VERSION: &str = "0.2: NIGHTLY (Wings)";
+const LATEST_VERSION_CODE: &str = "4";
 
 fn main() -> anyhow::Result<()> {
     // Use memory-only GSettings backend to prevent dconf permission errors

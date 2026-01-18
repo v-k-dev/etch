@@ -6,6 +6,18 @@ authors = ["Aaron"]
 description = "A transparent, trustworthy ISO-to-USB writer for Linux"
 license = "MIT OR Apache-2.0"
 
+[[bin]]
+name = "etch"
+path = "src/main.rs"
+
+[[bin]]
+name = "etch-helper"
+path = "src/bin/etch-helper.rs"
+
+[[bin]]
+name = "etch-updater"
+path = "src/bin/etch-updater.rs"
+
 [dependencies]
 gtk4 = "0.9"
 glib = "0.20"
@@ -13,6 +25,8 @@ anyhow = "1.0"
 libc = "0.2"
 tokio = { version = "1.0", features = ["full"] }
 rayon = "1.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
 [dev-dependencies]
 tempfile = "3.0"
