@@ -1,0 +1,5 @@
+cargo:rustc-env=GIT_HASH=15fd2b3
+cargo:rustc-env=GIT_BRANCH=main-nightly-wings
+cargo:rustc-env=AUTO_VERSION=0.2.0
+cargo:rustc-env=AUTO_VERSION_CODE=36
+cargo:rerun-if-changed=.git/HEAD

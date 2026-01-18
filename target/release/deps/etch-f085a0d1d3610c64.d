@@ -1,0 +1,21 @@
+/home/aaronn/Dokumente/development/dev2/etch/target/release/deps/etch-f085a0d1d3610c64.d: src/main.rs src/core/mod.rs src/core/models.rs src/core/verification.rs src/core/platforms.rs src/io/mod.rs src/io/devices.rs src/io/writer.rs src/ui/mod.rs src/ui/window.rs src/ui/style.css src/ui/../../org.etch.Etch.png
+
+/home/aaronn/Dokumente/development/dev2/etch/target/release/deps/etch-f085a0d1d3610c64: src/main.rs src/core/mod.rs src/core/models.rs src/core/verification.rs src/core/platforms.rs src/io/mod.rs src/io/devices.rs src/io/writer.rs src/ui/mod.rs src/ui/window.rs src/ui/style.css src/ui/../../org.etch.Etch.png
+
+src/main.rs:
+src/core/mod.rs:
+src/core/models.rs:
+src/core/verification.rs:
+src/core/platforms.rs:
+src/io/mod.rs:
+src/io/devices.rs:
+src/io/writer.rs:
+src/ui/mod.rs:
+src/ui/window.rs:
+src/ui/style.css:
+src/ui/../../org.etch.Etch.png:
+
+# env-dep:AUTO_VERSION=0.2.0
+# env-dep:AUTO_VERSION_CODE=36
+# env-dep:GIT_BRANCH=main-nightly-wings
+# env-dep:GIT_HASH=15fd2b3

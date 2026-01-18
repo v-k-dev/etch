@@ -104,20 +104,6 @@ pub fn build_ui(app: &Application) {
     title_box.add_css_class("title-section");
     title_box.set_halign(gtk4::Align::Fill);
 
-    // App icon/logo
-    let loader = PixbufLoader::new();
-    let icon_data = include_bytes!("../../org.etch.Etch.png");
-    if loader.write(icon_data).is_ok() {
-        let _ = loader.close();
-        if let Some(icon_pixbuf) = loader.pixbuf() {
-            if let Some(scaled_pixbuf) = icon_pixbuf.scale_simple(32, 32, gtk4::gdk_pixbuf::InterpType::Bilinear) {
-                let app_icon = Image::from_pixbuf(Some(&scaled_pixbuf));
-                app_icon.set_valign(gtk4::Align::Center);
-                title_box.append(&app_icon);
-            }
-        }
-    }
-
     // Status Dot
     let status_dot = GtkBox::new(Orientation::Horizontal, 0);
     status_dot.add_css_class("status-dot");
@@ -377,15 +363,60 @@ pub fn build_ui(app: &Application) {
         fast_btn.set_halign(gtk4::Align::Fill);
         content.append(&fast_btn);
         
+        let dialog_for_fast = dialog.clone();
+        fast_btn.connect_clicked(move |_| {
+            let info = MessageDialog::new(
+                None::<&gtk4::Window>,
+                gtk4::DialogFlags::MODAL,
+                MessageType::Info,
+                ButtonsType::Ok,
+                "Fast Mode",
+            );
+            info.set_secondary_text(Some("Quick write mode selected.\nFastest write speed with minimal verification."));
+            info.connect_response(|d, _| d.close());
+            info.show();
+            dialog_for_fast.close();
+        });
+        
         let medium_btn = Button::with_label("Medium (Balanced)");
         medium_btn.add_css_class("menu-item");
         medium_btn.set_halign(gtk4::Align::Fill);
         content.append(&medium_btn);
         
+        let dialog_for_medium = dialog.clone();
+        medium_btn.connect_clicked(move |_| {
+            let info = MessageDialog::new(
+                None::<&gtk4::Window>,
+                gtk4::DialogFlags::MODAL,
+                MessageType::Info,
+                ButtonsType::Ok,
+                "Medium Mode",
+            );
+            info.set_secondary_text(Some("Balanced write mode selected.\nGood speed with standard verification."));
+            info.connect_response(|d, _| d.close());
+            info.show();
+            dialog_for_medium.close();
+        });
+        
         let slow_btn = Button::with_label("Secure (Slow)");
         slow_btn.add_css_class("menu-item");
         slow_btn.set_halign(gtk4::Align::Fill);
         content.append(&slow_btn);
+        
+        let dialog_for_slow = dialog.clone();
+        slow_btn.connect_clicked(move |_| {
+            let info = MessageDialog::new(
+                None::<&gtk4::Window>,
+                gtk4::DialogFlags::MODAL,
+                MessageType::Info,
+                ButtonsType::Ok,
+                "Secure Mode",
+            );
+            info.set_secondary_text(Some("Secure write mode selected.\nSlower speed with extensive verification and checksum validation."));
+            info.connect_response(|d, _| d.close());
+            info.show();
+            dialog_for_slow.close();
+        });
         
         // Security Options
         let security_section = Label::new(Some("Security"));
@@ -399,15 +430,60 @@ pub fn build_ui(app: &Application) {
         clean_btn.set_halign(gtk4::Align::Fill);
         content.append(&clean_btn);
         
+        let dialog_for_clean = dialog.clone();
+        clean_btn.connect_clicked(move |_| {
+            let info = MessageDialog::new(
+                None::<&gtk4::Window>,
+                gtk4::DialogFlags::MODAL,
+                MessageType::Info,
+                ButtonsType::Ok,
+                "Zero Fill",
+            );
+            info.set_secondary_text(Some("Overwrites entire drive with zeros.\nBasic secure erase method."));
+            info.connect_response(|d, _| d.close());
+            info.show();
+            dialog_for_clean.close();
+        });
+        
         let forensic_btn = Button::with_label("DoD 5220.22-M");
         forensic_btn.add_css_class("menu-item");
         forensic_btn.set_halign(gtk4::Align::Fill);
         content.append(&forensic_btn);
         
+        let dialog_for_forensic = dialog.clone();
+        forensic_btn.connect_clicked(move |_| {
+            let info = MessageDialog::new(
+                None::<&gtk4::Window>,
+                gtk4::DialogFlags::MODAL,
+                MessageType::Info,
+                ButtonsType::Ok,
+                "DoD 5220.22-M",
+            );
+            info.set_secondary_text(Some("Department of Defense standard.\n3-pass overwrite: random → complement → random.\nSuitable for classified data."));
+            info.connect_response(|d, _| d.close());
+            info.show();
+            dialog_for_forensic.close();
+        });
+        
         let crypto_btn = Button::with_label("AES-256 Shred");
         crypto_btn.add_css_class("menu-item");
         crypto_btn.set_halign(gtk4::Align::Fill);
         content.append(&crypto_btn);
+        
+        let dialog_for_crypto = dialog.clone();
+        crypto_btn.connect_clicked(move |_| {
+            let info = MessageDialog::new(
+                None::<&gtk4::Window>,
+                gtk4::DialogFlags::MODAL,
+                MessageType::Info,
+                ButtonsType::Ok,
+                "AES-256 Shred",
+            );
+            info.set_secondary_text(Some("Military-grade secure erase.\n7-pass overwrite with AES-256 encrypted random data.\nMaximum security, slowest operation."));
+            info.connect_response(|d, _| d.close());
+            info.show();
+            dialog_for_crypto.close();
+        });
         
         // About section
         let about_section = Label::new(Some("About"));

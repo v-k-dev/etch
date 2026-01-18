@@ -1,0 +1,1 @@
+/home/aaronn/Dokumente/development/dev2/etch/target/release/etch-updater: /home/aaronn/Dokumente/development/dev2/etch/.git/HEAD /home/aaronn/Dokumente/development/dev2/etch/build.rs /home/aaronn/Dokumente/development/dev2/etch/src/bin/etch-updater.rs
