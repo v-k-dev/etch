@@ -3,10 +3,11 @@
 <div align="center">
   <img
     src="https://github.com/user-attachments/assets/e0e0857e-ffc5-4cf3-8e14-95cb0fe7acb1"
-    width="256"
+    width="420"
     alt="Etch Logo"
   />
 </div>
+
 
 **Correctness over convenience. No fake progress. Just write.**
 
