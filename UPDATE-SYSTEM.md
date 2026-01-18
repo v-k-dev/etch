@@ -7,14 +7,18 @@ Etch includes a built-in update system that checks GitHub for new releases and c
 ## Components
 
 ### 1. Polkit Policy (`org.etch.Etch.policy`)
+
 Provides privilege escalation for:
+
 - Writing ISO images to disks
 - Updating the Etch application
 
 Install to: `/usr/share/polkit-1/actions/org.etch.Etch.policy`
 
 ### 2. Updater Binary (`etch-updater`)
+
 A separate binary that:
+
 - Downloads new releases from GitHub
 - Verifies the downloaded binary
 - Replaces the old binary with elevated permissions
@@ -23,7 +27,9 @@ A separate binary that:
 Runs via `pkexec` for privilege escalation.
 
 ### 3. GUI Update Checker
+
 Integrated into the main application:
+
 - Checks GitHub API for latest releases
 - Compares versions
 - Downloads and installs updates
@@ -49,6 +55,7 @@ Integrated into the main application:
 ## Manual Update
 
 If automatic update fails:
+
 ```bash
 # Download latest release
 curl -L -o /tmp/etch https://github.com/v-k-dev/etch/releases/latest/download/etch-x86_64
@@ -60,6 +67,7 @@ pkexec install -m 755 /tmp/etch /usr/bin/etch
 ## For Package Maintainers
 
 When building the package, ensure:
+
 1. All three binaries are built: `etch`, `etch-helper`, `etch-updater`
 2. Polkit policy is installed to `/usr/share/polkit-1/actions/`
 3. Binaries have executable permissions (755)
