@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6bc3f4eb-f075-4448-9971-ac02c6c5a8d3"
        alt="ETCH logo"
-       width="360" />
+       width="420" />
 </p>
 
 
