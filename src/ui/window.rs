@@ -698,56 +698,32 @@ pub fn build_ui(app: &Application) {
     content_box.append(&device_section);
     main_box.append(&content_box);
 
-    // Action Section - Prominent Write Button
-    let action_box = GtkBox::new(Orientation::Vertical, 16);
-    action_box.set_margin_top(16);
+    // Action Section - Horizontal
+    let action_box = GtkBox::new(Orientation::Horizontal, 12);
+    action_box.set_margin_top(6);
 
-    // Large prominent write button
-    let write_button_box = GtkBox::new(Orientation::Horizontal, 0);
-    write_button_box.set_halign(gtk4::Align::Center);
-    
-    let write_button = Button::new();
-    let write_content = GtkBox::new(Orientation::Horizontal, 12);
-    write_content.set_halign(gtk4::Align::Center);
-    
-    let write_icon = Image::from_icon_name("media-floppy-symbolic");
-    write_icon.set_icon_size(gtk4::IconSize::Large);
-    write_icon.add_css_class("write-button-icon");
-    write_content.append(&write_icon);
-    
-    let write_label = Label::new(Some("WRITE"));
-    write_label.add_css_class("write-button-text");
-    write_content.append(&write_label);
-    
-    write_button.set_child(Some(&write_content));
-    write_button.add_css_class("write-button-large");
+    let write_button = build_icon_button("Write", "media-floppy-symbolic", "write-button-compact");
     write_button.set_sensitive(false);
-    write_button.set_size_request(200, 56);
-    write_button_box.append(&write_button);
-    
-    action_box.append(&write_button_box);
+    write_button.set_size_request(80, -1);
+    action_box.append(&write_button);
 
-    action_box.append(&write_button_box);
-
-    // Progress Section - Centered Below Button
-    let progress_box = GtkBox::new(Orientation::Vertical, 6);
-    progress_box.set_halign(gtk4::Align::Center);
+    // Progress Section - Compact
+    let progress_box = GtkBox::new(Orientation::Vertical, 3);
     progress_box.set_hexpand(true);
 
-    let progress_label = Label::new(Some("Ready to write"));
-    progress_label.add_css_class("progress-label-large");
-    progress_label.set_halign(gtk4::Align::Center);
+    let progress_label = Label::new(Some("Ready"));
+    progress_label.add_css_class("progress-label-compact");
+    progress_label.set_halign(gtk4::Align::Start);
     progress_box.append(&progress_label);
 
     let progress_bar = ProgressBar::new();
     progress_bar.set_show_text(true);
-    progress_bar.add_css_class("progress-bar-large");
-    progress_bar.set_size_request(400, 10);
+    progress_bar.add_css_class("progress-compact");
     progress_box.append(&progress_bar);
 
     let speed_label = Label::new(Some(""));
-    speed_label.add_css_class("speed-label-large");
-    speed_label.set_halign(gtk4::Align::Center);
+    speed_label.add_css_class("speed-label-compact");
+    speed_label.set_halign(gtk4::Align::Start);
     progress_box.append(&speed_label);
 
     action_box.append(&progress_box);
