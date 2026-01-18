@@ -1167,18 +1167,21 @@ fn show_iso_browser_window(
                 row.add_css_class("iso-row");
 
                 let info = GtkBox::new(Orientation::Vertical, 1);
-                info.set_hexpand(true);
-                info.set_halign(gtk4::Align::Fill);
+                info.set_hexpand(false);
+                info.set_halign(gtk4::Align::Start);
+                info.set_size_request(400, -1);
 
                 let name = Label::new(Some(&distro.name));
                 name.set_halign(gtk4::Align::Start);
                 name.set_ellipsize(gtk4::pango::EllipsizeMode::End);
+                name.set_max_width_chars(40);
                 name.add_css_class("iso-name-label");
                 info.append(&name);
 
                 let meta = Label::new(Some(&format!("{} • {}", distro.version, distro.size_human)));
                 meta.set_halign(gtk4::Align::Start);
                 meta.set_ellipsize(gtk4::pango::EllipsizeMode::End);
+                meta.set_max_width_chars(40);
                 meta.add_css_class("iso-meta-label");
                 info.append(&meta);
 
@@ -1193,6 +1196,7 @@ fn show_iso_browser_window(
                 dl_btn.set_size_request(40, 32);
                 dl_btn.set_halign(gtk4::Align::End);
                 dl_btn.set_valign(gtk4::Align::Center);
+                dl_btn.set_hexpand(false);
 
                 let distro_clone = distro.clone();
                 let iso_label_clone = iso_label.clone();
