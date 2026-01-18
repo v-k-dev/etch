@@ -370,8 +370,7 @@ pub fn build_ui(app: &Application) {
         about_section.set_margin_top(8);
         content.append(&about_section);
         
-        let version_info = Label::new(Some(&format!("v{} · {}", 
-            crate::VERSION, crate::GIT_HASH)));
+        let version_info = Label::new(Some(&crate::version_info()));
         version_info.add_css_class("menu-info");
         version_info.set_halign(gtk4::Align::Start);
         content.append(&version_info);

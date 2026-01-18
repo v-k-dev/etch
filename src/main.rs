@@ -6,15 +6,25 @@ use gtk4::prelude::*;
 use gtk4::Application;
 
 const APP_ID: &str = "org.etch.Etch";
-const VERSION: &str = "0.1: NIGHTLY (Wings)";
-#[allow(dead_code)]
-const VERSION_CODE: &str = "3";
-const GIT_HASH: &str = env!("GIT_HASH");
-const GIT_BRANCH: &str = env!("GIT_BRANCH");
+pub const VERSION: &str = env!("AUTO_VERSION");
+pub const VERSION_CODE: &str = env!("AUTO_VERSION_CODE");
+pub const GIT_HASH: &str = env!("GIT_HASH");
+pub const GIT_BRANCH: &str = env!("GIT_BRANCH");
 
-// Simulated remote version for update checking
-const LATEST_VERSION: &str = "0.2: NIGHTLY (Wings)";
-const LATEST_VERSION_CODE: &str = "4";
+// Compose full version info for display
+pub fn version_info() -> String {
+    let branch = if GIT_BRANCH == "main" || GIT_BRANCH == "master" {
+        "STABLE"
+    } else if GIT_BRANCH.contains("nightly") {
+        "NIGHTLY"
+    } else if GIT_BRANCH.contains("dev") {
+        "DEV"
+    } else {
+        GIT_BRANCH
+    };
+    
+    format!("{} · {} ({})", VERSION, branch, &GIT_HASH[..7.min(GIT_HASH.len())])
+}
 
 fn main() -> anyhow::Result<()> {
     // Use memory-only GSettings backend to prevent dconf permission errors
