@@ -160,7 +160,9 @@ pub fn build_ui(app: &Application) {
         let (tx, rx) = mpsc::channel();
         
         // Fetch latest release from GitHub in background thread
+        // Try releases first, then fallback to tags
         thread::spawn(move || {
+            // Try releases first
             let result = std::process::Command::new("curl")
                 .args([
                     "-s",
@@ -169,7 +171,26 @@ pub fn build_ui(app: &Application) {
                 ])
                 .output();
             
-            tx.send(result).ok();
+            // If releases don't exist, try tags
+            if let Ok(ref output) = result {
+                if output.status.success() {
+                    let response = String::from_utf8_lossy(&output.stdout);
+                    if response.contains("\"message\"") && response.contains("\"Not Found\"") {
+                        // No releases, try tags instead
+                        let tags_result = std::process::Command::new("curl")
+                            .args([
+                                "-s",
+                                "-H", "Accept: application/vnd.github+json",
+                                "https://api.github.com/repos/v-k-dev/etch/tags"
+                            ])
+                            .output();
+                        tx.send(("tags", tags_result)).ok();
+                        return;
+                    }
+                }
+            }
+            
+            tx.send(("releases", result)).ok();
         });
         
         // Poll for result
@@ -179,74 +200,99 @@ pub fn build_ui(app: &Application) {
             let mut rx_opt = rx_holder.borrow_mut().take();
             if let Some(rx) = rx_opt.as_mut() {
                 match rx.try_recv() {
-                    Ok(Ok(output)) if output.status.success() => {
+                    Ok((source, Ok(output))) if output.status.success() => {
                         dialog_clone.close();
                         
                         let response = String::from_utf8_lossy(&output.stdout);
                         
-                        // Check if response indicates "Not Found" (404)
-                        if response.contains("\"message\"") && response.contains("\"Not Found\"") {
-                            // No releases exist yet
-                            let info_dialog = MessageDialog::new(
-                                Some(&window_clone),
-                                gtk4::DialogFlags::MODAL,
-                                MessageType::Info,
-                                ButtonsType::Ok,
-                                "No Releases Available",
-                            );
-                            info_dialog.set_secondary_text(Some(&format!(
-                                "No releases have been published yet.\n\n\
-                                 Current Version: {}\n\
-                                 Git: {}\n\n\
-                                 You're running the latest development version.",
-                                crate::VERSION, crate::GIT_HASH
-                            )));
-                            info_dialog.connect_response(|d, _| d.close());
-                            info_dialog.show();
-                            return glib::ControlFlow::Break;
-                        }
-                        
-                        // Parse JSON response to get tag_name and download URL
-                        if let Some(tag_start) = response.find("\"tag_name\"") {
-                            if let Some(tag_value_start) = response[tag_start..].find(": \"") {
-                                let tag_search = &response[tag_start + tag_value_start + 3..];
-                                if let Some(tag_end) = tag_search.find('"') {
-                                    let latest_tag = &tag_search[..tag_end];
-                                    let current_version = format!("v{}", crate::VERSION);
-                                    
-                                    if latest_tag != current_version {
-                                        // Update available
-                                        show_update_available_dialog(&window_clone, latest_tag, &response);
+                        match source {
+                            "tags" => {
+                                // Parse tags array and get the first (latest) tag
+                                if response.trim() == "[]" || response.contains("\"message\"") {
+                                    // No tags exist
+                                    let info_dialog = MessageDialog::new(
+                                        Some(&window_clone),
+                                        gtk4::DialogFlags::MODAL,
+                                        MessageType::Info,
+                                        ButtonsType::Ok,
+                                        "No Releases Available",
+                                    );
+                                    info_dialog.set_secondary_text(Some(&format!(
+                                        "No releases have been published yet.\n\n\
+                                         Current Version: v{}\n\
+                                         Git: {}\n\n\
+                                         You're running the latest development version.",
+                                        crate::VERSION, crate::GIT_HASH
+                                    )));
+                                    info_dialog.connect_response(|d, _| d.close());
+                                    info_dialog.show();
+                                    return glib::ControlFlow::Break;
+                                }
+                                
+                                // Parse first tag from array: [{"name": "v0.1.1", ...}]
+                                if let Some(name_start) = response.find("\"name\"") {
+                                    if let Some(name_value_start) = response[name_start..].find(": \"") {
+                                        let name_search = &response[name_start + name_value_start + 3..];
+                                        if let Some(name_end) = name_search.find('"') {
+                                            let latest_tag = &name_search[..name_end];
+                                            
+                                            if compare_versions(&format!("v{}", crate::VERSION), latest_tag) {
+                                                // Update available - show manual update dialog
+                                                show_manual_update_dialog(&window_clone, latest_tag);
+                                            } else {
+                                                // Already up to date
+                                                show_up_to_date_dialog(&window_clone);
+                                            }
+                                        } else {
+                                            show_update_error(&window_clone, "Failed to parse tag name");
+                                        }
                                     } else {
-                                        // Already up to date
-                                        let info_dialog = MessageDialog::new(
-                                            Some(&window_clone),
-                                            gtk4::DialogFlags::MODAL,
-                                            MessageType::Info,
-                                            ButtonsType::Ok,
-                                            "Up to Date",
-                                        );
-                                        info_dialog.set_secondary_text(Some(&format!(
-                                            "You are using the latest version.\n\nVersion: {}\nGit: {}",
-                                            crate::VERSION, crate::GIT_HASH
-                                        )));
-                                        info_dialog.connect_response(|d, _| d.close());
-                                        info_dialog.show();
+                                        show_update_error(&window_clone, "Invalid tags API response");
                                     }
                                 } else {
-                                    show_update_error(&window_clone, "Failed to parse release version");
+                                    show_update_error(&window_clone, "No tags found in response");
                                 }
-                            } else {
-                                show_update_error(&window_clone, "Invalid GitHub API response format");
                             }
-                        } else {
-                            // Response succeeded but no tag_name found
-                            show_update_error(&window_clone, "GitHub API returned unexpected format");
+                            "releases" => {
+                                // Parse release JSON response
+                                if response.contains("\"message\"") && response.contains("\"Not Found\"") {
+                                    // This shouldn't happen as we fallback to tags, but handle it
+                                    show_update_error(&window_clone, "No releases found");
+                                    return glib::ControlFlow::Break;
+                                }
+                                
+                                // Parse JSON response to get tag_name and download URL
+                                if let Some(tag_start) = response.find("\"tag_name\"") {
+                                    if let Some(tag_value_start) = response[tag_start..].find(": \"") {
+                                        let tag_search = &response[tag_start + tag_value_start + 3..];
+                                        if let Some(tag_end) = tag_search.find('"') {
+                                            let latest_tag = &tag_search[..tag_end];
+                                            
+                                            if compare_versions(&format!("v{}", crate::VERSION), latest_tag) {
+                                                // Update available
+                                                show_update_available_dialog(&window_clone, latest_tag, &response);
+                                            } else {
+                                                // Already up to date
+                                                show_up_to_date_dialog(&window_clone);
+                                            }
+                                        } else {
+                                            show_update_error(&window_clone, "Failed to parse release version");
+                                        }
+                                    } else {
+                                        show_update_error(&window_clone, "Invalid GitHub API response format");
+                                    }
+                                } else {
+                                    show_update_error(&window_clone, "GitHub API returned unexpected format");
+                                }
+                            }
+                            _ => {
+                                show_update_error(&window_clone, "Internal error: unknown source");
+                            }
                         }
                         
                         return glib::ControlFlow::Break;
                     }
-                    Ok(Ok(output)) => {
+                    Ok((_, Ok(output))) => {
                         // Non-success status code
                         dialog_clone.close();
                         let stderr = String::from_utf8_lossy(&output.stderr);
@@ -257,7 +303,7 @@ pub fn build_ui(app: &Application) {
                         }
                         return glib::ControlFlow::Break;
                     }
-                    Ok(Err(_)) => {
+                    Ok((_, Err(_))) => {
                         dialog_clone.close();
                         show_update_error(&window_clone, "Failed to execute update check");
                         return glib::ControlFlow::Break;
@@ -1608,6 +1654,83 @@ fn sync_device_selection(
             .unwrap_or_else(|| "DEV_SELECTED=NONE".to_string());
         append_message(message_buffer, &message);
     }
+}
+
+// Compare semantic versions: returns true if remote is newer than current
+fn compare_versions(current: &str, remote: &str) -> bool {
+    let parse_version = |v: &str| -> Option<(u32, u32, u32)> {
+        let v = v.trim_start_matches('v');
+        let parts: Vec<&str> = v.split('.').collect();
+        if parts.len() >= 3 {
+            let major = parts[0].parse().ok()?;
+            let minor = parts[1].parse().ok()?;
+            let patch = parts[2].parse().ok()?;
+            Some((major, minor, patch))
+        } else {
+            None
+        }
+    };
+    
+    if let (Some((c_maj, c_min, c_pat)), Some((r_maj, r_min, r_pat))) = 
+        (parse_version(current), parse_version(remote)) {
+        // Compare versions
+        if r_maj > c_maj { return true; }
+        if r_maj < c_maj { return false; }
+        if r_min > c_min { return true; }
+        if r_min < c_min { return false; }
+        if r_pat > c_pat { return true; }
+    }
+    false
+}
+
+fn show_up_to_date_dialog(window: &ApplicationWindow) {
+    let info_dialog = MessageDialog::new(
+        Some(window),
+        gtk4::DialogFlags::MODAL,
+        MessageType::Info,
+        ButtonsType::Ok,
+        "Up to Date",
+    );
+    info_dialog.set_secondary_text(Some(&format!(
+        "You are using the latest version.\n\nVersion: v{}\nGit: {}",
+        crate::VERSION, crate::GIT_HASH
+    )));
+    info_dialog.connect_response(|d, _| d.close());
+    info_dialog.show();
+}
+
+fn show_manual_update_dialog(window: &ApplicationWindow, latest_tag: &str) {
+    let dialog = MessageDialog::new(
+        Some(window),
+        gtk4::DialogFlags::MODAL,
+        MessageType::Info,
+        ButtonsType::None,
+        "Update Available",
+    );
+    dialog.set_secondary_text(Some(&format!(
+        "A new version is available!\n\n\
+         Current: v{}\n\
+         Latest: {}\n\n\
+         Please download the latest version from GitHub:\n\
+         https://github.com/v-k-dev/etch/releases/tag/{}",
+        crate::VERSION, latest_tag, latest_tag
+    )));
+    dialog.add_button("Cancel", ResponseType::Cancel);
+    dialog.add_button("Open in Browser", ResponseType::Accept);
+    
+    let tag = latest_tag.to_string();
+    dialog.connect_response(move |dlg, response| {
+        if response == ResponseType::Accept {
+            // Open browser to release page
+            let url = format!("https://github.com/v-k-dev/etch/releases/tag/{}", tag);
+            let _ = std::process::Command::new("xdg-open")
+                .arg(&url)
+                .spawn();
+        }
+        dlg.close();
+    });
+    
+    dialog.show();
 }
 
 fn show_update_error(window: &ApplicationWindow, message: &str) {
