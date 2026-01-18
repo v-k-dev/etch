@@ -163,23 +163,27 @@ window {
 
 /* Buttons - NO BASE RULE */
 
+button {
+    padding: 0;
+    margin: 0;
+}
+
 .button-compact {
     background: transparent;
     color: #a8a8a8;
     border: none;
-    border-bottom: 1px solid #333333;
-    border-radius: 0;
+    border-radius: 4px;
     font-weight: 600;
-    padding: 4px 12px;
+    padding: 4px 8px;
     min-height: 24px;
-    min-width: 0;
+    min-width: 32px;
     font-size: 10px;
     letter-spacing: 0.3px;
-    transition: border-bottom-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .button-compact:hover:not(:disabled) {
-    border-bottom-color: #666666;
+    background: #2a2a2a;
 }
 
 .button-compact:active:not(:disabled) {
@@ -196,8 +200,7 @@ window {
     background: #a0a0a0;
     color: #0a0a0a;
     border: none;
-    border-bottom: 1px solid #a0a0a0;
-    border-radius: 0;
+    border-radius: 4px;
     font-weight: 600;
     padding: 4px 12px;
     min-height: 24px;
@@ -205,20 +208,18 @@ window {
     max-width: 80px;
     font-size: 10px;
     letter-spacing: 0.3px;
-    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1), border-bottom-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .write-button-compact:hover:not(:disabled) {
     background: #b0b0b0;
-    border-bottom-color: #b0b0b0;
 }
 
 .write-button-compact:disabled {
     background: #252525;
     color: #555555;
     border: none;
-    border-bottom: 1px solid #555555;
-    border-radius: 0;
+    border-radius: 4px;
     font-weight: 600;
     padding: 4px 12px;
     min-height: 24px;
@@ -239,6 +240,54 @@ window {
     outline-offset: 2px;
 }
 
+/* Write Button - Large & Prominent */
+.write-button-large {
+    background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    min-height: 56px;
+    min-width: 200px;
+    box-shadow: 0 4px 16px rgba(255, 68, 68, 0.3);
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.write-button-large:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ff5555 0%, #ff7777 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 68, 68, 0.4);
+}
+
+.write-button-large:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+}
+
+.write-button-large:disabled {
+    background: linear-gradient(135deg, #2a2a2a 0%, #333333 100%);
+    box-shadow: none;
+}
+
+.write-button-text {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+}
+
+.write-button-large:disabled .write-button-text {
+    color: #666666;
+}
+
+.write-button-icon {
+    -gtk-icon-size: 24px;
+    color: #ffffff;
+}
+
+.write-button-large:disabled .write-button-icon {
+    color: #666666;
+}
+
 .button-icon {
     color: #a8a8a8;
     -gtk-icon-size: 11px;
@@ -246,6 +295,137 @@ window {
 
 .write-button-compact .button-icon {
     color: #0a0a0a;
+}
+
+.write-button-compact:disabled .button-icon {
+    color: #555555;
+}
+
+.icon-button-compact {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 24px !important;
+    min-width: 24px !important;
+    max-height: 24px !important;
+    max-width: 24px !important;
+    transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-button-compact:hover:not(:disabled) {
+    background: #2a2a2a;
+}
+
+.icon-button-compact:active:not(:disabled) {
+    background: #1a1a1a;
+    opacity: 0.8;
+}
+
+.icon-button-compact image {
+    -gtk-icon-size: 12px;
+    color: #a8a8a8;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ISO Browser Styles */
+.iso-row {
+    background: #1a1a1a;
+    border-radius: 6px;
+    padding: 10px 14px;
+    transition: background 150ms ease-out;
+}
+
+.iso-row:hover {
+    background: #1f1f1f;
+}
+
+.iso-name-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #d0d0d0;
+}
+
+.iso-meta-label {
+    font-size: 10px;
+    color: #808080;
+    font-weight: 500;
+}
+
+.download-button {
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 8px 16px;
+    min-height: 36px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #d0d0d0;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.download-button:hover:not(:disabled) {
+    background: #3a3a3a;
+    border-color: #4a4a4a;
+    transform: translateY(-1px);
+}
+
+.download-button:active:not(:disabled) {
+    background: #1a1a1a;
+    transform: translateY(0);
+}
+
+.download-button:disabled {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+    color: #606060;
+    opacity: 0.6;
+}
+
+.download-button image {
+    -gtk-icon-size: 14px;
+    color: #d0d0d0;
+}
+
+.download-button:disabled image {
+    color: #606060;
+}
+
+/* Compact download button for browser */
+.download-button-compact {
+    background: transparent;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    padding: 4px;
+    min-height: 32px;
+    min-width: 40px;
+    transition: all 100ms ease-out;
+}
+
+.download-button-compact:hover:not(:disabled) {
+    background: #2a2a2a;
+    border-color: #4a4a4a;
+}
+
+.download-button-compact:active:not(:disabled) {
+    background: #1a1a1a;
+}
+
+.download-button-compact:disabled {
+    background: transparent;
+    border-color: #1a1a1a;
+    opacity: 0.4;
+}
+
+.download-button-compact image {
+    -gtk-icon-size: 16px;
+    color: #d0d0d0;
+}
+
+.download-button-compact:disabled image {
+    color: #606060;
 }
 
 .button-label {
@@ -292,6 +472,47 @@ window {
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-weight: 500;
     margin-top: 6px;
+    letter-spacing: 0.3px;
+}
+
+/* Progress - Large */
+.progress-label-large {
+    color: #d0d0d0;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.progress-bar-large {
+    min-height: 10px;
+    border-radius: 10px;
+    background: #1a1a1a;
+    border: none;
+    outline: none;
+}
+
+.progress-bar-large progress {
+    background: linear-gradient(90deg, #ff4444 0%, #ff6666 50%, #ff4444 100%);
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    transition: all 300ms ease-out;
+}
+
+.progress-bar-large trough {
+    background: #1a1a1a;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+.speed-label-large {
+    color: #909090;
+    font-size: 11px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-weight: 500;
+    margin-top: 4px;
     letter-spacing: 0.3px;
 }
 

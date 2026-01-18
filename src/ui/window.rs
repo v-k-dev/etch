@@ -698,32 +698,56 @@ pub fn build_ui(app: &Application) {
     content_box.append(&device_section);
     main_box.append(&content_box);
 
-    // Action Section - Horizontal
-    let action_box = GtkBox::new(Orientation::Horizontal, 12);
-    action_box.set_margin_top(6);
+    // Action Section - Prominent Write Button
+    let action_box = GtkBox::new(Orientation::Vertical, 16);
+    action_box.set_margin_top(16);
 
-    let write_button = build_icon_button("Write", "media-floppy-symbolic", "write-button-compact");
+    // Large prominent write button
+    let write_button_box = GtkBox::new(Orientation::Horizontal, 0);
+    write_button_box.set_halign(gtk4::Align::Center);
+    
+    let write_button = Button::new();
+    let write_content = GtkBox::new(Orientation::Horizontal, 12);
+    write_content.set_halign(gtk4::Align::Center);
+    
+    let write_icon = Image::from_icon_name("media-floppy-symbolic");
+    write_icon.set_icon_size(gtk4::IconSize::Large);
+    write_icon.add_css_class("write-button-icon");
+    write_content.append(&write_icon);
+    
+    let write_label = Label::new(Some("WRITE"));
+    write_label.add_css_class("write-button-text");
+    write_content.append(&write_label);
+    
+    write_button.set_child(Some(&write_content));
+    write_button.add_css_class("write-button-large");
     write_button.set_sensitive(false);
-    write_button.set_size_request(80, -1);
-    action_box.append(&write_button);
+    write_button.set_size_request(200, 56);
+    write_button_box.append(&write_button);
+    
+    action_box.append(&write_button_box);
 
-    // Progress Section - Compact
-    let progress_box = GtkBox::new(Orientation::Vertical, 3);
+    action_box.append(&write_button_box);
+
+    // Progress Section - Centered Below Button
+    let progress_box = GtkBox::new(Orientation::Vertical, 6);
+    progress_box.set_halign(gtk4::Align::Center);
     progress_box.set_hexpand(true);
 
-    let progress_label = Label::new(Some("Ready"));
-    progress_label.add_css_class("progress-label-compact");
-    progress_label.set_halign(gtk4::Align::Start);
+    let progress_label = Label::new(Some("Ready to write"));
+    progress_label.add_css_class("progress-label-large");
+    progress_label.set_halign(gtk4::Align::Center);
     progress_box.append(&progress_label);
 
     let progress_bar = ProgressBar::new();
     progress_bar.set_show_text(true);
-    progress_bar.add_css_class("progress-compact");
+    progress_bar.add_css_class("progress-bar-large");
+    progress_bar.set_size_request(400, 10);
     progress_box.append(&progress_bar);
 
     let speed_label = Label::new(Some(""));
-    speed_label.add_css_class("speed-label-compact");
-    speed_label.set_halign(gtk4::Align::Start);
+    speed_label.add_css_class("speed-label-large");
+    speed_label.set_halign(gtk4::Align::Center);
     progress_box.append(&speed_label);
 
     action_box.append(&progress_box);
@@ -1086,8 +1110,8 @@ fn show_iso_browser_window(
         .transient_for(parent)
         .modal(true)
         .title("Browse ISOs")
-        .default_width(500)
-        .default_height(400)
+        .default_width(900)
+        .default_height(600)
         .decorated(false)
         .build();
 
@@ -1097,10 +1121,10 @@ fn show_iso_browser_window(
     // Title bar
     let titlebar = GtkBox::new(Orientation::Horizontal, 12);
     titlebar.add_css_class("title-section");
-    titlebar.set_margin_top(16);
-    titlebar.set_margin_bottom(12);
-    titlebar.set_margin_start(18);
-    titlebar.set_margin_end(18);
+    titlebar.set_margin_top(14);
+    titlebar.set_margin_bottom(10);
+    titlebar.set_margin_start(16);
+    titlebar.set_margin_end(16);
 
     let title = Label::new(Some("BROWSE ISOs"));
     title.add_css_class("app-title");
@@ -1123,11 +1147,13 @@ fn show_iso_browser_window(
     let scroll = ScrolledWindow::new();
     scroll.set_policy(PolicyType::Never, PolicyType::Automatic);
     scroll.set_vexpand(true);
-    scroll.set_margin_start(18);
-    scroll.set_margin_end(18);
-    scroll.set_margin_bottom(18);
+    scroll.set_hexpand(true);
+    scroll.set_margin_start(12);
+    scroll.set_margin_end(12);
+    scroll.set_margin_bottom(12);
 
-    let distros_box = GtkBox::new(Orientation::Vertical, 8);
+    let distros_box = GtkBox::new(Orientation::Vertical, 4);
+    distros_box.set_hexpand(true);
 
     // Load catalog
     let catalog_result = DistrosCatalog::fetch();
@@ -1135,26 +1161,38 @@ fn show_iso_browser_window(
     match catalog_result {
         Ok(catalog) => {
             for distro in &catalog.distros {
-                let row = GtkBox::new(Orientation::Horizontal, 12);
-                row.set_margin_top(4);
-                row.set_margin_bottom(4);
+                let row = GtkBox::new(Orientation::Horizontal, 8);
+                row.set_margin_top(3);
+                row.set_margin_bottom(3);
+                row.add_css_class("iso-row");
 
-                let info = GtkBox::new(Orientation::Vertical, 2);
+                let info = GtkBox::new(Orientation::Vertical, 1);
                 info.set_hexpand(true);
+                info.set_halign(gtk4::Align::Fill);
 
                 let name = Label::new(Some(&distro.name));
                 name.set_halign(gtk4::Align::Start);
-                name.add_css_class("file-label-compact");
+                name.set_ellipsize(gtk4::pango::EllipsizeMode::End);
+                name.add_css_class("iso-name-label");
                 info.append(&name);
 
                 let meta = Label::new(Some(&format!("{} • {}", distro.version, distro.size_human)));
                 meta.set_halign(gtk4::Align::Start);
-                meta.add_css_class("platform-label");
+                meta.set_ellipsize(gtk4::pango::EllipsizeMode::End);
+                meta.add_css_class("iso-meta-label");
                 info.append(&meta);
 
                 row.append(&info);
 
-                let dl_btn = build_icon_button("Download", "folder-download-symbolic", "button-compact");
+                let dl_btn = Button::new();
+                let dl_icon = Image::from_icon_name("folder-download-symbolic");
+                dl_icon.set_icon_size(gtk4::IconSize::Normal);
+                dl_btn.set_child(Some(&dl_icon));
+                dl_btn.add_css_class("download-button-compact");
+                dl_btn.set_tooltip_text(Some(&format!("Download {} ({})", distro.name, distro.size_human)));
+                dl_btn.set_size_request(40, 32);
+                dl_btn.set_halign(gtk4::Align::End);
+                dl_btn.set_valign(gtk4::Align::Center);
 
                 let distro_clone = distro.clone();
                 let iso_label_clone = iso_label.clone();
@@ -1165,15 +1203,21 @@ fn show_iso_browser_window(
                 let dialog_clone2 = dialog.clone();
 
                 dl_btn.connect_clicked(move |btn| {
+                    let download_dir = ISOFetcher::default_download_dir();
+                    let download_file = format!("{}-{}.iso", distro_clone.name.replace(" ", "-"), distro_clone.version);
+                    let download_path = download_dir.join(&download_file);
+                    
+                    println!("→ Starting download: {}", distro_clone.name);
+                    println!("→ Download location: {}", download_path.display());
                     btn.set_sensitive(false);
-                    btn.set_label("Downloading...");
+                    btn.set_icon_name("emblem-synchronizing-symbolic");
 
                     let (tx, rx) = mpsc::channel();
                     let distro_for_thread = distro_clone.clone();
+                    let download_dir_clone = download_dir.clone();
 
                     thread::spawn(move || {
-                        let download_dir = ISOFetcher::default_download_dir();
-                        let result = ISOFetcher::download(&distro_for_thread, &download_dir, None);
+                        let result = ISOFetcher::download(&distro_for_thread, &download_dir_clone, None);
                         tx.send(result).ok();
                     });
 
@@ -1190,6 +1234,7 @@ fn show_iso_browser_window(
                             Ok(result) => {
                                 match result {
                                     Ok(path) => {
+                                        println!("✓ Download complete: {}", path.display());
                                         state_for_poll.borrow_mut().selected_iso = Some(path.clone());
                                         iso_label_for_poll.set_text(&path.file_name().unwrap().to_string_lossy());
 
@@ -1201,9 +1246,9 @@ fn show_iso_browser_window(
                                         dialog_for_poll.close();
                                     }
                                     Err(e) => {
-                                        btn_clone.set_label("Download");
+                                        println!("✗ Download failed: {}", e);
+                                        btn_clone.set_icon_name("folder-download-symbolic");
                                         btn_clone.set_sensitive(true);
-                                        eprintln!("Download failed: {}", e);
                                     }
                                 }
                                 glib::ControlFlow::Break

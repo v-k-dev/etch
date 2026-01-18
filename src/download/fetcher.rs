@@ -1,14 +1,15 @@
 use anyhow::{Context, Result};
-use std::fs::File;
-use std::io::{BufWriter, Read, Write};
+use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::Sender;
 use std::time::Instant;
+use std::process::{Command, Stdio};
 
 use super::Distro;
 use super::verification::verify_sha256;
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum DownloadProgress {
     Started { name: String, size: u64 },
     Progress { bytes: u64, total: u64, bps: u64 },
@@ -20,7 +21,7 @@ pub enum DownloadProgress {
 pub struct ISOFetcher;
 
 impl ISOFetcher {
-    /// Download an ISO with progress reporting
+    /// Download an ISO with progress reporting using curl
     pub fn download(
         distro: &Distro,
         destination_dir: &Path,
@@ -44,62 +45,90 @@ impl ISOFetcher {
             });
         }
 
-        // Download with progress tracking
-        let mut response = reqwest::blocking::get(&distro.download_url)
-            .context("Failed to start download")?;
+        println!("Starting download with curl: {}", distro.download_url);
+        println!("Output: {}", output_path.display());
 
-        if !response.status().is_success() {
+        // Use curl for downloading with progress
+        let mut child = Command::new("curl")
+            .arg("-L") // Follow redirects
+            .arg("-#") // Show progress bar
+            .arg("-o")
+            .arg(&output_path)
+            .arg(&distro.download_url)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .context("Failed to start curl - is it installed?")?;
+
+        // Monitor stderr for progress (curl outputs progress to stderr)
+        let stderr = child.stderr.take();
+        if let Some(stderr) = stderr {
+            let reader = BufReader::new(stderr);
+            let start_time = Instant::now();
+            
+            for line_result in reader.lines() {
+                if let Ok(_line) = line_result {
+                    // curl progress format: ######## (percentage)
+                    // We'll estimate based on time and expected size
+                    let elapsed = start_time.elapsed().as_secs_f64();
+                    
+                    // Simple progress estimation
+                    if let Some(ref tx) = progress_tx {
+                        // Check if file exists and get its current size
+                        if let Ok(metadata) = std::fs::metadata(&output_path) {
+                            let downloaded = metadata.len();
+                            let bps = if elapsed > 0.0 {
+                                (downloaded as f64 / elapsed) as u64
+                            } else {
+                                0
+                            };
+                            
+                            let _ = tx.send(DownloadProgress::Progress {
+                                bytes: downloaded,
+                                total: distro.size_bytes,
+                                bps,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        // Wait for curl to finish
+        let status = child.wait()?;
+
+        if !status.success() {
+            let error_msg = format!("curl failed with exit code: {}", status.code().unwrap_or(-1));
             if let Some(ref tx) = progress_tx {
                 let _ = tx.send(DownloadProgress::Error {
-                    error: format!("HTTP error: {}", response.status()),
+                    error: error_msg.clone(),
                 });
             }
-            anyhow::bail!("Download failed with status: {}", response.status());
+            anyhow::bail!(error_msg);
         }
 
-        let file = File::create(&output_path)?;
-        let mut writer = BufWriter::new(file);
-        let mut downloaded: u64 = 0;
-        let mut buffer = [0u8; 32768]; // 32KB chunks
-        let start_time = Instant::now();
+        // Verify file exists and has reasonable size
+        if !output_path.exists() {
+            anyhow::bail!("Download completed but file not found");
+        }
 
-        loop {
-            match response.read(&mut buffer) {
-                Ok(0) => break, // EOF
-                Ok(n) => {
-                    writer.write_all(&buffer[..n])?;
-                    downloaded += n as u64;
+        let file_size = std::fs::metadata(&output_path)?.len();
+        if file_size < 1_000_000 { // Less than 1MB is suspicious
+            anyhow::bail!("Downloaded file is too small ({}), download may have failed", file_size);
+        }
 
-                    // Calculate speed
-                    let elapsed = start_time.elapsed().as_secs_f64();
-                    let bps = if elapsed > 0.0 {
-                        (downloaded as f64 / elapsed) as u64
-                    } else {
-                        0
-                    };
+        println!("Download complete: {} bytes", file_size);
 
-                    // Send progress update
-                    if let Some(ref tx) = progress_tx {
-                        let _ = tx.send(DownloadProgress::Progress {
-                            bytes: downloaded,
-                            total: distro.size_bytes,
-                            bps,
-                        });
-                    }
-                }
-                Err(e) => {
-                    if let Some(ref tx) = progress_tx {
-                        let _ = tx.send(DownloadProgress::Error {
-                            error: format!("Download error: {}", e),
-                        });
-                    }
-                    return Err(e.into());
-                }
+        // Skip SHA256 verification if hash is placeholder or empty
+        if distro.sha256.is_empty() || distro.sha256.starts_with("PLACEHOLDER") {
+            println!("Skipping verification - no valid hash provided");
+            if let Some(ref tx) = progress_tx {
+                let _ = tx.send(DownloadProgress::Complete {
+                    path: output_path.clone(),
+                });
             }
+            return Ok(output_path);
         }
-
-        writer.flush()?;
-        drop(writer);
 
         // Verify SHA256
         if let Some(ref tx) = progress_tx {
