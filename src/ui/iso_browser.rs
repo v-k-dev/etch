@@ -201,6 +201,18 @@ pub fn show_iso_browser_window(
 
                     // Poll for progress updates
                     glib::timeout_add_local(std::time::Duration::from_millis(100), move || {
+                        // Check if progress window was closed (cancel button)
+                        if progress_window.is_cancelled() {
+                            println!("✗ Download cancelled by user");
+                            // Clear global download flag on cancel
+                            state_for_poll.borrow().download_in_progress.store(false, Ordering::Relaxed);
+                            // Re-enable ALL buttons after cancel
+                            for button in buttons_for_poll.borrow().iter() {
+                                button.set_sensitive(true);
+                            }
+                            return glib::ControlFlow::Break;
+                        }
+
                         // Update progress if available
                         while let Ok(progress) = progress_rx.try_recv() {
                             use crate::download::DownloadProgress;

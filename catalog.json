@@ -5,9 +5,9 @@
     {
       "id": "ubuntu-24.04-lts-desktop",
       "name": "Ubuntu 24.04 LTS Desktop",
-      "version": "24.04 LTS",
+      "version": "24.04.3 LTS",
       "category": "ubuntu",
-      "download_url": "https://releases.ubuntu.com/24.04/ubuntu-24.04.1-desktop-amd64.iso",
+      "download_url": "https://releases.ubuntu.com/24.04/ubuntu-24.04.3-desktop-amd64.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 6100000000,
       "size_human": "5.7 GB",
@@ -99,11 +99,11 @@
       "verified": true
     },
     {
-      "id": "debian-12-live",
-      "name": "Debian 12 Live",
-      "version": "12.8",
+      "id": "debian-13-live",
+      "name": "Debian 13 Live",
+      "version": "13.3.0",
       "category": "debian",
-      "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.8.0-amd64-standard.iso",
+      "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-standard.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 500000000,
       "size_human": "476 MB",
@@ -111,11 +111,11 @@
       "verified": true
     },
     {
-      "id": "debian-12-gnome",
-      "name": "Debian 12 GNOME",
-      "version": "12.8",
+      "id": "debian-13-gnome",
+      "name": "Debian 13 GNOME",
+      "version": "13.3.0",
       "category": "debian",
-      "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.8.0-amd64-gnome.iso",
+      "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-gnome.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 3200000000,
       "size_human": "3.0 GB",
@@ -123,11 +123,11 @@
       "verified": true
     },
     {
-      "id": "arch-2024.01",
+      "id": "arch-2026.01",
       "name": "Arch Linux",
-      "version": "2024.01.01",
+      "version": "2026.01.01",
       "category": "arch",
-      "download_url": "https://mirror.rackspace.com/archlinux/iso/2024.01.01/archlinux-2024.01.01-x86_64.iso",
+      "download_url": "https://mirror.rackspace.com/archlinux/iso/latest/archlinux-2026.01.01-x86_64.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 900000000,
       "size_human": "858 MB",
@@ -195,11 +195,11 @@
       "verified": true
     },
     {
-      "id": "kali-2024.4",
-      "name": "Kali Linux 2024.4",
-      "version": "2024.4",
+      "id": "kali-2025.4",
+      "name": "Kali Linux 2025.4",
+      "version": "2025.4",
       "category": "debian",
-      "download_url": "https://cdimage.kali.org/kali-2024.4/kali-linux-2024.4-installer-amd64.iso",
+      "download_url": "https://cdimage.kali.org/current/kali-linux-2025.4-installer-amd64.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 4300000000,
       "size_human": "4.0 GB",
@@ -217,6 +217,78 @@
       "size_human": "2.3 GB",
       "description": "Arch-based with easy installer",
       "verified": true
+    },
+    {
+      "id": "cachyos-2024-desktop",
+      "name": "CachyOS Desktop",
+      "version": "240101",
+      "category": "arch",
+      "download_url": "https://mirror.cachyos.org/ISO/kde/240101/cachyos-kde-linux-240101.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3200000000,
+      "size_human": "3.0 GB",
+      "description": "Performance-optimized Arch with latest kernel",
+      "verified": true
+    },
+    {
+      "id": "cachyos-2024-nvidia",
+      "name": "CachyOS NVIDIA",
+      "version": "240101",
+      "category": "arch",
+      "download_url": "https://mirror.cachyos.org/ISO/kde/240101/cachyos-kde-linux-240101.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3200000000,
+      "size_human": "3.0 GB",
+      "description": "CachyOS with NVIDIA drivers pre-installed",
+      "verified": true
+    },
+    {
+      "id": "nobara-39-official",
+      "name": "Nobara 39 Official",
+      "version": "39",
+      "category": "fedora",
+      "download_url": "https://nobaraproject.org/download-nobara",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3800000000,
+      "size_human": "3.5 GB",
+      "description": "Gaming-focused Fedora with wine and drivers",
+      "verified": true
+    },
+    {
+      "id": "garuda-dr460nized",
+      "name": "Garuda Linux Dr460nized",
+      "version": "Latest",
+      "category": "arch",
+      "download_url": "https://iso.builds.garudalinux.org/iso/latest/garuda/dr460nized/latest.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3500000000,
+      "size_human": "3.3 GB",
+      "description": "Beautiful gaming-optimized Arch distro",
+      "verified": true
+    },
+    {
+      "id": "mx-linux-23",
+      "name": "MX Linux 23",
+      "version": "23",
+      "category": "debian",
+      "download_url": "https://sourceforge.net/projects/mx-linux/files/Final/Xfce/MX-23_x64.iso/download",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 2200000000,
+      "size_human": "2.1 GB",
+      "description": "Stable midweight Debian-based distro",
+      "verified": true
+    },
+    {
+      "id": "windows-11-iot",
+      "name": "Windows 11 IoT LTSC",
+      "version": "2024",
+      "category": "other",
+      "download_url": "https://www.microsoft.com/en-us/evalcenter/download-windows-11-iot-enterprise-ltsc",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 5200000000,
+      "size_human": "4.9 GB",
+      "description": "Long-term support Windows for embedded systems",
+      "verified": false
     }
   ]
 }
