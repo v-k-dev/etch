@@ -835,3 +835,84 @@ textview text {
 .platform-arduino .platform-icon {
     color: #00979d;
 }
+
+/* ISO Browser Logo Backgrounds */
+.logo-ubuntu {
+    background: linear-gradient(135deg, #dd4814 0%, #ff6633 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-ubuntu image {
+    color: white;
+}
+
+.logo-fedora {
+    background: linear-gradient(135deg, #294172 0%, #3c6eb4 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-fedora image {
+    color: white;
+}
+
+.logo-debian {
+    background: linear-gradient(135deg, #a80030 0%, #d70a53 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-debian image {
+    color: white;
+}
+
+.logo-arch {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-arch image {
+    color: #1793d1;
+}
+
+.logo-mint {
+    background: linear-gradient(135deg, #5fb83f 0%, #87cf3e 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-mint image {
+    color: white;
+}
+
+.logo-raspberry {
+    background: linear-gradient(135deg, #c51a4a 0%, #e8235e 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-raspberry image {
+    color: white;
+}
+
+.logo-suse {
+    background: linear-gradient(135deg, #0c322c 0%, #73ba25 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-suse image {
+    color: white;
+}
+
+.logo-default {
+    background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.logo-default image {
+    color: #7c7c7c;
+}

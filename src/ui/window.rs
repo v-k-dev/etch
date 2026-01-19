@@ -10,16 +10,19 @@ use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::sync::mpsc;
+use std::sync::atomic::AtomicBool;
+use std::sync::Arc;
 use std::thread;
 
-use crate::download::{DistrosCatalog, ISOFetcher};
+use super::iso_browser::show_iso_browser_window;
 
 #[derive(Clone)]
-struct AppState {
-    selected_iso: Option<PathBuf>,
-    selected_device_path: Option<String>,
-    is_working: bool,
-    action_state: ActionAreaState,
+pub struct AppState {
+    pub selected_iso: Option<PathBuf>,
+    pub selected_device_path: Option<String>,
+    pub is_working: bool,
+    pub action_state: ActionAreaState,
+    pub download_in_progress: Arc<AtomicBool>,
 }
 
 #[derive(Clone)]
@@ -92,6 +95,7 @@ pub fn build_ui(app: &Application) {
         selected_device_path: None,
         is_working: false,
         action_state: ActionAreaState::Idle,
+        download_in_progress: Arc::new(AtomicBool::new(false)),
     }));
 
     let main_box = GtkBox::new(Orientation::Vertical, 0);
@@ -1072,190 +1076,6 @@ pub fn build_ui(app: &Application) {
     });
 
     window.present();
-}
-
-fn show_iso_browser_window(
-    parent: &ApplicationWindow,
-    iso_label: Label,
-    state: Rc<RefCell<AppState>>,
-    platform_box: GtkBox,
-    platform_icon: Image,
-    platform_label: Label,
-) {
-    let dialog = ApplicationWindow::builder()
-        .transient_for(parent)
-        .modal(true)
-        .title("Browse ISOs")
-        .default_width(900)
-        .default_height(600)
-        .decorated(false)
-        .build();
-
-    let main_box = GtkBox::new(Orientation::Vertical, 0);
-    main_box.add_css_class("main-container");
-
-    // Title bar
-    let titlebar = GtkBox::new(Orientation::Horizontal, 12);
-    titlebar.add_css_class("title-section");
-    titlebar.set_margin_top(14);
-    titlebar.set_margin_bottom(10);
-    titlebar.set_margin_start(16);
-    titlebar.set_margin_end(16);
-
-    let title = Label::new(Some("BROWSE ISOs"));
-    title.add_css_class("app-title");
-    title.set_hexpand(true);
-    title.set_halign(gtk4::Align::Start);
-    titlebar.append(&title);
-
-    let close_btn = Button::new();
-    close_btn.set_icon_name("window-close-symbolic");
-    close_btn.add_css_class("menu-button");
-    let dialog_clone = dialog.clone();
-    close_btn.connect_clicked(move |_| {
-        dialog_clone.close();
-    });
-    titlebar.append(&close_btn);
-
-    main_box.append(&titlebar);
-
-    // Content
-    let scroll = ScrolledWindow::new();
-    scroll.set_policy(PolicyType::Never, PolicyType::Automatic);
-    scroll.set_vexpand(true);
-    scroll.set_hexpand(true);
-    scroll.set_margin_start(12);
-    scroll.set_margin_end(12);
-    scroll.set_margin_bottom(12);
-
-    let distros_box = GtkBox::new(Orientation::Vertical, 4);
-    distros_box.set_hexpand(true);
-
-    // Load catalog
-    let catalog_result = DistrosCatalog::fetch();
-
-    match catalog_result {
-        Ok(catalog) => {
-            for distro in &catalog.distros {
-                let row = GtkBox::new(Orientation::Horizontal, 8);
-                row.set_margin_top(3);
-                row.set_margin_bottom(3);
-                row.add_css_class("iso-row");
-
-                let info = GtkBox::new(Orientation::Vertical, 1);
-                info.set_hexpand(false);
-                info.set_halign(gtk4::Align::Start);
-                info.set_size_request(400, -1);
-
-                let name = Label::new(Some(&distro.name));
-                name.set_halign(gtk4::Align::Start);
-                name.set_ellipsize(gtk4::pango::EllipsizeMode::End);
-                name.set_max_width_chars(40);
-                name.add_css_class("iso-name-label");
-                info.append(&name);
-
-                let meta = Label::new(Some(&format!("{} • {}", distro.version, distro.size_human)));
-                meta.set_halign(gtk4::Align::Start);
-                meta.set_ellipsize(gtk4::pango::EllipsizeMode::End);
-                meta.set_max_width_chars(40);
-                meta.add_css_class("iso-meta-label");
-                info.append(&meta);
-
-                row.append(&info);
-
-                let dl_btn = Button::new();
-                let dl_icon = Image::from_icon_name("folder-download-symbolic");
-                dl_icon.set_icon_size(gtk4::IconSize::Normal);
-                dl_btn.set_child(Some(&dl_icon));
-                dl_btn.add_css_class("download-button-compact");
-                dl_btn.set_tooltip_text(Some(&format!("Download {} ({})", distro.name, distro.size_human)));
-                dl_btn.set_size_request(40, 32);
-                dl_btn.set_halign(gtk4::Align::End);
-                dl_btn.set_valign(gtk4::Align::Center);
-                dl_btn.set_hexpand(false);
-
-                let distro_clone = distro.clone();
-                let iso_label_clone = iso_label.clone();
-                let state_clone = state.clone();
-                let platform_box_clone = platform_box.clone();
-                let platform_icon_clone = platform_icon.clone();
-                let platform_label_clone = platform_label.clone();
-                let dialog_clone2 = dialog.clone();
-
-                dl_btn.connect_clicked(move |btn| {
-                    let download_dir = ISOFetcher::default_download_dir();
-                    let download_file = format!("{}-{}.iso", distro_clone.name.replace(" ", "-"), distro_clone.version);
-                    let download_path = download_dir.join(&download_file);
-                    
-                    println!("→ Starting download: {}", distro_clone.name);
-                    println!("→ Download location: {}", download_path.display());
-                    btn.set_sensitive(false);
-                    btn.set_icon_name("emblem-synchronizing-symbolic");
-
-                    let (tx, rx) = mpsc::channel();
-                    let distro_for_thread = distro_clone.clone();
-                    let download_dir_clone = download_dir.clone();
-
-                    thread::spawn(move || {
-                        let result = ISOFetcher::download(&distro_for_thread, &download_dir_clone, None);
-                        tx.send(result).ok();
-                    });
-
-                    let btn_clone = btn.clone();
-                    let iso_label_for_poll = iso_label_clone.clone();
-                    let state_for_poll = state_clone.clone();
-                    let platform_box_for_poll = platform_box_clone.clone();
-                    let platform_icon_for_poll = platform_icon_clone.clone();
-                    let platform_label_for_poll = platform_label_clone.clone();
-                    let dialog_for_poll = dialog_clone2.clone();
-
-                    glib::timeout_add_local(std::time::Duration::from_millis(100), move || {
-                        match rx.try_recv() {
-                            Ok(result) => {
-                                match result {
-                                    Ok(path) => {
-                                        println!("✓ Download complete: {}", path.display());
-                                        state_for_poll.borrow_mut().selected_iso = Some(path.clone());
-                                        iso_label_for_poll.set_text(&path.file_name().unwrap().to_string_lossy());
-
-                                        let platform = crate::core::platforms::Platform::from_iso_path(&path);
-                                        platform_box_for_poll.set_visible(true);
-                                        platform_icon_for_poll.set_icon_name(Some(platform.icon_name()));
-                                        platform_label_for_poll.set_text(platform.display_name());
-
-                                        dialog_for_poll.close();
-                                    }
-                                    Err(e) => {
-                                        println!("✗ Download failed: {}", e);
-                                        btn_clone.set_icon_name("folder-download-symbolic");
-                                        btn_clone.set_sensitive(true);
-                                    }
-                                }
-                                glib::ControlFlow::Break
-                            }
-                            Err(_) => glib::ControlFlow::Continue,
-                        }
-                    });
-                });
-
-                row.append(&dl_btn);
-                distros_box.append(&row);
-            }
-        }
-        Err(e) => {
-            let err = Label::new(Some(&format!("Failed to load catalog:\n{}", e)));
-            err.add_css_class("warning-compact");
-            err.set_wrap(true);
-            err.set_margin_top(20);
-            distros_box.append(&err);
-        }
-    }
-
-    scroll.set_child(Some(&distros_box));
-    main_box.append(&scroll);
-
-    dialog.set_child(Some(&main_box));
-    dialog.present();
 }
 
 fn build_icon_button(label: &str, icon_name: &str, class_name: &str) -> Button {

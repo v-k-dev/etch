@@ -1,9 +1,10 @@
 use anyhow::{Context, Result};
-use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::io::Write;
 use std::time::Instant;
-use std::process::{Command, Stdio};
 
 use super::Distro;
 use super::verification::verify_sha256;
@@ -21,11 +22,12 @@ pub enum DownloadProgress {
 pub struct ISOFetcher;
 
 impl ISOFetcher {
-    /// Download an ISO with progress reporting using curl
+    /// Download an ISO with progress reporting using reqwest
     pub fn download(
         distro: &Distro,
         destination_dir: &Path,
         progress_tx: Option<Sender<DownloadProgress>>,
+        cancel_flag: Option<Arc<AtomicBool>>,
     ) -> Result<PathBuf> {
         // Create destination directory
         std::fs::create_dir_all(destination_dir)?;
@@ -45,60 +47,23 @@ impl ISOFetcher {
             });
         }
 
-        println!("Starting download with curl: {}", distro.download_url);
-        println!("Output: {}", output_path.display());
+        println!("→ Starting download: {}", distro.name);
+        println!("  URL: {}", distro.download_url);
+        println!("  Destination: {}", output_path.display());
 
-        // Use curl for downloading with progress
-        let mut child = Command::new("curl")
-            .arg("-L") // Follow redirects
-            .arg("-#") // Show progress bar
-            .arg("-o")
-            .arg(&output_path)
-            .arg(&distro.download_url)
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .context("Failed to start curl - is it installed?")?;
+        // Use reqwest for reliable downloading
+        let client = reqwest::blocking::Client::builder()
+            .timeout(std::time::Duration::from_secs(300))
+            .build()
+            .context("Failed to create HTTP client")?;
 
-        // Monitor stderr for progress (curl outputs progress to stderr)
-        let stderr = child.stderr.take();
-        if let Some(stderr) = stderr {
-            let reader = BufReader::new(stderr);
-            let start_time = Instant::now();
-            
-            for line_result in reader.lines() {
-                if let Ok(_line) = line_result {
-                    // curl progress format: ######## (percentage)
-                    // We'll estimate based on time and expected size
-                    let elapsed = start_time.elapsed().as_secs_f64();
-                    
-                    // Simple progress estimation
-                    if let Some(ref tx) = progress_tx {
-                        // Check if file exists and get its current size
-                        if let Ok(metadata) = std::fs::metadata(&output_path) {
-                            let downloaded = metadata.len();
-                            let bps = if elapsed > 0.0 {
-                                (downloaded as f64 / elapsed) as u64
-                            } else {
-                                0
-                            };
-                            
-                            let _ = tx.send(DownloadProgress::Progress {
-                                bytes: downloaded,
-                                total: distro.size_bytes,
-                                bps,
-                            });
-                        }
-                    }
-                }
-            }
-        }
+        let mut response = client
+            .get(&distro.download_url)
+            .send()
+            .context("Failed to start download")?;
 
-        // Wait for curl to finish
-        let status = child.wait()?;
-
-        if !status.success() {
-            let error_msg = format!("curl failed with exit code: {}", status.code().unwrap_or(-1));
+        if !response.status().is_success() {
+            let error_msg = format!("HTTP error: {}", response.status());
             if let Some(ref tx) = progress_tx {
                 let _ = tx.send(DownloadProgress::Error {
                     error: error_msg.clone(),
@@ -107,6 +72,81 @@ impl ISOFetcher {
             anyhow::bail!(error_msg);
         }
 
+        // Get total size from Content-Length header
+        let total_size = response.content_length().unwrap_or(distro.size_bytes);
+
+        // Create output file
+        let mut file = std::fs::File::create(&output_path)
+            .context("Failed to create output file")?;
+
+        // Download with progress reporting
+        let mut downloaded: u64 = 0;
+        let mut last_report = Instant::now();
+        let mut speed_samples: Vec<f64> = Vec::new();
+        let start_time = Instant::now();
+
+        let mut buffer = vec![0; 128 * 1024]; // 128KB buffer
+
+        loop {
+            // Check cancel flag
+            if let Some(ref flag) = cancel_flag {
+                if flag.load(Ordering::Relaxed) {
+                    println!("✗ Download cancelled by user");
+                    let _ = std::fs::remove_file(&output_path);
+                    anyhow::bail!("Download cancelled");
+                }
+            }
+
+            // Read chunk
+            use std::io::Read;
+            let bytes_read = response.read(&mut buffer)
+                .context("Failed to read from response")?;
+
+            if bytes_read == 0 {
+                break; // EOF
+            }
+
+            // Write to file
+            file.write_all(&buffer[..bytes_read])
+                .context("Failed to write to file")?;
+
+            downloaded += bytes_read as u64;
+
+            // Report progress every 200ms
+            if last_report.elapsed().as_millis() >= 200 {
+                let elapsed_secs = start_time.elapsed().as_secs_f64();
+                let speed_bps = if elapsed_secs > 0.0 {
+                    downloaded as f64 / elapsed_secs
+                } else {
+                    0.0
+                };
+
+                // Keep last 10 speed samples for smoothing
+                speed_samples.push(speed_bps);
+                if speed_samples.len() > 10 {
+                    speed_samples.remove(0);
+                }
+
+                let avg_speed = speed_samples.iter().sum::<f64>() / speed_samples.len() as f64;
+
+                if let Some(ref tx) = progress_tx {
+                    let _ = tx.send(DownloadProgress::Progress {
+                        bytes: downloaded,
+                        total: total_size,
+                        bps: avg_speed as u64,
+                    });
+                }
+
+                last_report = Instant::now();
+            }
+        }
+
+        // Ensure all data is written
+        file.flush().context("Failed to flush file")?;
+        drop(file);
+
+        println!("✓ Download complete: {} bytes", downloaded);
+
         // Verify file exists and has reasonable size
         if !output_path.exists() {
             anyhow::bail!("Download completed but file not found");
@@ -114,14 +154,12 @@ impl ISOFetcher {
 
         let file_size = std::fs::metadata(&output_path)?.len();
         if file_size < 1_000_000 { // Less than 1MB is suspicious
-            anyhow::bail!("Downloaded file is too small ({}), download may have failed", file_size);
+            anyhow::bail!("Downloaded file is too small ({} bytes), download may have failed", file_size);
         }
-
-        println!("Download complete: {} bytes", file_size);
 
         // Skip SHA256 verification if hash is placeholder or empty
         if distro.sha256.is_empty() || distro.sha256.starts_with("PLACEHOLDER") {
-            println!("Skipping verification - no valid hash provided");
+            println!("⚠ Skipping verification - no valid hash provided");
             if let Some(ref tx) = progress_tx {
                 let _ = tx.send(DownloadProgress::Complete {
                     path: output_path.clone(),
@@ -131,12 +169,14 @@ impl ISOFetcher {
         }
 
         // Verify SHA256
+        println!("⟳ Verifying SHA256 checksum...");
         if let Some(ref tx) = progress_tx {
             let _ = tx.send(DownloadProgress::Verifying);
         }
 
         match verify_sha256(&output_path, &distro.sha256) {
             Ok(true) => {
+                println!("✓ Checksum verified successfully");
                 if let Some(ref tx) = progress_tx {
                     let _ = tx.send(DownloadProgress::Complete {
                         path: output_path.clone(),

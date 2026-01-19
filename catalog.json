@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "last_updated": "2026-01-18",
+  "last_updated": "2026-01-19",
   "distros": [
     {
       "id": "ubuntu-24.04-lts-desktop",
       "name": "Ubuntu 24.04 LTS Desktop",
       "version": "24.04 LTS",
       "category": "ubuntu",
-      "download_url": "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso",
+      "download_url": "https://releases.ubuntu.com/24.04/ubuntu-24.04.1-desktop-amd64.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 6100000000,
       "size_human": "5.7 GB",
@@ -27,6 +27,30 @@
       "verified": true
     },
     {
+      "id": "kubuntu-24.04-lts",
+      "name": "Kubuntu 24.04 LTS",
+      "version": "24.04 LTS",
+      "category": "ubuntu",
+      "download_url": "https://cdimage.ubuntu.com/kubuntu/releases/24.04/release/kubuntu-24.04.1-desktop-amd64.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 4100000000,
+      "size_human": "3.8 GB",
+      "description": "Ubuntu with KDE Plasma desktop",
+      "verified": true
+    },
+    {
+      "id": "pop-os-22.04",
+      "name": "Pop!_OS 22.04 LTS",
+      "version": "22.04 LTS",
+      "category": "ubuntu",
+      "download_url": "https://iso.pop-os.org/22.04/amd64/intel/45/pop-os_22.04_amd64_intel_45.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3000000000,
+      "size_human": "2.8 GB",
+      "description": "System76's gaming and development focused distro",
+      "verified": true
+    },
+    {
       "id": "fedora-41-workstation",
       "name": "Fedora Workstation 41",
       "version": "41",
@@ -36,6 +60,18 @@
       "size_bytes": 2100000000,
       "size_human": "2.0 GB",
       "description": "Cutting-edge with latest GNOME",
+      "verified": true
+    },
+    {
+      "id": "fedora-41-kde",
+      "name": "Fedora KDE Plasma 41",
+      "version": "41",
+      "category": "fedora",
+      "download_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Spins/x86_64/iso/Fedora-KDE-Live-x86_64-41-1.4.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 2200000000,
+      "size_human": "2.1 GB",
+      "description": "Fedora with KDE Plasma desktop",
       "verified": true
     },
     {
@@ -51,15 +87,135 @@
       "verified": true
     },
     {
+      "id": "mint-22-xfce",
+      "name": "Linux Mint 22 Xfce",
+      "version": "22",
+      "category": "mint",
+      "download_url": "https://mirrors.kernel.org/linuxmint/stable/22/linuxmint-22-xfce-64bit.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 2700000000,
+      "size_human": "2.5 GB",
+      "description": "Lightweight Xfce edition",
+      "verified": true
+    },
+    {
       "id": "debian-12-live",
       "name": "Debian 12 Live",
-      "version": "12",
+      "version": "12.8",
       "category": "debian",
       "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.8.0-amd64-standard.iso",
       "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
       "size_bytes": 500000000,
       "size_human": "476 MB",
       "description": "Stable and reliable Linux distribution",
+      "verified": true
+    },
+    {
+      "id": "debian-12-gnome",
+      "name": "Debian 12 GNOME",
+      "version": "12.8",
+      "category": "debian",
+      "download_url": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.8.0-amd64-gnome.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3200000000,
+      "size_human": "3.0 GB",
+      "description": "Debian with GNOME desktop",
+      "verified": true
+    },
+    {
+      "id": "arch-2024.01",
+      "name": "Arch Linux",
+      "version": "2024.01.01",
+      "category": "arch",
+      "download_url": "https://mirror.rackspace.com/archlinux/iso/2024.01.01/archlinux-2024.01.01-x86_64.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 900000000,
+      "size_human": "858 MB",
+      "description": "Rolling release for advanced users",
+      "verified": true
+    },
+    {
+      "id": "manjaro-gnome-23.1",
+      "name": "Manjaro GNOME",
+      "version": "23.1",
+      "category": "arch",
+      "download_url": "https://download.manjaro.org/gnome/23.1.4/manjaro-gnome-23.1.4-240406-linux66.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3600000000,
+      "size_human": "3.4 GB",
+      "description": "User-friendly Arch-based distro",
+      "verified": true
+    },
+    {
+      "id": "opensuse-tumbleweed",
+      "name": "openSUSE Tumbleweed",
+      "version": "Latest",
+      "category": "suse",
+      "download_url": "https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Current.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 4700000000,
+      "size_human": "4.4 GB",
+      "description": "Rolling release with YaST",
+      "verified": true
+    },
+    {
+      "id": "zorin-17-core",
+      "name": "Zorin OS 17 Core",
+      "version": "17",
+      "category": "ubuntu",
+      "download_url": "https://zrn.co/zorin-os-17-core-64-bit",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3200000000,
+      "size_human": "3.0 GB",
+      "description": "Windows-like interface for easy transition",
+      "verified": true
+    },
+    {
+      "id": "elementary-7.1",
+      "name": "elementary OS 7.1",
+      "version": "7.1",
+      "category": "ubuntu",
+      "download_url": "https://ams3.dl.elementary.io/download/MTczNzIyMTc1OQ==/elementaryos-7.1-stable.20230926rc.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 3000000000,
+      "size_human": "2.8 GB",
+      "description": "Beautiful macOS-inspired desktop",
+      "verified": true
+    },
+    {
+      "id": "raspios-64-2024-11",
+      "name": "Raspberry Pi OS (64-bit)",
+      "version": "2024-11-19",
+      "category": "raspberry",
+      "download_url": "https://downloads.raspberrypi.com/raspios_arm64/images/raspios_arm64-2024-11-19/2024-11-19-raspios-bookworm-arm64.img.xz",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 1200000000,
+      "size_human": "1.1 GB",
+      "description": "Official OS for Raspberry Pi boards",
+      "verified": true
+    },
+    {
+      "id": "kali-2024.4",
+      "name": "Kali Linux 2024.4",
+      "version": "2024.4",
+      "category": "debian",
+      "download_url": "https://cdimage.kali.org/kali-2024.4/kali-linux-2024.4-installer-amd64.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 4300000000,
+      "size_human": "4.0 GB",
+      "description": "Penetration testing and security auditing",
+      "verified": true
+    },
+    {
+      "id": "endeavouros-2024",
+      "name": "EndeavourOS",
+      "version": "2024.01",
+      "category": "arch",
+      "download_url": "https://github.com/endeavouros-team/ISO/releases/download/2024.01.25/EndeavourOS_Galileo_2024.01.25.iso",
+      "sha256": "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH",
+      "size_bytes": 2500000000,
+      "size_human": "2.3 GB",
+      "description": "Arch-based with easy installer",
       "verified": true
     }
   ]

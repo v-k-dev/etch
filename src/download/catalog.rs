@@ -30,6 +30,8 @@ pub enum DistroCategory {
     Mint,
     Debian,
     Arch,
+    Raspberry,
+    Suse,
     Other,
 }
 
@@ -42,6 +44,8 @@ impl DistroCategory {
             Self::Mint => "Linux Mint",
             Self::Debian => "Debian",
             Self::Arch => "Arch Linux",
+            Self::Raspberry => "Raspberry Pi",
+            Self::Suse => "openSUSE",
             Self::Other => "Other",
         }
     }
