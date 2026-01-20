@@ -1,5 +1,0 @@
-cargo:rustc-env=GIT_HASH=3eaf934
-cargo:rustc-env=GIT_BRANCH=main-nightly-wings
-cargo:rustc-env=AUTO_VERSION=0.1.2
-cargo:rustc-env=AUTO_VERSION_CODE=0
-cargo:rerun-if-changed=.git/HEAD
