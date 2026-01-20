@@ -1,6 +1,8 @@
+use crate::db::{DbConnection, Distro as DbDistro};
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+use chrono;
 
 /// Remote catalog URL - points to GitHub-hosted catalog
 #[allow(dead_code)]
@@ -22,6 +24,41 @@ pub struct Distro {
     pub size_human: String,
     pub description: String,
     pub verified: bool,
+}
+
+impl From<DbDistro> for Distro {
+    fn from(db_distro: DbDistro) -> Self {
+        // Get primary mirror URL
+        let mirrors = DbConnection::get_mirrors(&db_distro.id).unwrap_or_default();
+        let download_url = mirrors.first()
+            .map(|m| m.url.clone())
+            .unwrap_or_default();
+        
+        let category = match db_distro.category.as_str() {
+            "ubuntu" => DistroCategory::Ubuntu,
+            "fedora" => DistroCategory::Fedora,
+            "mint" => DistroCategory::Mint,
+            "debian" => DistroCategory::Debian,
+            "arch" => DistroCategory::Arch,
+            "raspberry" => DistroCategory::Raspberry,
+            "suse" => DistroCategory::Suse,
+            _ => DistroCategory::Other,
+        };
+
+        Self {
+            id: db_distro.id.clone(),
+            name: db_distro.name,
+            version: db_distro.version,
+            category,
+            download_url,
+            mirrors: mirrors.iter().skip(1).map(|m| m.url.clone()).collect(),
+            sha256: "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH".to_string(),
+            size_bytes: db_distro.size_bytes as u64,
+            size_human: db_distro.size_human,
+            description: db_distro.description,
+            verified: db_distro.verified,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -62,14 +99,51 @@ pub struct DistrosCatalog {
 }
 
 impl DistrosCatalog {
-    /// Load the catalog from the bundled JSON file
+    /// Load the catalog from SQLite database
     pub fn fetch() -> Result<Self> {
-        // Try to load from bundled catalog.json
-        let catalog_json = include_str!("../../catalog.json");
-        let catalog: DistrosCatalog = serde_json::from_str(catalog_json)
-            .context("Failed to parse catalog.json")?;
+        let db_distros = DbConnection::get_distros(None)
+            .context("Failed to load distros from database")?;
         
-        Ok(catalog)
+        let distros: Vec<Distro> = db_distros.into_iter()
+            .map(|db_distro| db_distro.into())
+            .collect();
+        
+        Ok(DistrosCatalog {
+            version: 1,
+            last_updated: chrono::Utc::now().format("%Y-%m-%d").to_string(),
+            distros,
+        })
+    }
+    
+    /// Search distros by query
+    pub fn search(query: &str) -> Result<Vec<Distro>> {
+        let db_distros = DbConnection::search_distros(query)
+            .context("Failed to search distros")?;
+        
+        Ok(db_distros.into_iter()
+            .map(|db_distro| db_distro.into())
+            .collect())
+    }
+    
+    /// Get distros by category
+    pub fn by_category(category: &DistroCategory) -> Result<Vec<Distro>> {
+        let category_str = match category {
+            DistroCategory::Ubuntu => "ubuntu",
+            DistroCategory::Fedora => "fedora",
+            DistroCategory::Mint => "mint",
+            DistroCategory::Debian => "debian",
+            DistroCategory::Arch => "arch",
+            DistroCategory::Raspberry => "raspberry",
+            DistroCategory::Suse => "suse",
+            DistroCategory::Other => "other",
+        };
+        
+        let db_distros = DbConnection::get_distros(Some(category_str))
+            .context("Failed to load distros by category")?;
+        
+        Ok(db_distros.into_iter()
+            .map(|db_distro| db_distro.into())
+            .collect())
     }
     
     /// Legacy hardcoded catalog (kept for fallback)
@@ -90,15 +164,6 @@ impl DistrosCatalog {
         let content = serde_json::to_string_pretty(self)?;
         std::fs::write(path, content)?;
         Ok(())
-    }
-
-    /// Get distros by category
-    #[allow(dead_code)]
-    pub fn by_category(&self, category: DistroCategory) -> Vec<&Distro> {
-        self.distros
-            .iter()
-            .filter(|d| d.category == category)
-            .collect()
     }
 
     /// Get all categories present in catalog

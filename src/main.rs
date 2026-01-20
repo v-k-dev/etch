@@ -2,6 +2,7 @@ mod core;
 mod download;
 mod io;
 mod ui;
+mod db;
 
 use gtk4::prelude::*;
 use gtk4::Application;
@@ -38,6 +39,13 @@ fn main() -> anyhow::Result<()> {
     //
     // This is NOT a workaround - it's the correct architecture for a stateless utility.
     std::env::set_var("GSETTINGS_BACKEND", "memory");
+
+    // Initialize database and migrate if needed
+    if db::needs_migration()? {
+        println!("First run detected - initializing catalog database...");
+        db::migrate_json_to_db()?;
+        println!("Database initialized with {} distros", db::DbConnection::get_distro_count()?);
+    }
 
     // Root check removed from startup - will be checked when write operation starts
     let app = Application::builder().application_id(APP_ID).build();

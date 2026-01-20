@@ -18,21 +18,27 @@ impl DownloadProgressWindow {
             .transient_for(parent)
             .modal(true)
             .title("Downloading ISO")
-            .default_width(500)
-            .default_height(200)
+            .default_width(480)
+            .default_height(240)
             .decorated(false)
             .build();
 
         let main_box = GtkBox::new(Orientation::Vertical, 0);
         main_box.add_css_class("main-container");
-        main_box.set_margin_top(20);
-        main_box.set_margin_bottom(20);
-        main_box.set_margin_start(24);
-        main_box.set_margin_end(24);
+        main_box.set_margin_top(18);
+        main_box.set_margin_bottom(18);
+        main_box.set_margin_start(20);
+        main_box.set_margin_end(20);
 
-        // Title
-        let title_box = GtkBox::new(Orientation::Horizontal, 12);
-        let title = Label::new(Some("DOWNLOADING ISO"));
+        // Title with download icon
+        let title_box = GtkBox::new(Orientation::Horizontal, 10);
+        
+        let dl_icon = gtk4::Image::from_icon_name("folder-download-symbolic");
+        dl_icon.set_icon_size(gtk4::IconSize::Normal);
+        dl_icon.add_css_class("download-title-icon");
+        title_box.append(&dl_icon);
+        
+        let title = Label::new(Some("DOWNLOADING"));
         title.add_css_class("app-title");
         title.set_hexpand(true);
         title.set_halign(gtk4::Align::Start);
@@ -48,58 +54,79 @@ impl DownloadProgressWindow {
         title_box.append(&close_btn);
         main_box.append(&title_box);
 
-        // ISO name label
+        // ISO name label with better styling
         let name_label = Label::new(Some(iso_name));
-        name_label.add_css_class("section-label");
-        name_label.set_margin_top(16);
+        name_label.add_css_class("download-iso-name");
+        name_label.set_margin_top(8);
+        name_label.set_margin_bottom(12);
         name_label.set_halign(gtk4::Align::Start);
+        name_label.set_ellipsize(gtk4::pango::EllipsizeMode::End);
         main_box.append(&name_label);
 
-        // Progress bar
+        // Progress bar with better styling
         let progress_bar = ProgressBar::new();
-        progress_bar.set_margin_top(12);
+        progress_bar.set_margin_top(8);
+        progress_bar.set_margin_bottom(14);
         progress_bar.set_show_text(true);
-        progress_bar.set_text(Some("Starting download..."));
+        progress_bar.set_text(Some("Connecting..."));
+        progress_bar.add_css_class("download-progress-bar");
         main_box.append(&progress_bar);
 
-        // Info grid
-        let info_box = GtkBox::new(Orientation::Horizontal, 24);
-        info_box.set_margin_top(12);
+        // Info grid with 3 columns
+        let info_box = GtkBox::new(Orientation::Horizontal, 16);
         info_box.set_homogeneous(true);
 
         // Speed
-        let speed_box = GtkBox::new(Orientation::Vertical, 4);
+        let speed_box = GtkBox::new(Orientation::Vertical, 3);
+        let speed_icon_box = GtkBox::new(Orientation::Horizontal, 4);
+        let speed_icon = gtk4::Image::from_icon_name("network-transmit-symbolic");
+        speed_icon.set_icon_size(gtk4::IconSize::Normal);
+        speed_icon.add_css_class("info-icon");
+        speed_icon_box.append(&speed_icon);
         let speed_label_title = Label::new(Some("Speed"));
         speed_label_title.add_css_class("field-label");
         speed_label_title.set_halign(gtk4::Align::Start);
+        speed_icon_box.append(&speed_label_title);
+        speed_box.append(&speed_icon_box);
         let speed_label = Label::new(Some("-- MB/s"));
-        speed_label.add_css_class("field-value");
+        speed_label.add_css_class("field-value-compact");
         speed_label.set_halign(gtk4::Align::Start);
-        speed_box.append(&speed_label_title);
         speed_box.append(&speed_label);
         info_box.append(&speed_box);
 
         // ETA
-        let eta_box = GtkBox::new(Orientation::Vertical, 4);
-        let eta_label_title = Label::new(Some("ETA"));
+        let eta_box = GtkBox::new(Orientation::Vertical, 3);
+        let eta_icon_box = GtkBox::new(Orientation::Horizontal, 4);
+        let eta_icon = gtk4::Image::from_icon_name("alarm-symbolic");
+        eta_icon.set_icon_size(gtk4::IconSize::Normal);
+        eta_icon.add_css_class("info-icon");
+        eta_icon_box.append(&eta_icon);
+        let eta_label_title = Label::new(Some("Time Left"));
         eta_label_title.add_css_class("field-label");
         eta_label_title.set_halign(gtk4::Align::Start);
+        eta_icon_box.append(&eta_label_title);
+        eta_box.append(&eta_icon_box);
         let eta_label = Label::new(Some("Calculating..."));
-        eta_label.add_css_class("field-value");
+        eta_label.add_css_class("field-value-compact");
         eta_label.set_halign(gtk4::Align::Start);
-        eta_box.append(&eta_label_title);
         eta_box.append(&eta_label);
         info_box.append(&eta_box);
 
         // Size
-        let size_box = GtkBox::new(Orientation::Vertical, 4);
-        let size_label_title = Label::new(Some("Size"));
+        let size_box = GtkBox::new(Orientation::Vertical, 3);
+        let size_icon_box = GtkBox::new(Orientation::Horizontal, 4);
+        let size_icon = gtk4::Image::from_icon_name("drive-harddisk-symbolic");
+        size_icon.set_icon_size(gtk4::IconSize::Normal);
+        size_icon.add_css_class("info-icon");
+        size_icon_box.append(&size_icon);
+        let size_label_title = Label::new(Some("Progress"));
         size_label_title.add_css_class("field-label");
         size_label_title.set_halign(gtk4::Align::Start);
-        let size_label = Label::new(Some("0 MB / 0 MB"));
-        size_label.add_css_class("field-value");
+        size_icon_box.append(&size_label_title);
+        size_box.append(&size_icon_box);
+        let size_label = Label::new(Some("0 / 0 MB"));
+        size_label.add_css_class("field-value-compact");
         size_label.set_halign(gtk4::Align::Start);
-        size_box.append(&size_label_title);
         size_box.append(&size_label);
         info_box.append(&size_box);
 
@@ -108,8 +135,8 @@ impl DownloadProgressWindow {
         // Cancel button
         let cancel_flag = Arc::new(AtomicBool::new(false));
         let cancel_btn = Button::with_label("Cancel Download");
-        cancel_btn.add_css_class("button-primary");
-        cancel_btn.set_margin_top(20);
+        cancel_btn.add_css_class("button-danger");
+        cancel_btn.set_margin_top(16);
         let cancel_flag_clone = cancel_flag.clone();
         let dialog_clone = dialog.clone();
         cancel_btn.connect_clicked(move |_| {
@@ -145,16 +172,23 @@ impl DownloadProgressWindow {
         
         // Update percentage text
         let percent = (fraction * 100.0) as u32;
-        self.progress_bar.set_text(Some(&format!("{}%", percent)));
+        self.progress_bar.set_text(Some(&format!("{}% complete", percent)));
 
         // Update speed
         let speed_mbps = speed_bps / 1_048_576.0;
-        self.speed_label.set_text(&format!("{:.2} MB/s", speed_mbps));
+        self.speed_label.set_text(&format!("{:.1} MB/s", speed_mbps));
 
-        // Update size
+        // Update size with GB if over 1000 MB
         let mb_downloaded = bytes_downloaded as f64 / 1_048_576.0;
         let mb_total = total_bytes as f64 / 1_048_576.0;
-        self.size_label.set_text(&format!("{:.1} MB / {:.1} MB", mb_downloaded, mb_total));
+        
+        if mb_total > 1000.0 {
+            let gb_downloaded = mb_downloaded / 1024.0;
+            let gb_total = mb_total / 1024.0;
+            self.size_label.set_text(&format!("{:.2} / {:.2} GB", gb_downloaded, gb_total));
+        } else {
+            self.size_label.set_text(&format!("{:.0} / {:.0} MB", mb_downloaded, mb_total));
+        }
 
         // Calculate ETA
         if speed_bps > 0.0 {

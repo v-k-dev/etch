@@ -48,7 +48,7 @@ enum WorkMessage {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-enum ActionAreaState {
+pub enum ActionAreaState {
     Idle,
     Armed,
     Writing,
@@ -588,25 +588,6 @@ pub fn build_ui(app: &Application) {
     
     iso_section.append(&button_row);
 
-    // Browse button opens separate window
-    let window_for_browse = window.clone();
-    let iso_label_for_browse = iso_label.clone();
-    let state_for_browse = state.clone();
-    let platform_box_for_browse = platform_box.clone();
-    let platform_icon_for_browse = platform_icon.clone();
-    let platform_label_for_browse = platform_label.clone();
-    
-    browse_button.connect_clicked(move |_| {
-        show_iso_browser_window(
-            &window_for_browse,
-            iso_label_for_browse.clone(),
-            state_for_browse.clone(),
-            platform_box_for_browse.clone(),
-            platform_icon_for_browse.clone(),
-            platform_label_for_browse.clone(),
-        );
-    });
-
     content_box.append(&iso_section);
 
     // Device Selection Section
@@ -643,18 +624,20 @@ pub fn build_ui(app: &Application) {
     let devices = Rc::new(RefCell::new(crate::io::devices::list_removable_devices().unwrap_or_default()));
     let device_store = ListStore::new::<glib::BoxedAnyObject>();
 
-    {
+    let has_single_device = {
         let devices_borrow = devices.borrow();
         if devices_borrow.is_empty() {
             device_label.set_text("No removable devices detected");
+            false
         } else {
             for device in devices_borrow.iter() {
                 let obj = glib::BoxedAnyObject::new(device.path.clone());
                 device_store.append(&obj);
             }
             device_label.set_text("Select device");
+            devices_borrow.len() == 1
         }
-    }
+    };
 
     let factory = gtk4::SignalListItemFactory::new();
     let devices_for_factory = Rc::clone(&devices);
@@ -690,6 +673,12 @@ pub fn build_ui(app: &Application) {
     });
 
     let selection_model = gtk4::SingleSelection::new(Some(device_store.clone()));
+    
+    // Auto-select first device if only one is available
+    if has_single_device {
+        selection_model.set_selected(0);
+    }
+    
     let device_dropdown = DropDown::new(
         Some(selection_model.clone().upcast::<gtk4::gio::ListModel>()),
         None::<gtk4::Expression>,
@@ -852,6 +841,11 @@ pub fn build_ui(app: &Application) {
                     } else if changed {
                         append_message(&message_buffer_rc, &format!("Device change detected: {} device(s) available", device_count));
                     }
+                    
+                    // Auto-select first device if only one is available
+                    if devices_borrow.len() == 1 {
+                        selection_model_rc.set_selected(0);
+                    }
                 }
                 drop(devices_borrow);
                 
@@ -883,6 +877,35 @@ pub fn build_ui(app: &Application) {
     let refresh_fn_for_button = refresh_device_list.clone();
     refresh_button.connect_clicked(move |_| {
         refresh_fn_for_button(false);
+    });
+    
+    // Connect browse ISOs button
+    let window_for_browse = window.clone();
+    let iso_label_for_browse = iso_label.clone();
+    let state_for_browse = state.clone();
+    let platform_box_for_browse = platform_box.clone();
+    let platform_icon_for_browse = platform_icon.clone();
+    let platform_label_for_browse = platform_label.clone();
+    let write_button_for_browse = write_button.clone();
+    let progress_label_for_browse = progress_label.clone();
+    let progress_bar_for_browse = progress_bar.clone();
+    let speed_label_for_browse = speed_label.clone();
+    let status_dot_for_browse = status_dot.clone();
+    
+    browse_button.connect_clicked(move |_| {
+        show_iso_browser_window(
+            &window_for_browse,
+            iso_label_for_browse.clone(),
+            state_for_browse.clone(),
+            platform_box_for_browse.clone(),
+            platform_icon_for_browse.clone(),
+            platform_label_for_browse.clone(),
+            write_button_for_browse.clone(),
+            progress_label_for_browse.clone(),
+            progress_bar_for_browse.clone(),
+            speed_label_for_browse.clone(),
+            status_dot_for_browse.clone(),
+        );
     });
     
     // Auto-detect device changes every 3 seconds
@@ -1610,6 +1633,21 @@ fn append_message_with_type(buffer: &TextBuffer, message: &str, message_type: &s
     buffer.place_cursor(&final_iter);
 }
 
+pub fn recompute_action_state_export(state: &mut AppState) {
+    recompute_action_state(state);
+}
+
+pub fn update_action_area_export(
+    state: &ActionAreaState,
+    write_button: &Button,
+    progress_label: &Label,
+    progress_bar: &ProgressBar,
+    speed_label: &Label,
+    status_dot: &GtkBox,
+) {
+    update_action_area(state, write_button, progress_label, progress_bar, speed_label, status_dot);
+}
+
 fn recompute_action_state(state: &mut AppState) {
     if state.is_working {
         return;
@@ -1775,11 +1813,15 @@ fn sync_device_selection(
 fn compare_versions(current: &str, remote: &str) -> bool {
     let parse_version = |v: &str| -> Option<(u32, u32, u32)> {
         let v = v.trim_start_matches('v');
+        // Strip pre-release suffix like "-nightly-wings" or "-beta"
+        let v = v.split('-').next().unwrap_or(v);
         let parts: Vec<&str> = v.split('.').collect();
         if parts.len() >= 3 {
             let major = parts[0].parse().ok()?;
             let minor = parts[1].parse().ok()?;
-            let patch = parts[2].parse().ok()?;
+            // Handle cases where patch might have non-numeric suffix
+            let patch_str = parts[2].split(|c: char| !c.is_ascii_digit()).next().unwrap_or("0");
+            let patch = patch_str.parse().ok()?;
             Some((major, minor, patch))
         } else {
             None

@@ -329,34 +329,84 @@ button {
 /* ISO Browser Styles */
 .iso-row {
     background: #1a1a1a;
-    border-radius: 6px;
-    padding: 10px 14px;
-    transition: background 150ms ease-out;
+    padding: 3px 8px;
+    border-radius: 5px;
+    transition: all 120ms cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
 }
 
 .iso-row:hover {
-    background: #1f1f1f;
+    background: #202020;
+    border-color: #2a2a2a;
+    transform: translateX(2px);
+}
+
+.iso-row-downloaded {
+    background: rgba(50, 120, 50, 0.12);
+    border-color: rgba(80, 160, 80, 0.25);
+}
+
+.iso-row-downloaded:hover {
+    background: rgba(50, 120, 50, 0.18);
+    border-color: rgba(80, 160, 80, 0.35);
+}
+
+.iso-row-unverified {
+    background: rgba(140, 100, 40, 0.12);
+    border-color: rgba(180, 140, 60, 0.25);
+}
+
+.iso-row-unverified:hover {
+    background: rgba(140, 100, 40, 0.18);
+    border-color: rgba(180, 140, 60, 0.35);
 }
 
 .iso-name-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #d0d0d0;
+    color: #f0f0f0;
 }
 
 .iso-meta-label {
-    font-size: 10px;
-    color: #808080;
-    font-weight: 500;
+    font-size: 9px;
+    color: #909090;
+    font-weight: 400;
+}
+
+.iso-logo-container {
+    border-radius: 6px;
+    background: transparent;
+}
+
+.iso-fallback-icon {
+    color: #707070;
+}
+
+.iso-downloaded-badge {
+    color: #60d060;
+    -gtk-icon-size: 14px;
+    margin-top: 1px;
+}
+
+.iso-verified-badge {
+    color: #60d060;
+    -gtk-icon-size: 13px;
+    margin-top: 1px;
+}
+
+.iso-unverified-badge {
+    color: #d0a040;
+    -gtk-icon-size: 13px;
+    margin-top: 1px;
 }
 
 .download-button {
     background: #2a2a2a;
     border: 1px solid #3a3a3a;
-    border-radius: 6px;
-    padding: 8px 16px;
-    min-height: 36px;
-    font-size: 11px;
+    border-radius: 5px;
+    padding: 6px 12px;
+    min-height: 30px;
+    font-size: 10px;
     font-weight: 600;
     color: #d0d0d0;
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -391,37 +441,130 @@ button {
 
 /* Compact download button for browser */
 .download-button-compact {
-    background: transparent;
+    background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%);
     border: 1px solid #3a3a3a;
-    border-radius: 4px;
-    padding: 4px;
-    min-height: 32px;
-    min-width: 40px;
-    transition: all 100ms ease-out;
+    border-radius: 6px;
+    padding: 4px 6px;
+    min-height: 28px;
+    min-width: 36px;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .download-button-compact:hover:not(:disabled) {
-    background: #2a2a2a;
+    background: linear-gradient(135deg, #353535 0%, #2f2f2f 100%);
     border-color: #4a4a4a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .download-button-compact:active:not(:disabled) {
-    background: #1a1a1a;
+    background: #1f1f1f;
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .download-button-compact:disabled {
     background: transparent;
     border-color: #1a1a1a;
-    opacity: 0.4;
+    opacity: 0.3;
+    box-shadow: none;
 }
 
 .download-button-compact image {
-    -gtk-icon-size: 16px;
-    color: #d0d0d0;
+    -gtk-icon-size: 14px;
+    color: #e0e0e0;
 }
 
 .download-button-compact:disabled image {
     color: #606060;
+}
+
+/* Search Entry */
+.search-entry {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: #d0d0d0;
+    font-size: 11px;
+    min-height: 28px;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-entry:focus {
+    background: #1f1f1f;
+    border-color: #505050;
+    box-shadow: 0 0 0 3px rgba(80, 80, 80, 0.15);
+}
+
+.search-entry text {
+    color: #d0d0d0;
+}
+
+.search-entry placeholder {
+    color: #606060;
+}
+
+/* Filter Buttons */
+.filter-button {
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 3px 8px;
+    min-height: 24px;
+    font-size: 9px;
+    font-weight: 500;
+    color: #909090;
+    transition: all 120ms ease-out;
+}
+
+.filter-button:hover {
+    background: #1f1f1f;
+    border-color: #3a3a3a;
+    color: #b0b0b0;
+    transform: translateY(-1px);
+}
+
+.filter-button.filter-active {
+    background: linear-gradient(135deg, #2a4a2a 0%, #1f3f1f 100%);
+    border-color: #4a6a4a;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 0 8px rgba(80, 160, 80, 0.3);
+}
+
+.filter-button.filter-active:hover {
+    background: linear-gradient(135deg, #2f4f2f 0%, #244424 100%);
+    border-color: #5a7a5a;
+    transform: translateY(0);
+}
+
+/* Version Badges */
+.version-badge {
+    font-size: 7px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+}
+
+.badge-lts {
+    background: linear-gradient(135deg, #2a5a2a 0%, #1f4f1f 100%);
+    color: #a0ffa0;
+    border: 1px solid #3a6a3a;
+}
+
+.badge-server {
+    background: linear-gradient(135deg, #2a4a6a 0%, #1f3f5f 100%);
+    color: #a0c0ff;
+    border: 1px solid #3a5a7a;
+}
+
+.badge-pro {
+    background: linear-gradient(135deg, #6a4a2a 0%, #5f3f1f 100%);
+    color: #ffc060;
+    border: 1px solid #7a5a3a;
 }
 
 .button-label {
@@ -915,4 +1058,67 @@ textview text {
 
 .logo-default image {
     color: #7c7c7c;
+}
+
+/* Download Progress Window */
+.download-iso-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.download-title-icon {
+    color: #70d070;
+    -gtk-icon-size: 16px;
+}
+
+.download-progress-bar {
+    min-height: 8px;
+}
+
+.download-progress-bar trough {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    min-height: 8px;
+}
+
+.download-progress-bar progress {
+    background: linear-gradient(90deg, #50a050 0%, #70d070 100%);
+    border-radius: 5px;
+    min-height: 8px;
+}
+
+.info-icon {
+    color: #909090;
+    -gtk-icon-size: 14px;
+}
+
+.field-value-compact {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.button-danger {
+    background: linear-gradient(135deg, #803030 0%, #602020 100%);
+    border: 1px solid #904040;
+    color: #ffffff;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-danger:hover {
+    background: linear-gradient(135deg, #904040 0%, #703030 100%);
+    border-color: #a05050;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(128, 48, 48, 0.4);
+}
+
+.button-danger:active {
+    background: #602020;
+    transform: translateY(0);
 }

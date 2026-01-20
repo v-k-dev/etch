@@ -51,3 +51,14 @@ pub fn calculate_sha256(path: &Path) -> Result<String> {
     let result = hasher.finalize();
     Ok(format!("{:x}", result))
 }
+
+/// Quick verify if a file exists and matches expected hash
+pub fn quick_verify(path: &Path, expected_hash: &str) -> bool {
+    // Skip verification if hash is placeholder
+    if expected_hash.is_empty() || expected_hash.starts_with("PLACEHOLDER") {
+        return path.exists(); // Just check existence
+    }
+    
+    // Verify with hash
+    verify_sha256(path, expected_hash).unwrap_or(false)
+}

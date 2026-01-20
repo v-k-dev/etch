@@ -1,3 +1,4 @@
+use crate::db::DbConnection;
 use anyhow::{Context, Result};
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::Sender;
@@ -22,8 +23,84 @@ pub enum DownloadProgress {
 pub struct ISOFetcher;
 
 impl ISOFetcher {
-    /// Download an ISO with progress reporting using reqwest
+    /// Validate a download URL by sending a HEAD request
+    pub async fn validate_url(url: &str) -> Result<bool> {
+        let client = reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(10))
+            .build()?;
+        
+        match client.head(url).send().await {
+            Ok(response) => {
+                if response.status().is_success() {
+                    println!("✓ URL validation passed: {}", url);
+                    Ok(true)
+                } else {
+                    println!("✗ URL validation failed with status {}: {}", response.status(), url);
+                    Ok(false)
+                }
+            }
+            Err(e) => {
+                println!("✗ URL validation error: {} - {}", url, e);
+                Err(anyhow::anyhow!("URL validation failed: {}", e))
+            }
+        }
+    }
+    
+    /// Download an ISO with progress reporting using reqwest with mirror fallback
     pub fn download(
+        distro: &Distro,
+        destination_dir: &Path,
+        progress_tx: Option<Sender<DownloadProgress>>,
+        cancel_flag: Option<Arc<AtomicBool>>,
+    ) -> Result<PathBuf> {
+        // Get all mirrors for this distro
+        let mirrors = DbConnection::get_mirrors(&distro.id).unwrap_or_default();
+        
+        if mirrors.is_empty() {
+            // Fallback to download_url if no mirrors in DB
+            return Self::download_from_url(
+                &distro.download_url,
+                distro,
+                destination_dir,
+                progress_tx,
+                cancel_flag,
+            );
+        }
+
+        // Try mirrors in priority order
+        let mut last_error = None;
+        for mirror in mirrors {
+            println!("→ Trying mirror: {} ({})", mirror.region, mirror.url);
+            
+            match Self::download_from_url(
+                &mirror.url,
+                distro,
+                destination_dir,
+                progress_tx.clone(),
+                cancel_flag.clone(),
+            ) {
+                Ok(path) => {
+                    // Update mirror status to "ok"
+                    let _ = DbConnection::update_mirror_status(mirror.id, "ok");
+                    return Ok(path);
+                }
+                Err(e) => {
+                    println!("✗ Mirror failed: {}", e);
+                    // Mark mirror as down
+                    let _ = DbConnection::update_mirror_status(mirror.id, "down");
+                    last_error = Some(e);
+                    continue;
+                }
+            }
+        }
+
+        // All mirrors failed
+        Err(last_error.unwrap_or_else(|| anyhow::anyhow!("All mirrors failed")))
+    }
+
+    /// Download from a specific URL (internal helper)
+    fn download_from_url(
+        url: &str,
         distro: &Distro,
         destination_dir: &Path,
         progress_tx: Option<Sender<DownloadProgress>>,
@@ -48,7 +125,7 @@ impl ISOFetcher {
         }
 
         println!("→ Starting download: {}", distro.name);
-        println!("  URL: {}", distro.download_url);
+        println!("  URL: {}", url);
         println!("  Destination: {}", output_path.display());
 
         // Use reqwest for reliable downloading
@@ -58,7 +135,7 @@ impl ISOFetcher {
             .context("Failed to create HTTP client")?;
 
         let mut response = client
-            .get(&distro.download_url)
+            .get(url)
             .send()
             .context("Failed to start download")?;
 
