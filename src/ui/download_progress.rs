@@ -3,6 +3,7 @@ use gtk4::{ApplicationWindow, Box as GtkBox, Button, Label, Orientation, Progres
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct DownloadProgressWindow {
     dialog: ApplicationWindow,
     progress_bar: ProgressBar,
@@ -16,11 +17,12 @@ impl DownloadProgressWindow {
     pub fn new(parent: &ApplicationWindow, iso_name: &str) -> Self {
         let dialog = ApplicationWindow::builder()
             .transient_for(parent)
-            .modal(true)
+            .modal(false)
             .title("Downloading ISO")
-            .default_width(480)
-            .default_height(240)
-            .decorated(false)
+            .default_width(680)
+            .default_height(440)
+            .decorated(true)
+            .deletable(true)
             .build();
 
         let main_box = GtkBox::new(Orientation::Vertical, 0);
@@ -47,6 +49,7 @@ impl DownloadProgressWindow {
         let close_btn = Button::new();
         close_btn.set_icon_name("window-close-symbolic");
         close_btn.add_css_class("menu-button");
+        close_btn.set_sensitive(false); // Disable close during download
         let dialog_clone = dialog.clone();
         close_btn.connect_clicked(move |_| {
             dialog_clone.close();
@@ -132,20 +135,45 @@ impl DownloadProgressWindow {
 
         main_box.append(&info_box);
 
+        // Buttons row
+        let button_box = GtkBox::new(Orientation::Horizontal, 10);
+        button_box.set_halign(gtk4::Align::Fill);
+        button_box.set_margin_top(16);
+        
+        // Hide button (minimize to continue in background)
+        let hide_btn = Button::with_label("Hide Window");
+        hide_btn.add_css_class("button-secondary");
+        hide_btn.set_hexpand(true);
+        let dialog_clone = dialog.clone();
+        hide_btn.connect_clicked(move |_| {
+            dialog_clone.set_visible(false);
+        });
+        button_box.append(&hide_btn);
+        
         // Cancel button
         let cancel_flag = Arc::new(AtomicBool::new(false));
         let cancel_btn = Button::with_label("Cancel Download");
         cancel_btn.add_css_class("button-danger");
-        cancel_btn.set_margin_top(16);
+        cancel_btn.set_hexpand(true);
         let cancel_flag_clone = cancel_flag.clone();
-        let dialog_clone = dialog.clone();
+        let dialog_clone2 = dialog.clone();
         cancel_btn.connect_clicked(move |_| {
             cancel_flag_clone.store(true, Ordering::Relaxed);
-            dialog_clone.close();
+            dialog_clone2.close();
         });
-        main_box.append(&cancel_btn);
+        button_box.append(&cancel_btn);
+        
+        main_box.append(&button_box);
 
         dialog.set_child(Some(&main_box));
+
+        // Allow window to be hidden/minimized (download continues in background)
+        // User can close window but download continues until complete/cancelled
+        dialog.connect_close_request(move |window| {
+            // Hide instead of destroying - download continues
+            window.set_visible(false);
+            glib::Propagation::Stop
+        });
 
         Self {
             dialog,
@@ -215,5 +243,36 @@ impl DownloadProgressWindow {
 
     pub fn close(&self) {
         self.dialog.close();
+    }
+
+    pub fn show_complete(&self) {
+        // Update progress bar to 100%
+        self.progress_bar.set_fraction(1.0);
+        self.progress_bar.set_text(Some("Download complete!"));
+        
+        // Update labels
+        self.eta_label.set_text("Complete");
+        
+        // Enable close button in the title bar
+        if let Some(child) = self.dialog.child() {
+            if let Ok(main_box) = child.downcast::<GtkBox>() {
+                if let Some(title_box) = main_box.first_child() {
+                    if let Ok(title_box) = title_box.downcast::<GtkBox>() {
+                        // Find the close button (last child)
+                        let mut current = title_box.first_child();
+                        let mut close_btn: Option<Button> = None;
+                        while let Some(child) = current {
+                            if let Ok(btn) = child.clone().downcast::<Button>() {
+                                close_btn = Some(btn);
+                            }
+                            current = child.next_sibling();
+                        }
+                        if let Some(btn) = close_btn {
+                            btn.set_sensitive(true);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 use gtk4::prelude::*;
-use gtk4::{ApplicationWindow, Box as GtkBox, Button, Image, Label, Orientation, PolicyType, ScrolledWindow, ProgressBar};
+use gtk4::{ApplicationWindow, Box as GtkBox, Button, Image, Label, Orientation, PolicyType, ScrolledWindow, ProgressBar, MessageDialog, ButtonsType, MessageType};
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
@@ -12,6 +12,24 @@ use crate::download::catalog::DistroCategory;
 
 use super::window::{AppState, recompute_action_state_export, update_action_area_export};
 use super::download_progress::DownloadProgressWindow;
+
+/// Show an error dialog with a user-friendly message
+fn show_error_dialog(parent: &ApplicationWindow, title: &str, message: &str) {
+    let dialog = MessageDialog::builder()
+        .transient_for(parent)
+        .modal(true)
+        .message_type(MessageType::Error)
+        .buttons(ButtonsType::Ok)
+        .text(title)
+        .secondary_text(message)
+        .build();
+    
+    dialog.connect_response(|dialog, _| {
+        dialog.close();
+    });
+    
+    dialog.present();
+}
 
 /// Get embedded SVG icon data for a distro
 fn get_distro_icon_svg(distro_id: &str) -> Option<&'static [u8]> {
@@ -288,7 +306,7 @@ pub fn show_iso_browser_window(
         .modal(true)
         .title("Browse ISOs")
         .default_width(680)
-        .default_height(520)
+        .default_height(440)
         .decorated(false)
         .build();
 
@@ -320,11 +338,11 @@ pub fn show_iso_browser_window(
 
     main_box.append(&titlebar);
 
-    // Search bar
-    let search_box = GtkBox::new(Orientation::Vertical, 6);
-    search_box.set_margin_start(12);
-    search_box.set_margin_end(12);
-    search_box.set_margin_bottom(6);
+    // Search bar and filters container
+    let search_box = GtkBox::new(Orientation::Vertical, 8);
+    search_box.set_margin_start(16);
+    search_box.set_margin_end(16);
+    search_box.set_margin_bottom(8);
 
     let search_entry = gtk4::SearchEntry::builder()
         .placeholder_text("Search distributions...")
@@ -333,24 +351,27 @@ pub fn show_iso_browser_window(
     search_entry.add_css_class("search-entry");
     search_box.append(&search_entry);
 
-    // Category filters with icons and better visuals
+    // Filter system
     let filter_scroll = ScrolledWindow::new();
-    filter_scroll.set_policy(PolicyType::Automatic, PolicyType::Never);
+    filter_scroll.set_policy(PolicyType::Never, PolicyType::Never);
     filter_scroll.set_hexpand(true);
+    filter_scroll.set_margin_top(0);
+    filter_scroll.set_margin_bottom(6);
     
-    let filter_box = GtkBox::new(Orientation::Horizontal, 4);
+    let filter_box = GtkBox::new(Orientation::Horizontal, 5);
     filter_box.set_halign(gtk4::Align::Start);
 
     let categories = vec![
-        ("🌐 All", None, "folder-symbolic"),
-        ("🐧 Popular", Some(DistroCategory::Other), "starred-symbolic"),
-        ("🎮 Gaming", Some(DistroCategory::Arch), "applications-games-symbolic"),
-        ("💼 Pro/Server", Some(DistroCategory::Fedora), "network-server-symbolic"),
-        ("🍓 Raspberry Pi", Some(DistroCategory::Raspberry), "computer-symbolic"),
-        ("🔒 Security", Some(DistroCategory::Debian), "security-high-symbolic"),
-        ("🎨 Ubuntu", Some(DistroCategory::Ubuntu), "ubuntu-logo-symbolic"),
-        ("📦 Arch", Some(DistroCategory::Arch), "package-symbolic"),
-        ("🌿 Mint", Some(DistroCategory::Mint), "applications-utilities-symbolic"),
+        ("All", None),
+        ("Popular", Some(DistroCategory::Other)),
+        ("Gaming", Some(DistroCategory::Gaming)),
+        ("Ubuntu", Some(DistroCategory::Ubuntu)),
+        ("Arch", Some(DistroCategory::Arch)),
+        ("Mint", Some(DistroCategory::Mint)),
+        ("Debian", Some(DistroCategory::Debian)),
+        ("Fedora", Some(DistroCategory::Fedora)),
+        ("Raspberry Pi", Some(DistroCategory::Raspberry)),
+        ("Security", Some(DistroCategory::Debian)),
     ];
 
     let active_category: Rc<RefCell<Option<DistroCategory>>> = Rc::new(RefCell::new(None));
@@ -365,11 +386,11 @@ pub fn show_iso_browser_window(
     scroll.set_policy(PolicyType::Never, PolicyType::Automatic);
     scroll.set_vexpand(true);
     scroll.set_hexpand(true);
-    scroll.set_margin_start(10);
-    scroll.set_margin_end(10);
-    scroll.set_margin_bottom(10);
+    scroll.set_margin_start(8);
+    scroll.set_margin_end(8);
+    scroll.set_margin_bottom(8);
 
-    let distros_box = GtkBox::new(Orientation::Vertical, 3);
+    let distros_box = GtkBox::new(Orientation::Vertical, 2);
     distros_box.set_hexpand(true);
 
     // Track all download buttons to disable during download
@@ -655,6 +676,9 @@ pub fn show_iso_browser_window(
                     let progress_bar_for_poll = progress_bar_clone.clone();
                     let speed_label_for_poll = speed_label_clone.clone();
                     let status_dot_for_poll = status_dot_clone.clone();
+                    let parent_for_poll = parent_clone.clone();
+                    let parent_for_err = parent_clone.clone();
+                    let distro_name_for_err = distro_clone.name.clone();
 
                     // Poll for progress updates
                     glib::timeout_add_local(std::time::Duration::from_millis(100), move || {
@@ -684,14 +708,15 @@ pub fn show_iso_browser_window(
                         // Check if download finished
                         match rx.try_recv() {
                             Ok(result) => {
-                                progress_window.close();
-                                
                                 // Clear global download flag
                                 state_for_poll.borrow().download_in_progress.store(false, Ordering::Relaxed);
 
                                 match result {
                                     Ok(path) => {
                                         println!("✓ Download complete: {}", path.display());
+                                        
+                                        // Show completion state in progress window
+                                        progress_window.show_complete();
                                         
                                         // Update state with downloaded ISO
                                         let mut state_ref = state_for_poll.borrow_mut();
@@ -723,10 +748,45 @@ pub fn show_iso_browser_window(
                                             button.set_sensitive(true);
                                         }
                                         
-                                        dialog_for_poll.close();
+                                        // Show success notification
+                                        let success_dialog = gtk4::MessageDialog::builder()
+                                            .transient_for(&parent_for_poll)
+                                            .modal(true)
+                                            .message_type(gtk4::MessageType::Info)
+                                            .buttons(gtk4::ButtonsType::Ok)
+                                            .text("Download Complete")
+                                            .secondary_text(&format!("Successfully downloaded {}\n\nThe ISO is ready to be written to a USB device.", path.file_name().unwrap().to_string_lossy()))
+                                            .build();
+                                        
+                                        let progress_window_clone = progress_window.clone();
+                                        let dialog_clone = dialog_for_poll.clone();
+                                        success_dialog.connect_response(move |dialog, _| {
+                                            dialog.close();
+                                            progress_window_clone.close();
+                                            dialog_clone.close();
+                                        });
+                                        success_dialog.present();
                                     }
                                     Err(e) => {
-                                        println!("✗ Download failed: {}", e);
+                                        let error_msg = e.to_string();
+                                        println!("✗ Download failed: {}", error_msg);
+                                        
+                                        // Close progress window
+                                        progress_window.close();
+                                        
+                                        // Show user-friendly error dialog
+                                        let error_title = "Download Failed";
+                                        let error_details = if error_msg.contains("Network") || error_msg.contains("connection") {
+                                            format!("Network error: Could not connect to server.\n\nPlease check your internet connection and try again.")
+                                        } else if error_msg.contains("disk") || error_msg.contains("space") {
+                                            format!("Not enough disk space.\n\nPlease free up some space and try again.")
+                                        } else if error_msg.contains("hash") || error_msg.contains("SHA256") {
+                                            format!("File verification failed.\n\nThe downloaded file is corrupted or tampered with.\nPlease try downloading again.")
+                                        } else {
+                                            format!("Failed to download {}.\n\nError: {}", distro_name_for_err, error_msg)
+                                        };
+                                        
+                                        show_error_dialog(&parent_for_err, error_title, &error_details);
                                         
                                         // Re-enable ALL buttons after failure
                                         for button in buttons_for_poll.borrow().iter() {
@@ -752,11 +812,12 @@ pub fn show_iso_browser_window(
     // Initial load - all distros
     load_distros(None, None);
 
-    // Create category filter buttons with icons
-    for (label, category, _icon_name) in categories {
+    // Create category filter buttons with modern styling
+    for (label, category) in categories {
         let btn = Button::with_label(label);
         btn.add_css_class("filter-button");
-        if label == "🌐 All" {
+        btn.add_css_class("filter-chip");
+        if label == "All" {
             btn.add_css_class("filter-active");
         }
         

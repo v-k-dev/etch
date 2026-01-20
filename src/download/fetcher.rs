@@ -116,6 +116,50 @@ impl ISOFetcher {
         );
         let output_path = destination_dir.join(&filename);
 
+        // Check if file already exists with valid size
+        if output_path.exists() {
+            let existing_size = std::fs::metadata(&output_path)?.len();
+            
+            // If file exists and is reasonably sized, verify it
+            if existing_size > 1_000_000 {
+                println!("✓ Found existing download: {}", output_path.display());
+                println!("  Size: {} bytes", existing_size);
+                
+                // Skip verification if hash is placeholder
+                if distro.sha256.is_empty() || distro.sha256.starts_with("PLACEHOLDER") {
+                    println!("✓ Using existing file (no hash to verify)");
+                    if let Some(ref tx) = progress_tx {
+                        let _ = tx.send(DownloadProgress::Complete {
+                            path: output_path.clone(),
+                        });
+                    }
+                    return Ok(output_path);
+                }
+                
+                // Verify existing file
+                println!("⟳ Verifying existing file...");
+                if let Some(ref tx) = progress_tx {
+                    let _ = tx.send(DownloadProgress::Verifying);
+                }
+                
+                if verify_sha256(&output_path, &distro.sha256).unwrap_or(false) {
+                    println!("✓ Existing file verified successfully");
+                    if let Some(ref tx) = progress_tx {
+                        let _ = tx.send(DownloadProgress::Complete {
+                            path: output_path.clone(),
+                        });
+                    }
+                    return Ok(output_path);
+                } else {
+                    println!("⚠ Existing file verification failed, re-downloading...");
+                    let _ = std::fs::remove_file(&output_path);
+                }
+            } else {
+                println!("⚠ Existing file too small, re-downloading...");
+                let _ = std::fs::remove_file(&output_path);
+            }
+        }
+
         // Send start notification
         if let Some(ref tx) = progress_tx {
             let _ = tx.send(DownloadProgress::Started {

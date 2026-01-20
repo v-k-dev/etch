@@ -1,0 +1,1202 @@
+[0;34m========================================[0m
+[0;34m  ISO Download URL Validation[0m
+[0;34m========================================[0m
+
+[0;34m[1][0m Testing: Ubuntu 24.04 LTS Desktop...
+    URL: https://releases.ubuntu.com/24.04/ubuntu-24.04.3-desktop-amd64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[2][0m Testing: Ubuntu 24.10 Desktop...
+    URL: https://releases.ubuntu.com/24.10/ubuntu-24.10-desktop-amd64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://old-releases.ubuntu.com/releases/24.10/ubuntu-24.10-desktop-amd64.iso
+
+[0;34m[3][0m Testing: Kubuntu 24.04 LTS...
+    URL: https://cdimage.ubuntu.com/kubuntu/releases/24.04/release/kubuntu-24.04.1-desktop-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[4][0m Testing: Pop!_OS 22.04 LTS...
+    URL: https://iso.pop-os.org/22.04/amd64/intel/45/pop-os_22.04_amd64_intel_45.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[5][0m Testing: Fedora Workstation 41...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.4.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://ftp-stud.hs-esslingen.de/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.4.iso
+
+[0;34m[6][0m Testing: Fedora KDE Plasma 41...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Spins/x86_64/iso/Fedora-KDE-Live-x86_64-41-1.4.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirrors.nxthost.com/fedora/releases/41/Spins/x86_64/iso/Fedora-KDE-Live-x86_64-41-1.4.iso
+
+[0;34m[7][0m Testing: Linux Mint 22 Cinnamon...
+    URL: https://mirrors.kernel.org/linuxmint/stable/22/linuxmint-22-cinnamon-64bit.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirrors.edge.kernel.org/linuxmint/stable/22/linuxmint-22-cinnamon-64bit.iso
+
+[0;34m[8][0m Testing: Linux Mint 22 Xfce...
+    URL: https://mirrors.kernel.org/linuxmint/stable/22/linuxmint-22-xfce-64bit.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirrors.edge.kernel.org/linuxmint/stable/22/linuxmint-22-xfce-64bit.iso
+
+[0;34m[9][0m Testing: Debian 13 Live...
+    URL: https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-standard.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://gemmei.ftp.acc.umu.se/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-standard.iso
+
+[0;34m[10][0m Testing: Debian 13 GNOME...
+    URL: https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-gnome.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://saimei.ftp.acc.umu.se/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-gnome.iso
+
+[0;34m[11][0m Testing: Arch Linux...
+    URL: https://mirror.rackspace.com/archlinux/iso/latest/archlinux-2026.01.01-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[12][0m Testing: Manjaro GNOME...
+    URL: https://download.manjaro.org/gnome/23.1.4/manjaro-gnome-23.1.4-240406-linux66.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[13][0m Testing: openSUSE Tumbleweed...
+    URL: https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Current.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirror.easyname.at/opensuse/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Snapshot20260113-Media.iso
+
+[0;34m[14][0m Testing: Zorin OS 17 Core...
+    URL: https://zrn.co/zorin-os-17-core-64-bit
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[15][0m Testing: elementary OS 7.1...
+    URL: https://ams3.dl.elementary.io/download/MTczNzIyMTc1OQ==/elementaryos-7.1-stable.20230926rc.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://elementary.io/410
+
+[0;34m[16][0m Testing: Raspberry Pi OS (64-bit)...
+    URL: https://downloads.raspberrypi.com/raspios_arm64/images/raspios_arm64-2024-11-19/2024-11-19-raspios-bookworm-arm64.img.xz
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[17][0m Testing: Kali Linux 2025.4...
+    URL: https://cdimage.kali.org/current/kali-linux-2025.4-installer-amd64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://kali.download/base-images/kali-2025.4/kali-linux-2025.4-installer-amd64.iso
+
+[0;34m[18][0m Testing: EndeavourOS...
+    URL: https://github.com/endeavouros-team/ISO/releases/download/2024.01.25/EndeavourOS_Galileo_2024.01.25.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[19][0m Testing: CachyOS Desktop...
+    URL: https://mirror.cachyos.org/ISO/kde/240101/cachyos-kde-linux-240101.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[20][0m Testing: CachyOS NVIDIA...
+    URL: https://mirror.cachyos.org/ISO/kde/240101/cachyos-kde-linux-240101.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[21][0m Testing: Nobara 39 Official...
+    URL: https://nobaraproject.org/download-nobara
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[22][0m Testing: Garuda Linux Dr460nized...
+    URL: https://iso.builds.garudalinux.org/iso/latest/garuda/dr460nized/latest.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://iso.builds.garudalinux.org/iso/garuda/dr460nized/260115/garuda-dr460nized-linux-zen-260115.iso
+
+[0;34m[23][0m Testing: MX Linux 23...
+    URL: https://sourceforge.net/projects/mx-linux/files/Final/Xfce/MX-23_x64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[24][0m Testing: Windows 11 IoT LTSC...
+    URL: https://www.microsoft.com/en-us/evalcenter/download-windows-11-iot-enterprise-ltsc
+    [0;31m✗ FAILED[0m (HTTP 403)
+
+[0;34m[25][0m Testing: Ubuntu 25.04 Daily (Experimental)...
+    URL: https://cdimage.ubuntu.com/daily-live/current/plucky-desktop-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[26][0m Testing: Fedora Rawhide 42 (Experimental)...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/development/rawhide/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-Rawhide.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[27][0m Testing: Arch Linux 2026.02.01...
+    URL: https://geo.mirror.pkgbuild.com/iso/2026.02.01/archlinux-2026.02.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[28][0m Testing: NixOS 24.11 Plasma...
+    URL: https://releases.nixos.org/nixos/24.11/nixos-24.11.20250118.9ddcbaa/nixos-plasma-24.11.20250118.9ddcbaa-x86_64-linux.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[29][0m Testing: NixOS Unstable (Experimental)...
+    URL: https://releases.nixos.org/nixos/unstable/nixos-unstable.x86_64-linux.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[30][0m Testing: CachyOS KDE 2026.01...
+    URL: https://mirror.cachyos.org/ISO/kde/cachyos-kde-linux-240119.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[31][0m Testing: Void Linux Xfce...
+    URL: https://repo-default.voidlinux.org/live/current/void-live-x86_64-20240314-xfce.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[32][0m Testing: Alpine Linux 3.21...
+    URL: https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-standard-3.21.0-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[33][0m Testing: Artix Linux KDE Plasma...
+    URL: https://iso.artixlinux.org/iso/artix-plasma-runit-20231127-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://artixlinux.org/download.php
+
+[0;34m[34][0m Testing: Gentoo Linux Minimal...
+    URL: https://distfiles.gentoo.org/releases/amd64/autobuilds/20250119T170202Z/install-amd64-minimal-20250119T170202Z.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[35][0m Testing: Crystal Linux...
+    URL: https://getcryst.al/site/assets/files/1/crystal-2024.02.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 000000)
+
+[0;34m[36][0m Testing: Vanilla OS 2 Orchid...
+    URL: https://images.vanillaos.org/orchid/vanilla-os-2.0-orchid-x86_64-20240118.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[37][0m Testing: BlendOS 4...
+    URL: https://github.com/blend-os/blendos/releases/download/v4.0.0/blendOS-4.0.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[38][0m Testing: Siduction 2024.1 KDE...
+    URL: https://sourceforge.net/projects/siduction/files/siduction-2024.1.0/siduction-2024.1.0-wintersky-kde-amd64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[39][0m Testing: Tails 6.10...
+    URL: https://mirrors.wikimedia.org/tails/stable/tails-amd64-6.10/tails-amd64-6.10.img
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[40][0m Testing: Qubes OS 4.2...
+    URL: https://mirrors.edge.kernel.org/qubes/iso/Qubes-R4.2.3-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[41][0m Testing: Ubuntu Server 24.04 LTS...
+    URL: https://releases.ubuntu.com/24.04/ubuntu-24.04.1-live-server-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[42][0m Testing: EndeavourOS...
+    URL: https://github.com/endeavouros-team/ISO/releases/download/2024.09.22/EndeavourOS_Endeavour-2024.09.22.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[43][0m Testing: Garuda Linux KDE...
+    URL: https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://iso.builds.garudalinux.org/iso/garuda/kde-lite/260115/garuda-kde-lite-linux-zen-260115.iso
+
+[0;34m[44][0m Testing: Artix Linux Plasma...
+    URL: https://iso.artixlinux.org/iso/artix-plasma-openrc-20230814-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://artixlinux.org/download.php
+
+[0;34m[45][0m Testing: Solus Budgie...
+    URL: https://mirrors.rit.edu/solus/images/4.5/Solus-4.5-Budgie.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[46][0m Testing: Clear Linux Desktop...
+    URL: https://cdn.download.clearlinux.org/releases/42400/clear/clear-42400-live-desktop.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[47][0m Testing: MX Linux 23...
+    URL: https://sourceforge.net/projects/mx-linux/files/Final/KDE/MX-23.4_KDE_x64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[48][0m Testing: antiX 23...
+    URL: https://sourceforge.net/projects/antix-linux/files/Final/antiX-23.1/antiX-23.1_x64-full.iso/download
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://pilotfiber.dl.sourceforge.net/project/antix-linux/Final/antiX-23.1/antiX-23.1_x64-full.iso?viasf=1
+
+[0;34m[49][0m Testing: blendOS...
+    URL: https://github.com/blend-os/blendOS/releases/download/v4.0.0/blendOS-v4.0.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[50][0m Testing: Vanilla OS 2...
+    URL: https://github.com/Vanilla-OS/live-images/releases/download/2.0.0/vanilla-os-2.0.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[51][0m Testing: Tiny Core Linux...
+    URL: http://tinycorelinux.net/15.x/x86_64/release/TinyCorePure64-15.0.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[52][0m Testing: Bodhi Linux 7...
+    URL: https://sourceforge.net/projects/bodhilinux/files/7.0.0/bodhi-7.0.0-64.iso/download
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://deac-ams.dl.sourceforge.net/project/bodhilinux/7.0.0/bodhi-7.0.0-64.iso?viasf=1
+
+[0;34m[53][0m Testing: Peppermint OS...
+    URL: https://sourceforge.net/projects/peppermintos/files/Peppermint-2024-01-15-amd64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[54][0m Testing: Rocky Linux 9...
+    URL: https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.3-x86_64-minimal.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[55][0m Testing: AlmaLinux 9...
+    URL: https://repo.almalinux.org/almalinux/9/isos/x86_64/AlmaLinux-9.3-x86_64-minimal.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[56][0m Testing: Devuan 5 Daedalus...
+    URL: https://pkgmaster.devuan.org/devuan_daedalus/desktop-live/devuan_daedalus_5.0.0_amd64_desktop-live.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[57][0m Testing: Slackware 15.0...
+    URL: https://slackware.uk/slackware/slackware-iso/slackware64-15.0-iso/slackware64-15.0-install-dvd.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[58][0m Testing: Mageia 9...
+    URL: https://www.mageia.org/downloads/Mageia-9-Live-Plasma-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[59][0m Testing: PCLinuxOS...
+    URL: https://sourceforge.net/projects/pclinuxos/files/pclinuxos/2024.02/pclinuxos64-kde-2024.02.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[60][0m Testing: SparkyLinux 7...
+    URL: https://sourceforge.net/projects/sparkylinux/files/stable/sparkylinux-7.3-x86_64-xfce.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[61][0m Testing: BigLinux...
+    URL: https://iso.biglinux.com.br/biglinux_2024.01.27_k67.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[62][0m Testing: RebornOS...
+    URL: https://www.rebornos.org/download/rebornos-2024.01.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[63][0m Testing: CachyOS...
+    URL: https://mirror.cachyos.org/ISO/kde/cachyos-kde-linux-240101.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[64][0m Testing: XeroLinux...
+    URL: https://sourceforge.net/projects/xerolinux/files/Xero/xerolinux-2024.12.01-x86_64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[65][0m Testing: Archcraft...
+    URL: https://sourceforge.net/projects/archcraft/files/archcraft-2024.01.01-x86_64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[66][0m Testing: ArcoLinux...
+    URL: https://sourceforge.net/projects/arcolinux/files/arcolinux-2024.01.21-x86_64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[67][0m Testing: Crystal Linux...
+    URL: https://github.com/crystal-linux/iso/releases/download/2024.01/crystal-2024.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[68][0m Testing: Parrot Security OS 6...
+    URL: https://deb.parrot.sh/parrot/iso/6.0/Parrot-security-6.0_amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[69][0m Testing: BlackArch Linux...
+    URL: https://mirrors.ocf.berkeley.edu/blackarch/iso/blackarch-linux-live-2024.01.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[70][0m Testing: Athena OS...
+    URL: https://github.com/Athena-OS/athena/releases/download/v24.01/athena-2024.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[71][0m Testing: Pentoo...
+    URL: https://pentoo.ch/isos/daily-portage-amd64/pentoo-full-amd64-hardened-latest.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[72][0m Testing: Trisquel 11...
+    URL: https://mirrors.ocf.berkeley.edu/trisquel-images/trisquel_11.0_amd64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[73][0m Testing: Parabola GNU/Linux...
+    URL: https://repo.parabola.nu/iso/parabola-2024.01.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[74][0m Testing: Hyperbola GNU/Linux...
+    URL: https://www.hyperbola.info/download/hyperbola-milky-way-v0.4.4-dual.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[75][0m Testing: GNU Guix...
+    URL: https://ftp.gnu.org/gnu/guix/guix-system-1.4.0.x86_64-linux.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[76][0m Testing: Redox OS...
+    URL: https://static.redox-os.org/releases/0.8.0/x86_64/redox_demo_x86_64_0.8.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[77][0m Testing: Haiku OS...
+    URL: https://cdn.haiku-os.org/haiku-release/r1beta4/haiku-r1beta4-x86_64-anyboot.iso
+    [0;31m✗ FAILED[0m (HTTP 000000)
+
+[0;34m[78][0m Testing: KolibriOS...
+    URL: http://builds.kolibrios.org/eng/latest-iso.7z
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[79][0m Testing: MenuetOS...
+    URL: https://www.menuetos.net/sc10.img
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[80][0m Testing: ReactOS...
+    URL: https://sourceforge.net/projects/reactos/files/ReactOS/0.4.14/ReactOS-0.4.14-live.zip/download
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://phoenixnap.dl.sourceforge.net/project/reactos/ReactOS/0.4.14/ReactOS-0.4.14-live.zip?viasf=1
+
+[0;34m[81][0m Testing: FreeDOS...
+    URL: https://www.freedos.org/download/download/FD13LIVE.zip
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[82][0m Testing: SerenityOS...
+    URL: https://github.com/SerenityOS/serenity/releases/download/rolling/serenity-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[83][0m Testing: TempleOS...
+    URL: https://templeos.org/Downloads/TempleOSV5.03.ISO
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[84][0m Testing: Raspberry Pi OS (64-bit)...
+    URL: https://downloads.raspberrypi.com/raspios_arm64/images/raspios_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64.img.xz
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[85][0m Testing: Raspberry Pi OS Lite (64-bit)...
+    URL: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[86][0m Testing: Ubuntu Core 22...
+    URL: https://cdimage.ubuntu.com/ubuntu-core/22/stable/current/ubuntu-core-22-amd64.img.xz
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[87][0m Testing: DietPi ARM64...
+    URL: https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bookworm.7z
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[88][0m Testing: LibreELEC (RPi4)...
+    URL: https://releases.libreelec.tv/LibreELEC-RPi4.arm-12.0.0.img.gz
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[89][0m Testing: RetroPie (RPi4)...
+    URL: https://github.com/RetroPie/RetroPie-Setup/releases/download/4.8.10/retropie-buster-4.8.10-rpi4_400.img.gz
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[90][0m Testing: Recalbox...
+    URL: https://gitlab.com/recalbox/recalbox/-/jobs/artifacts/master/raw/recalbox-rpi4.img.xz?job=recalbox-rpi4
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[91][0m Testing: Batocera (RPi)...
+    URL: https://batocera.org/download/batocera-rpi4-39-20240101.img.gz
+    [0;31m✗ FAILED[0m (HTTP 500)
+
+[0;34m[92][0m Testing: Kali Linux ARM (RPi)...
+    URL: https://kali.download/arm-images/kali-2024.1/kali-linux-2024.1-raspberry-pi-armhf.img.xz
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[93][0m Testing: Volumio...
+    URL: https://updates.volumio.com/pi/volumio/3.631/volumio-3.631-2024-07-15-pi.img.zip
+    [0;31m✗ FAILED[0m (HTTP 000000)
+
+[0;34m[94][0m Testing: Home Assistant OS (RPi)...
+    URL: https://github.com/home-assistant/operating-system/releases/download/11.5/haos_rpi4-64-11.5.img.xz
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://release-assets.githubusercontent.com/github-production-release-asset/115992009/13ec25f2-8d98-44b4-a0bf-0258131b3b39?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-01-20T13%3A25%3A53Z&rscd=attachment%3B+filename%3Dhaos_rpi4-64-11.5.img.xz&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-01-20T12%3A25%3A12Z&ske=2026-01-20T13%3A25%3A53Z&sks=b&skv=2018-11-09&sig=sR5riKnrIbnuLPDKNq3zoqPBwkCCecd2F6KtjVGenlM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2ODkxNjI2NCwibmJmIjoxNzY4OTEyNjY0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.BRyAY_xmajMs4pRTwFAT0U6yvI641-sBCTLVmiwziBM&response-content-disposition=attachment%3B%20filename%3Dhaos_rpi4-64-11.5.img.xz&response-content-type=application%2Foctet-stream
+
+[0;34m[95][0m Testing: Red Hat Enterprise Linux 9 Workstation...
+    URL: https://developers.redhat.com/content-gateway/file/rhel-9.3-x86_64-boot.iso
+    [0;31m✗ FAILED[0m (HTTP 400)
+
+[0;34m[96][0m Testing: Oracle Linux 9...
+    URL: https://yum.oracle.com/ISOS/OracleLinux/OL9/u3/x86_64/OracleLinux-R9-U3-x86_64-boot.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[97][0m Testing: EuroLinux 9...
+    URL: https://fbi.cdn.euro-linux.com/isos/9.3/EL-9.3-x86_64-minimal.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[98][0m Testing: Scientific Linux 7...
+    URL: https://ftp.scientificlinux.org/linux/scientific/7.9/x86_64/iso/SL-7.9-x86_64-netinstall.iso
+    [0;31m✗ FAILED[0m (HTTP 000000)
+
+[0;34m[99][0m Testing: Fedora Server 40...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/40/Server/x86_64/iso/Fedora-Server-dvd-x86_64-40-1.14.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirror.hyperdedic.ru/fedora/linux/releases/40/Server/x86_64/iso/Fedora-Server-dvd-x86_64-40-1.14.iso
+
+[0;34m[100][0m Testing: Fedora Silverblue 41...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Silverblue/x86_64/iso/Fedora-Silverblue-ostree-x86_64-41-1.4.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[101][0m Testing: Fedora Kinoite 41...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Kinoite/x86_64/iso/Fedora-Kinoite-ostree-x86_64-41-1.4.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirror.netsite.dk/fedora/linux/releases/41/Kinoite/x86_64/iso/Fedora-Kinoite-ostree-x86_64-41-1.4.iso
+
+[0;34m[102][0m Testing: Security Onion 2...
+    URL: https://github.com/Security-Onion-Solutions/securityonion/releases/download/2.4.90/securityonion-2.4.90.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[103][0m Testing: DRACÓS Linux...
+    URL: https://dracos-linux.org/downloads/dracos-2024.1.iso
+    [0;31m✗ FAILED[0m (HTTP 000000)
+
+[0;34m[104][0m Testing: Wifislax...
+    URL: https://sourceforge.net/projects/wifislax/files/wifislax-4.12-final.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[105][0m Testing: BackBox Linux 8...
+    URL: https://sourceforge.net/projects/backbox/files/backbox-8.1-amd64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[106][0m Testing: CAINE 13...
+    URL: https://www.caine-live.net/downloads/CAINE13.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[107][0m Testing: Bugtraq Team II...
+    URL: https://sourceforge.net/projects/bugtraq-team/files/bugtraq-2.0-amd64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[108][0m Testing: Samurai Web Testing Framework...
+    URL: https://sourceforge.net/projects/samurai/files/samurai-2024.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[109][0m Testing: REMnux...
+    URL: https://sourceforge.net/projects/remnux/files/remnux-2024.1.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[110][0m Testing: DEFT Zero...
+    URL: https://www.deftlinux.net/downloads/deft-zero-2024.1.iso
+    [0;31m✗ FAILED[0m (HTTP 000000)
+
+[0;34m[111][0m Testing: ArchStrike...
+    URL: https://mirror.archstrike.org/iso/archstrike-2024.01.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[112][0m Testing: Network Security Toolkit 36...
+    URL: https://sourceforge.net/projects/nst/files/NST-36-11929/nst-36-11929.x86_64.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[113][0m Testing: Fedora Security Lab...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/40/Spins/x86_64/iso/Fedora-Security-Live-x86_64-40-1.14.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[114][0m Testing: Android-x86...
+    URL: https://sourceforge.net/projects/android-x86/files/Release%209.0/android-x86_64-9.0-r2.iso/download
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://unlimited.dl.sourceforge.net/project/android-x86/Release%209.0/android-x86_64-9.0-r2.iso?viasf=1
+
+[0;34m[115][0m Testing: Bliss OS 15...
+    URL: https://sourceforge.net/projects/blissos-x86/files/Official/bleeding_edge/Bliss-v15.8.9-x86_64-OFFICIAL-20240101.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[116][0m Testing: PrimeOS...
+    URL: https://www.primeos.in/download/PrimeOS-mainline-2024.01.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[117][0m Testing: Pop!_OS 24.04 LTS...
+    URL: https://iso.pop-os.org/24.04/amd64/intel/52/pop-os_24.04_amd64_intel_52.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[118][0m Testing: Pop!_OS 24.04 (NVIDIA)...
+    URL: https://iso.pop-os.org/24.04/amd64/nvidia/52/pop-os_24.04_amd64_nvidia_52.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[119][0m Testing: elementary OS 7.1...
+    URL: https://ams3.dl.elementary.io/download/latest/elementaryos-7.1-stable.20230926rc.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://elementary.io/410
+
+[0;34m[120][0m Testing: Zorin OS 17 Core...
+    URL: https://sourceforge.net/projects/zorinos/files/17/Zorin-OS-17.1-Core-64-bit.iso/download
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[121][0m Testing: Linux Lite 7.0...
+    URL: https://sourceforge.net/projects/linux-lite/files/7.0/linux-lite-7.0-64bit.iso/download
+    [0;31m✗ FAILED[0m (HTTP 302000)
+
+[0;34m[122][0m Testing: NixOS 24.05...
+    URL: https://releases.nixos.org/nixos/24.05/nixos-24.05.20241231.f2b3e99/nixos-minimal-24.05.20241231.f2b3e99-x86_64-linux.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[123][0m Testing: Bazzite GNOME...
+    URL: https://github.com/ublue-os/bazzite/releases/download/v3.5.0/bazzite-gnome-stable.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[124][0m Testing: Bazzite KDE...
+    URL: https://github.com/ublue-os/bazzite/releases/download/v3.5.0/bazzite-deck-stable.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[125][0m Testing: Nobara 40 Official...
+    URL: https://nobaraproject.org/Nobara-40-Official-2024-11-12.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[126][0m Testing: ChimeraOS...
+    URL: https://github.com/ChimeraOS/chimeraos/releases/download/46-2/chimeraos-46-2.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[127][0m Testing: SteamOS 3.6...
+    URL: https://steamdeck-images.steamos.cloud/recovery/steamdeck-recovery-4.img.bz2
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[128][0m Testing: Alpine Linux 3.19...
+    URL: https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86_64/alpine-standard-3.19.1-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[129][0m Testing: Void Linux...
+    URL: https://repo-default.voidlinux.org/live/current/void-live-x86_64-20240314-base.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[130][0m Testing: Gentoo Linux...
+    URL: https://distfiles.gentoo.org/releases/amd64/autobuilds/20240128T164830Z/install-amd64-minimal-20240128T164830Z.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[131][0m Testing: Tails 6.0...
+    URL: https://tails.net/torrents/files/tails-amd64-6.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[132][0m Testing: Qubes OS 4.2...
+    URL: https://mirrors.edge.kernel.org/qubes/iso/Qubes-R4.2.0-x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[133][0m Testing: Clear Linux 41240...
+    URL: https://cdn.download.clearlinux.org/releases/41240/clear/clear-41240-live-desktop.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[134][0m Testing: Solus 4.5...
+    URL: https://mirrors.rit.edu/solus/images/4.5/Solus-4.5-Budgie.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[135][0m Testing: Armbian 24.02...
+    URL: https://github.com/armbian/build/releases/download/24.02.0/Armbian_24.02.0_Orangepi5.img.xz
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[136][0m Testing: OpenWrt 23.05...
+    URL: https://downloads.openwrt.org/releases/23.05.3/targets/x86/64/openwrt-23.05.3-x86-64-generic-ext4-combined.img.gz
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[137][0m Testing: CoreOS Stable...
+    URL: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/39.20240128.3.0/x86_64/fedora-coreos-39.20240128.3.0-live.x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[138][0m Testing: Photon OS 5.0...
+    URL: https://packages.vmware.com/photon/5.0/GA/iso/photon-5.0-dde71ec57.x86_64.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[139][0m Testing: AlmaLinux 9 Micro...
+    URL: https://repo.almalinux.org/almalinux/9.3/isos/x86_64/AlmaLinux-9.3-x86_64-minimal.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[140][0m Testing: Debian 12.5 Live...
+    URL: https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.5.0-amd64-gnome.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[141][0m Testing: Ubuntu Server 24.04 LTS...
+    URL: https://releases.ubuntu.com/24.04/ubuntu-24.04.1-live-server-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[142][0m Testing: Arch Linux...
+    URL: https://geo.mirror.pkgbuild.com/iso/2024.01.01/archlinux-2024.01.01-x86_64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[143][0m Testing: Ubuntu Studio 24.04...
+    URL: https://cdimage.ubuntu.com/ubuntustudio/releases/24.04/release/ubuntustudio-24.04-dvd-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[144][0m Testing: Ubuntu Server 22.04 LTS...
+    URL: https://releases.ubuntu.com/22.04/ubuntu-22.04.3-live-server-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[145][0m Testing: Fedora Server 39...
+    URL: https://download.fedoraproject.org/pub/fedora/linux/releases/39/Server/x86_64/iso/Fedora-Server-dvd-x86_64-39-1.5.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirror.hyperdedic.ru/fedora/linux/releases/39/Server/x86_64/iso/Fedora-Server-dvd-x86_64-39-1.5.iso
+
+[0;34m[146][0m Testing: Debian 12 Netinst...
+    URL: https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[147][0m Testing: Proxmox VE 8.1...
+    URL: https://enterprise.proxmox.com/iso/proxmox-ve_8.1-1.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[148][0m Testing: TrueNAS SCALE 24.04...
+    URL: https://download.truenas.com/truenas-scale/24.04/TrueNAS-SCALE-24.04.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[149][0m Testing: OPNsense 24.1...
+    URL: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/24.1/OPNsense-24.1-dvd-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[150][0m Testing: pfSense CE 2.7...
+    URL: https://atxfiles.netgate.com/mirror/downloads/pfSense-CE-2.7.2-RELEASE-amd64.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[151][0m Testing: RHEL 9 Server...
+    URL: https://developers.redhat.com/content-gateway/file/rhel-9.3-x86_64-dvd.iso
+    [0;31m✗ FAILED[0m (HTTP 400)
+
+[0;34m[152][0m Testing: SUSE Linux Enterprise 15...
+    URL: https://download.suse.com/Download?buildid=nYv9L3BRStw~
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://www.suse.com/products/?buildid=nYv9L3BRStw~
+
+[0;34m[153][0m Testing: CentOS Stream 9...
+    URL: https://mirrors.centos.org/mirrorlist?path=/9-stream/BaseOS/x86_64/iso/CentOS-Stream-9-latest-x86_64-dvd1.iso
+    [0;32m✓ OK[0m (HTTP 200)
+
+[0;34m[154][0m Testing: Vanilla OS 2...
+    URL: https://github.com/Vanilla-OS/live-iso/releases/download/2.0.0/vanilla-os-2.0.0.iso
+    [0;31m✗ FAILED[0m (HTTP 404)
+
+[0;34m[155][0m Testing: openSUSE MicroOS...
+    URL: https://download.opensuse.org/tumbleweed/iso/openSUSE-MicroOS-DVD-x86_64-Current.iso
+    [0;32m✓ OK[0m (HTTP 200)
+    [1;33m⚠ Redirected to:[0m https://mirror.easyname.at/opensuse/tumbleweed/iso/openSUSE-MicroOS-DVD-x86_64-Snapshot20260113-Media.iso
+
+[0;34m========================================[0m
+[0;34m  Summary[0m
+[0;34m========================================[0m
+Total URLs tested: [0;34m155[0m
+Successful: [0;32m46[0m
+Failed: [0;31m109[0m
+Redirects: [1;33m25[0m
+
+[0;31m========================================[0m
+[0;31m  Failed URLs (need fixing!)[0m
+[0;31m========================================[0m
+[0;31m✗[0m Kubuntu 24.04 LTS
+  URL: https://cdimage.ubuntu.com/kubuntu/releases/24.04/release/kubuntu-24.04.1-desktop-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Pop!_OS 22.04 LTS
+  URL: https://iso.pop-os.org/22.04/amd64/intel/45/pop-os_22.04_amd64_intel_45.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Zorin OS 17 Core
+  URL: https://zrn.co/zorin-os-17-core-64-bit
+  Error: HTTP 404
+
+[0;31m✗[0m EndeavourOS
+  URL: https://github.com/endeavouros-team/ISO/releases/download/2024.01.25/EndeavourOS_Galileo_2024.01.25.iso
+  Error: HTTP 404
+
+[0;31m✗[0m CachyOS Desktop
+  URL: https://mirror.cachyos.org/ISO/kde/240101/cachyos-kde-linux-240101.iso
+  Error: HTTP 404
+
+[0;31m✗[0m CachyOS NVIDIA
+  URL: https://mirror.cachyos.org/ISO/kde/240101/cachyos-kde-linux-240101.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Nobara 39 Official
+  URL: https://nobaraproject.org/download-nobara
+  Error: HTTP 404
+
+[0;31m✗[0m MX Linux 23
+  URL: https://sourceforge.net/projects/mx-linux/files/Final/Xfce/MX-23_x64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Windows 11 IoT LTSC
+  URL: https://www.microsoft.com/en-us/evalcenter/download-windows-11-iot-enterprise-ltsc
+  Error: HTTP 403
+
+[0;31m✗[0m Ubuntu 25.04 Daily (Experimental)
+  URL: https://cdimage.ubuntu.com/daily-live/current/plucky-desktop-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Fedora Rawhide 42 (Experimental)
+  URL: https://download.fedoraproject.org/pub/fedora/linux/development/rawhide/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-Rawhide.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Arch Linux 2026.02.01
+  URL: https://geo.mirror.pkgbuild.com/iso/2026.02.01/archlinux-2026.02.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m NixOS 24.11 Plasma
+  URL: https://releases.nixos.org/nixos/24.11/nixos-24.11.20250118.9ddcbaa/nixos-plasma-24.11.20250118.9ddcbaa-x86_64-linux.iso
+  Error: HTTP 404
+
+[0;31m✗[0m NixOS Unstable (Experimental)
+  URL: https://releases.nixos.org/nixos/unstable/nixos-unstable.x86_64-linux.iso
+  Error: HTTP 404
+
+[0;31m✗[0m CachyOS KDE 2026.01
+  URL: https://mirror.cachyos.org/ISO/kde/cachyos-kde-linux-240119.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Void Linux Xfce
+  URL: https://repo-default.voidlinux.org/live/current/void-live-x86_64-20240314-xfce.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Gentoo Linux Minimal
+  URL: https://distfiles.gentoo.org/releases/amd64/autobuilds/20250119T170202Z/install-amd64-minimal-20250119T170202Z.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Crystal Linux
+  URL: https://getcryst.al/site/assets/files/1/crystal-2024.02.01-x86_64.iso
+  Error: HTTP 000000
+
+[0;31m✗[0m Vanilla OS 2 Orchid
+  URL: https://images.vanillaos.org/orchid/vanilla-os-2.0-orchid-x86_64-20240118.iso
+  Error: HTTP 404
+
+[0;31m✗[0m BlendOS 4
+  URL: https://github.com/blend-os/blendos/releases/download/v4.0.0/blendOS-4.0.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Siduction 2024.1 KDE
+  URL: https://sourceforge.net/projects/siduction/files/siduction-2024.1.0/siduction-2024.1.0-wintersky-kde-amd64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Tails 6.10
+  URL: https://mirrors.wikimedia.org/tails/stable/tails-amd64-6.10/tails-amd64-6.10.img
+  Error: HTTP 404
+
+[0;31m✗[0m Ubuntu Server 24.04 LTS
+  URL: https://releases.ubuntu.com/24.04/ubuntu-24.04.1-live-server-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m EndeavourOS
+  URL: https://github.com/endeavouros-team/ISO/releases/download/2024.09.22/EndeavourOS_Endeavour-2024.09.22.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Solus Budgie
+  URL: https://mirrors.rit.edu/solus/images/4.5/Solus-4.5-Budgie.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Clear Linux Desktop
+  URL: https://cdn.download.clearlinux.org/releases/42400/clear/clear-42400-live-desktop.iso
+  Error: HTTP 404
+
+[0;31m✗[0m MX Linux 23
+  URL: https://sourceforge.net/projects/mx-linux/files/Final/KDE/MX-23.4_KDE_x64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m blendOS
+  URL: https://github.com/blend-os/blendOS/releases/download/v4.0.0/blendOS-v4.0.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Vanilla OS 2
+  URL: https://github.com/Vanilla-OS/live-images/releases/download/2.0.0/vanilla-os-2.0.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Peppermint OS
+  URL: https://sourceforge.net/projects/peppermintos/files/Peppermint-2024-01-15-amd64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Rocky Linux 9
+  URL: https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.3-x86_64-minimal.iso
+  Error: HTTP 404
+
+[0;31m✗[0m AlmaLinux 9
+  URL: https://repo.almalinux.org/almalinux/9/isos/x86_64/AlmaLinux-9.3-x86_64-minimal.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Devuan 5 Daedalus
+  URL: https://pkgmaster.devuan.org/devuan_daedalus/desktop-live/devuan_daedalus_5.0.0_amd64_desktop-live.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Mageia 9
+  URL: https://www.mageia.org/downloads/Mageia-9-Live-Plasma-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m PCLinuxOS
+  URL: https://sourceforge.net/projects/pclinuxos/files/pclinuxos/2024.02/pclinuxos64-kde-2024.02.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m SparkyLinux 7
+  URL: https://sourceforge.net/projects/sparkylinux/files/stable/sparkylinux-7.3-x86_64-xfce.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m BigLinux
+  URL: https://iso.biglinux.com.br/biglinux_2024.01.27_k67.iso
+  Error: HTTP 404
+
+[0;31m✗[0m RebornOS
+  URL: https://www.rebornos.org/download/rebornos-2024.01.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m CachyOS
+  URL: https://mirror.cachyos.org/ISO/kde/cachyos-kde-linux-240101.iso
+  Error: HTTP 404
+
+[0;31m✗[0m XeroLinux
+  URL: https://sourceforge.net/projects/xerolinux/files/Xero/xerolinux-2024.12.01-x86_64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Archcraft
+  URL: https://sourceforge.net/projects/archcraft/files/archcraft-2024.01.01-x86_64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m ArcoLinux
+  URL: https://sourceforge.net/projects/arcolinux/files/arcolinux-2024.01.21-x86_64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Crystal Linux
+  URL: https://github.com/crystal-linux/iso/releases/download/2024.01/crystal-2024.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Parrot Security OS 6
+  URL: https://deb.parrot.sh/parrot/iso/6.0/Parrot-security-6.0_amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m BlackArch Linux
+  URL: https://mirrors.ocf.berkeley.edu/blackarch/iso/blackarch-linux-live-2024.01.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Athena OS
+  URL: https://github.com/Athena-OS/athena/releases/download/v24.01/athena-2024.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Pentoo
+  URL: https://pentoo.ch/isos/daily-portage-amd64/pentoo-full-amd64-hardened-latest.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Parabola GNU/Linux
+  URL: https://repo.parabola.nu/iso/parabola-2024.01.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Hyperbola GNU/Linux
+  URL: https://www.hyperbola.info/download/hyperbola-milky-way-v0.4.4-dual.iso
+  Error: HTTP 404
+
+[0;31m✗[0m GNU Guix
+  URL: https://ftp.gnu.org/gnu/guix/guix-system-1.4.0.x86_64-linux.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Redox OS
+  URL: https://static.redox-os.org/releases/0.8.0/x86_64/redox_demo_x86_64_0.8.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Haiku OS
+  URL: https://cdn.haiku-os.org/haiku-release/r1beta4/haiku-r1beta4-x86_64-anyboot.iso
+  Error: HTTP 000000
+
+[0;31m✗[0m KolibriOS
+  URL: http://builds.kolibrios.org/eng/latest-iso.7z
+  Error: HTTP 404
+
+[0;31m✗[0m MenuetOS
+  URL: https://www.menuetos.net/sc10.img
+  Error: HTTP 404
+
+[0;31m✗[0m FreeDOS
+  URL: https://www.freedos.org/download/download/FD13LIVE.zip
+  Error: HTTP 404
+
+[0;31m✗[0m SerenityOS
+  URL: https://github.com/SerenityOS/serenity/releases/download/rolling/serenity-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m DietPi ARM64
+  URL: https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bookworm.7z
+  Error: HTTP 404
+
+[0;31m✗[0m LibreELEC (RPi4)
+  URL: https://releases.libreelec.tv/LibreELEC-RPi4.arm-12.0.0.img.gz
+  Error: HTTP 404
+
+[0;31m✗[0m RetroPie (RPi4)
+  URL: https://github.com/RetroPie/RetroPie-Setup/releases/download/4.8.10/retropie-buster-4.8.10-rpi4_400.img.gz
+  Error: HTTP 404
+
+[0;31m✗[0m Recalbox
+  URL: https://gitlab.com/recalbox/recalbox/-/jobs/artifacts/master/raw/recalbox-rpi4.img.xz?job=recalbox-rpi4
+  Error: HTTP 404
+
+[0;31m✗[0m Batocera (RPi)
+  URL: https://batocera.org/download/batocera-rpi4-39-20240101.img.gz
+  Error: HTTP 500
+
+[0;31m✗[0m Kali Linux ARM (RPi)
+  URL: https://kali.download/arm-images/kali-2024.1/kali-linux-2024.1-raspberry-pi-armhf.img.xz
+  Error: HTTP 404
+
+[0;31m✗[0m Volumio
+  URL: https://updates.volumio.com/pi/volumio/3.631/volumio-3.631-2024-07-15-pi.img.zip
+  Error: HTTP 000000
+
+[0;31m✗[0m Red Hat Enterprise Linux 9 Workstation
+  URL: https://developers.redhat.com/content-gateway/file/rhel-9.3-x86_64-boot.iso
+  Error: HTTP 400
+
+[0;31m✗[0m EuroLinux 9
+  URL: https://fbi.cdn.euro-linux.com/isos/9.3/EL-9.3-x86_64-minimal.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Scientific Linux 7
+  URL: https://ftp.scientificlinux.org/linux/scientific/7.9/x86_64/iso/SL-7.9-x86_64-netinstall.iso
+  Error: HTTP 000000
+
+[0;31m✗[0m Fedora Silverblue 41
+  URL: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Silverblue/x86_64/iso/Fedora-Silverblue-ostree-x86_64-41-1.4.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Security Onion 2
+  URL: https://github.com/Security-Onion-Solutions/securityonion/releases/download/2.4.90/securityonion-2.4.90.iso
+  Error: HTTP 404
+
+[0;31m✗[0m DRACÓS Linux
+  URL: https://dracos-linux.org/downloads/dracos-2024.1.iso
+  Error: HTTP 000000
+
+[0;31m✗[0m Wifislax
+  URL: https://sourceforge.net/projects/wifislax/files/wifislax-4.12-final.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m BackBox Linux 8
+  URL: https://sourceforge.net/projects/backbox/files/backbox-8.1-amd64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m CAINE 13
+  URL: https://www.caine-live.net/downloads/CAINE13.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Bugtraq Team II
+  URL: https://sourceforge.net/projects/bugtraq-team/files/bugtraq-2.0-amd64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Samurai Web Testing Framework
+  URL: https://sourceforge.net/projects/samurai/files/samurai-2024.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m REMnux
+  URL: https://sourceforge.net/projects/remnux/files/remnux-2024.1.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m DEFT Zero
+  URL: https://www.deftlinux.net/downloads/deft-zero-2024.1.iso
+  Error: HTTP 000000
+
+[0;31m✗[0m ArchStrike
+  URL: https://mirror.archstrike.org/iso/archstrike-2024.01.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Network Security Toolkit 36
+  URL: https://sourceforge.net/projects/nst/files/NST-36-11929/nst-36-11929.x86_64.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Fedora Security Lab
+  URL: https://download.fedoraproject.org/pub/fedora/linux/releases/40/Spins/x86_64/iso/Fedora-Security-Live-x86_64-40-1.14.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Bliss OS 15
+  URL: https://sourceforge.net/projects/blissos-x86/files/Official/bleeding_edge/Bliss-v15.8.9-x86_64-OFFICIAL-20240101.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m PrimeOS
+  URL: https://www.primeos.in/download/PrimeOS-mainline-2024.01.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Pop!_OS 24.04 LTS
+  URL: https://iso.pop-os.org/24.04/amd64/intel/52/pop-os_24.04_amd64_intel_52.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Pop!_OS 24.04 (NVIDIA)
+  URL: https://iso.pop-os.org/24.04/amd64/nvidia/52/pop-os_24.04_amd64_nvidia_52.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Zorin OS 17 Core
+  URL: https://sourceforge.net/projects/zorinos/files/17/Zorin-OS-17.1-Core-64-bit.iso/download
+  Error: HTTP 404
+
+[0;31m✗[0m Linux Lite 7.0
+  URL: https://sourceforge.net/projects/linux-lite/files/7.0/linux-lite-7.0-64bit.iso/download
+  Error: HTTP 302000
+
+[0;31m✗[0m NixOS 24.05
+  URL: https://releases.nixos.org/nixos/24.05/nixos-24.05.20241231.f2b3e99/nixos-minimal-24.05.20241231.f2b3e99-x86_64-linux.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Bazzite GNOME
+  URL: https://github.com/ublue-os/bazzite/releases/download/v3.5.0/bazzite-gnome-stable.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Bazzite KDE
+  URL: https://github.com/ublue-os/bazzite/releases/download/v3.5.0/bazzite-deck-stable.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Nobara 40 Official
+  URL: https://nobaraproject.org/Nobara-40-Official-2024-11-12.iso
+  Error: HTTP 404
+
+[0;31m✗[0m ChimeraOS
+  URL: https://github.com/ChimeraOS/chimeraos/releases/download/46-2/chimeraos-46-2.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Void Linux
+  URL: https://repo-default.voidlinux.org/live/current/void-live-x86_64-20240314-base.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Gentoo Linux
+  URL: https://distfiles.gentoo.org/releases/amd64/autobuilds/20240128T164830Z/install-amd64-minimal-20240128T164830Z.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Tails 6.0
+  URL: https://tails.net/torrents/files/tails-amd64-6.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Clear Linux 41240
+  URL: https://cdn.download.clearlinux.org/releases/41240/clear/clear-41240-live-desktop.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Solus 4.5
+  URL: https://mirrors.rit.edu/solus/images/4.5/Solus-4.5-Budgie.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Armbian 24.02
+  URL: https://github.com/armbian/build/releases/download/24.02.0/Armbian_24.02.0_Orangepi5.img.xz
+  Error: HTTP 404
+
+[0;31m✗[0m AlmaLinux 9 Micro
+  URL: https://repo.almalinux.org/almalinux/9.3/isos/x86_64/AlmaLinux-9.3-x86_64-minimal.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Debian 12.5 Live
+  URL: https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.5.0-amd64-gnome.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Ubuntu Server 24.04 LTS
+  URL: https://releases.ubuntu.com/24.04/ubuntu-24.04.1-live-server-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Arch Linux
+  URL: https://geo.mirror.pkgbuild.com/iso/2024.01.01/archlinux-2024.01.01-x86_64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Ubuntu Studio 24.04
+  URL: https://cdimage.ubuntu.com/ubuntustudio/releases/24.04/release/ubuntustudio-24.04-dvd-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Ubuntu Server 22.04 LTS
+  URL: https://releases.ubuntu.com/22.04/ubuntu-22.04.3-live-server-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Debian 12 Netinst
+  URL: https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso
+  Error: HTTP 404
+
+[0;31m✗[0m Proxmox VE 8.1
+  URL: https://enterprise.proxmox.com/iso/proxmox-ve_8.1-1.iso
+  Error: HTTP 404
+
+[0;31m✗[0m TrueNAS SCALE 24.04
+  URL: https://download.truenas.com/truenas-scale/24.04/TrueNAS-SCALE-24.04.0.iso
+  Error: HTTP 404
+
+[0;31m✗[0m OPNsense 24.1
+  URL: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/24.1/OPNsense-24.1-dvd-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m pfSense CE 2.7
+  URL: https://atxfiles.netgate.com/mirror/downloads/pfSense-CE-2.7.2-RELEASE-amd64.iso
+  Error: HTTP 404
+
+[0;31m✗[0m RHEL 9 Server
+  URL: https://developers.redhat.com/content-gateway/file/rhel-9.3-x86_64-dvd.iso
+  Error: HTTP 400
+
+[0;31m✗[0m Vanilla OS 2
+  URL: https://github.com/Vanilla-OS/live-iso/releases/download/2.0.0/vanilla-os-2.0.0.iso
+  Error: HTTP 404
+
+[1;33m========================================[0m
+[1;33m  Redirected URLs (consider updating)[0m
+[1;33m========================================[0m
+[1;33m⚠[0m Ubuntu 24.10 Desktop
+  Old: https://releases.ubuntu.com/24.10/ubuntu-24.10-desktop-amd64.iso
+  New: https://old-releases.ubuntu.com/releases/24.10/ubuntu-24.10-desktop-amd64.iso
+
+[1;33m⚠[0m Fedora Workstation 41
+  Old: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.4.iso
+  New: https://ftp-stud.hs-esslingen.de/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.4.iso
+
+[1;33m⚠[0m Fedora KDE Plasma 41
+  Old: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Spins/x86_64/iso/Fedora-KDE-Live-x86_64-41-1.4.iso
+  New: https://mirrors.nxthost.com/fedora/releases/41/Spins/x86_64/iso/Fedora-KDE-Live-x86_64-41-1.4.iso
+
+[1;33m⚠[0m Linux Mint 22 Cinnamon
+  Old: https://mirrors.kernel.org/linuxmint/stable/22/linuxmint-22-cinnamon-64bit.iso
+  New: https://mirrors.edge.kernel.org/linuxmint/stable/22/linuxmint-22-cinnamon-64bit.iso
+
+[1;33m⚠[0m Linux Mint 22 Xfce
+  Old: https://mirrors.kernel.org/linuxmint/stable/22/linuxmint-22-xfce-64bit.iso
+  New: https://mirrors.edge.kernel.org/linuxmint/stable/22/linuxmint-22-xfce-64bit.iso
+
+[1;33m⚠[0m Debian 13 Live
+  Old: https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-standard.iso
+  New: https://gemmei.ftp.acc.umu.se/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-standard.iso
+
+[1;33m⚠[0m Debian 13 GNOME
+  Old: https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-gnome.iso
+  New: https://saimei.ftp.acc.umu.se/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.3.0-amd64-gnome.iso
+
+[1;33m⚠[0m openSUSE Tumbleweed
+  Old: https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Current.iso
+  New: https://mirror.easyname.at/opensuse/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Snapshot20260113-Media.iso
+
+[1;33m⚠[0m elementary OS 7.1
+  Old: https://ams3.dl.elementary.io/download/MTczNzIyMTc1OQ==/elementaryos-7.1-stable.20230926rc.iso
+  New: https://elementary.io/410
+
+[1;33m⚠[0m Kali Linux 2025.4
+  Old: https://cdimage.kali.org/current/kali-linux-2025.4-installer-amd64.iso
+  New: https://kali.download/base-images/kali-2025.4/kali-linux-2025.4-installer-amd64.iso
+
+[1;33m⚠[0m Garuda Linux Dr460nized
+  Old: https://iso.builds.garudalinux.org/iso/latest/garuda/dr460nized/latest.iso
+  New: https://iso.builds.garudalinux.org/iso/garuda/dr460nized/260115/garuda-dr460nized-linux-zen-260115.iso
+
+[1;33m⚠[0m Artix Linux KDE Plasma
+  Old: https://iso.artixlinux.org/iso/artix-plasma-runit-20231127-x86_64.iso
+  New: https://artixlinux.org/download.php
+
+[1;33m⚠[0m Garuda Linux KDE
+  Old: https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.iso
+  New: https://iso.builds.garudalinux.org/iso/garuda/kde-lite/260115/garuda-kde-lite-linux-zen-260115.iso
+
+[1;33m⚠[0m Artix Linux Plasma
+  Old: https://iso.artixlinux.org/iso/artix-plasma-openrc-20230814-x86_64.iso
+  New: https://artixlinux.org/download.php
+
+[1;33m⚠[0m antiX 23
+  Old: https://sourceforge.net/projects/antix-linux/files/Final/antiX-23.1/antiX-23.1_x64-full.iso/download
+  New: https://pilotfiber.dl.sourceforge.net/project/antix-linux/Final/antiX-23.1/antiX-23.1_x64-full.iso?viasf=1
+
+[1;33m⚠[0m Bodhi Linux 7
+  Old: https://sourceforge.net/projects/bodhilinux/files/7.0.0/bodhi-7.0.0-64.iso/download
+  New: https://deac-ams.dl.sourceforge.net/project/bodhilinux/7.0.0/bodhi-7.0.0-64.iso?viasf=1
+
+[1;33m⚠[0m ReactOS
+  Old: https://sourceforge.net/projects/reactos/files/ReactOS/0.4.14/ReactOS-0.4.14-live.zip/download
+  New: https://phoenixnap.dl.sourceforge.net/project/reactos/ReactOS/0.4.14/ReactOS-0.4.14-live.zip?viasf=1
+
+[1;33m⚠[0m Home Assistant OS (RPi)
+  Old: https://github.com/home-assistant/operating-system/releases/download/11.5/haos_rpi4-64-11.5.img.xz
+  New: https://release-assets.githubusercontent.com/github-production-release-asset/115992009/13ec25f2-8d98-44b4-a0bf-0258131b3b39?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-01-20T13%3A25%3A53Z&rscd=attachment%3B+filename%3Dhaos_rpi4-64-11.5.img.xz&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-01-20T12%3A25%3A12Z&ske=2026-01-20T13%3A25%3A53Z&sks=b&skv=2018-11-09&sig=sR5riKnrIbnuLPDKNq3zoqPBwkCCecd2F6KtjVGenlM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2ODkxNjI2NCwibmJmIjoxNzY4OTEyNjY0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.BRyAY_xmajMs4pRTwFAT0U6yvI641-sBCTLVmiwziBM&response-content-disposition=attachment%3B%20filename%3Dhaos_rpi4-64-11.5.img.xz&response-content-type=application%2Foctet-stream
+
+[1;33m⚠[0m Fedora Server 40
+  Old: https://download.fedoraproject.org/pub/fedora/linux/releases/40/Server/x86_64/iso/Fedora-Server-dvd-x86_64-40-1.14.iso
+  New: https://mirror.hyperdedic.ru/fedora/linux/releases/40/Server/x86_64/iso/Fedora-Server-dvd-x86_64-40-1.14.iso
+
+[1;33m⚠[0m Fedora Kinoite 41
+  Old: https://download.fedoraproject.org/pub/fedora/linux/releases/41/Kinoite/x86_64/iso/Fedora-Kinoite-ostree-x86_64-41-1.4.iso
+  New: https://mirror.netsite.dk/fedora/linux/releases/41/Kinoite/x86_64/iso/Fedora-Kinoite-ostree-x86_64-41-1.4.iso
+
+[1;33m⚠[0m Android-x86
+  Old: https://sourceforge.net/projects/android-x86/files/Release%209.0/android-x86_64-9.0-r2.iso/download
+  New: https://unlimited.dl.sourceforge.net/project/android-x86/Release%209.0/android-x86_64-9.0-r2.iso?viasf=1
+
+[1;33m⚠[0m elementary OS 7.1
+  Old: https://ams3.dl.elementary.io/download/latest/elementaryos-7.1-stable.20230926rc.iso
+  New: https://elementary.io/410
+
+[1;33m⚠[0m Fedora Server 39
+  Old: https://download.fedoraproject.org/pub/fedora/linux/releases/39/Server/x86_64/iso/Fedora-Server-dvd-x86_64-39-1.5.iso
+  New: https://mirror.hyperdedic.ru/fedora/linux/releases/39/Server/x86_64/iso/Fedora-Server-dvd-x86_64-39-1.5.iso
+
+[1;33m⚠[0m SUSE Linux Enterprise 15
+  Old: https://download.suse.com/Download?buildid=nYv9L3BRStw~
+  New: https://www.suse.com/products/?buildid=nYv9L3BRStw~
+
+[1;33m⚠[0m openSUSE MicroOS
+  Old: https://download.opensuse.org/tumbleweed/iso/openSUSE-MicroOS-DVD-x86_64-Current.iso
+  New: https://mirror.easyname.at/opensuse/tumbleweed/iso/openSUSE-MicroOS-DVD-x86_64-Snapshot20260113-Media.iso
+
+[0;31m========================================[0m
+[0;31m  ✗ 109 URLs need attention![0m
+[0;31m========================================[0m

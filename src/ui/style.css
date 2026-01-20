@@ -217,14 +217,9 @@ button {
 .write-button-compact:disabled {
     background: #252525;
     color: #555555;
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
     padding: 4px 12px;
     min-height: 24px;
     min-width: 80px;
-    font-size: 10px;
-    letter-spacing: 0.3px;
 }
 
 .write-button-compact:active:not(:disabled) {
@@ -329,16 +324,17 @@ button {
 /* ISO Browser Styles */
 .iso-row {
     background: #1a1a1a;
-    padding: 3px 8px;
-    border-radius: 5px;
+    padding: 2px 6px;
+    border-radius: 4px;
     transition: all 120ms cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid transparent;
+    min-height: 32px;
 }
 
 .iso-row:hover {
     background: #202020;
     border-color: #2a2a2a;
-    transform: translateX(2px);
+    transform: translateX(1px);
 }
 
 .iso-row-downloaded {
@@ -362,13 +358,13 @@ button {
 }
 
 .iso-name-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: #f0f0f0;
 }
 
 .iso-meta-label {
-    font-size: 9px;
+    font-size: 8px;
     color: #909090;
     font-weight: 400;
 }
@@ -403,10 +399,10 @@ button {
 .download-button {
     background: #2a2a2a;
     border: 1px solid #3a3a3a;
-    border-radius: 5px;
-    padding: 6px 12px;
-    min-height: 30px;
-    font-size: 10px;
+    border-radius: 4px;
+    padding: 5px 10px;
+    min-height: 26px;
+    font-size: 9px;
     font-weight: 600;
     color: #d0d0d0;
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -506,38 +502,52 @@ button {
     color: #606060;
 }
 
-/* Filter Buttons */
-.filter-button {
-    background: transparent;
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
-    padding: 3px 8px;
-    min-height: 24px;
-    font-size: 9px;
+/* Filter Section Label */
+.filter-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #707070;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+/* Filter Buttons - Modern chip style */
+.filter-button,
+.filter-chip {
+    background: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-radius: 14px;
+    padding: 4px 12px;
+    min-height: 26px;
+    font-size: 10px;
     font-weight: 500;
-    color: #909090;
-    transition: all 120ms ease-out;
+    color: #a0a0a0;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .filter-button:hover {
-    background: #1f1f1f;
+    background: #222222;
     border-color: #3a3a3a;
-    color: #b0b0b0;
+    color: #d0d0d0;
     transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .filter-button.filter-active {
-    background: linear-gradient(135deg, #2a4a2a 0%, #1f3f1f 100%);
-    border-color: #4a6a4a;
+    background: linear-gradient(135deg, #2d5a2d 0%, #234a23 100%);
+    border-color: #3d6a3d;
     color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 0 8px rgba(80, 160, 80, 0.3);
+    box-shadow: 0 2px 6px rgba(70, 140, 70, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .filter-button.filter-active:hover {
-    background: linear-gradient(135deg, #2f4f2f 0%, #244424 100%);
-    border-color: #5a7a5a;
+    background: linear-gradient(135deg, #326032 0%, #285028 100%);
+    border-color: #4d7a4d;
     transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(70, 140, 70, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Version Badges */
@@ -727,38 +737,54 @@ progressbar text {
     50% { opacity: 0.4; }
 }
 
-/* Fix GtkGizmo slider warnings - ensure positive dimensions */
-/* Must use higher values and cover all scrollbar states */
+/* Thin red smooth scrollbars */
 scrollbar {
-    min-width: 12px;
-    min-height: 12px;
+    background: transparent;
+    border: none;
+    min-width: 6px;
+    min-height: 6px;
 }
 
 scrollbar slider {
-    min-width: 10px;
-    min-height: 10px;
-    margin: 1px;
+    background: linear-gradient(135deg, #8b1a1a 0%, #6d1414 100%);
+    border-radius: 3px;
+    min-width: 5px;
+    min-height: 5px;
+    margin: 0;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+scrollbar slider:hover {
+    background: linear-gradient(135deg, #a02020 0%, #801818 100%);
+    box-shadow: 0 2px 4px rgba(139, 26, 26, 0.4);
+}
+
+scrollbar slider:active {
+    background: linear-gradient(135deg, #b42828 0%, #941c1c 100%);
 }
 
 scrollbar trough {
-    min-width: 12px;
-    min-height: 12px;
+    background: rgba(20, 20, 20, 0.3);
+    border-radius: 3px;
+    min-width: 6px;
+    min-height: 6px;
 }
 
 scrollbar.horizontal {
-    min-height: 12px;
+    min-height: 6px;
 }
 
 scrollbar.horizontal slider {
-    min-height: 10px;
+    min-height: 5px;
 }
 
 scrollbar.vertical {
-    min-width: 12px;
+    min-width: 6px;
 }
 
 scrollbar.vertical slider {
-    min-width: 10px;
+    min-width: 5px;
 }
 
 /* Message Log */

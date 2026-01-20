@@ -23,6 +23,7 @@ pub struct AppState {
     pub is_working: bool,
     pub action_state: ActionAreaState,
     pub download_in_progress: Arc<AtomicBool>,
+    pub download_status: Option<String>,
 }
 
 #[derive(Clone)]
@@ -96,6 +97,7 @@ pub fn build_ui(app: &Application) {
         is_working: false,
         action_state: ActionAreaState::Idle,
         download_in_progress: Arc::new(AtomicBool::new(false)),
+        download_status: None,
     }));
 
     let main_box = GtkBox::new(Orientation::Vertical, 0);
@@ -1092,10 +1094,39 @@ pub fn build_ui(app: &Application) {
         );
     });
 
-    // Add close request handler - ALWAYS allow close, no blocking
-    window.connect_close_request(move |_window| {
-        // Always allow window to close
-        glib::Propagation::Proceed
+    // Add close request handler - prevent close during write/verify
+    let state_for_close = state.clone();
+    window.connect_close_request(move |window| {
+        let current_state = state_for_close.borrow().action_state.clone();
+        
+        match current_state {
+            ActionAreaState::Writing | ActionAreaState::Verifying => {
+                // Show warning dialog
+                let dialog = MessageDialog::builder()
+                    .transient_for(window)
+                    .modal(true)
+                    .message_type(MessageType::Warning)
+                    .buttons(ButtonsType::OkCancel)
+                    .text("Operation in Progress")
+                    .secondary_text("A write or verification operation is currently running.\n\nClosing now may result in corrupted data or incomplete verification.\n\nAre you sure you want to close?")
+                    .build();
+                
+                let window_clone = window.clone();
+                dialog.connect_response(move |dialog, response| {
+                    dialog.close();
+                    if response == gtk4::ResponseType::Ok {
+                        window_clone.close();
+                    }
+                });
+                
+                dialog.present();
+                glib::Propagation::Stop
+            }
+            _ => {
+                // Allow close for other states
+                glib::Propagation::Proceed
+            }
+        }
     });
 
     window.present();
@@ -1315,13 +1346,16 @@ fn start_write_operation(
                     }
                 }
                 Some("DONE") => {
-                    if tx.send(WorkMessage::WriteComplete).is_err() {
-                        eprintln!("WARNING: Write completed but UI channel closed");
-                    }
+                    // Write phase complete, don't send message yet
+                    // Wait for VERIFY_START to transition to verification
                 }
                 Some("VERIFY_START") => {
                     if let Some(size_str) = parts.get(1) {
                         total_size = size_str.parse().unwrap_or(0);
+                    }
+                    // Now send WriteComplete to trigger UI transition
+                    if tx.send(WorkMessage::WriteComplete).is_err() {
+                        eprintln!("WARNING: Write completed but UI channel closed");
                     }
                 }
                 Some("VERIFY_PROGRESS") => {
@@ -1415,6 +1449,8 @@ fn start_write_operation(
                             &ui.status_dot,
                         );
                         ui.progress_bar.set_fraction(0.0);
+                        ui.progress_bar.set_text(Some("Starting verification..."));
+                        ui.speed_label.set_text("Preparing to verify data integrity");
                     }
                     Ok(WorkMessage::VerifyProgress(bytes, total, bps)) => {
                         #[allow(clippy::cast_precision_loss)] // Acceptable for UI display
@@ -1703,8 +1739,9 @@ fn update_action_area(
         }
         ActionAreaState::Verifying => {
             write_button.set_sensitive(false);
-            progress_label.set_text("Verifying...");
+            progress_label.set_text("Verifying data integrity");
             progress_bar.set_visible(true);
+            progress_bar.set_text(Some("Preparing..."));
             status_dot.remove_css_class("idle");
             status_dot.remove_css_class("success");
             status_dot.add_css_class("active");

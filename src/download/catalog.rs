@@ -9,6 +9,22 @@ use chrono;
 pub const CATALOG_URL: &str = 
     "https://raw.githubusercontent.com/v-k-dev/etch/main-nightly-wings/catalog.json";
 
+/// Stability level of the distribution
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum Stability {
+    Stable,
+    Testing,
+    Experimental,
+    Nightly,
+}
+
+impl Default for Stability {
+    fn default() -> Self {
+        Stability::Stable
+    }
+}
+
 /// A single distribution entry in the catalog
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Distro {
@@ -16,6 +32,8 @@ pub struct Distro {
     pub name: String,
     pub version: String,
     pub category: DistroCategory,
+    #[serde(default)]
+    pub stability: Stability,
     pub download_url: String,
     #[serde(default)]
     pub mirrors: Vec<String>,
@@ -42,6 +60,7 @@ impl From<DbDistro> for Distro {
             "arch" => DistroCategory::Arch,
             "raspberry" => DistroCategory::Raspberry,
             "suse" => DistroCategory::Suse,
+            "gaming" => DistroCategory::Gaming,
             _ => DistroCategory::Other,
         };
 
@@ -50,6 +69,7 @@ impl From<DbDistro> for Distro {
             name: db_distro.name,
             version: db_distro.version,
             category,
+            stability: Stability::Stable, // Default to stable
             download_url,
             mirrors: mirrors.iter().skip(1).map(|m| m.url.clone()).collect(),
             sha256: "PLACEHOLDER_HASH_UPDATE_WITH_REAL_HASH".to_string(),
@@ -71,6 +91,7 @@ pub enum DistroCategory {
     Arch,
     Raspberry,
     Suse,
+    Gaming,
     Other,
 }
 
@@ -85,6 +106,7 @@ impl DistroCategory {
             Self::Arch => "Arch Linux",
             Self::Raspberry => "Raspberry Pi",
             Self::Suse => "openSUSE",
+            Self::Gaming => "Gaming",
             Self::Other => "Other",
         }
     }
@@ -135,6 +157,7 @@ impl DistrosCatalog {
             DistroCategory::Arch => "arch",
             DistroCategory::Raspberry => "raspberry",
             DistroCategory::Suse => "suse",
+            DistroCategory::Gaming => "gaming",
             DistroCategory::Other => "other",
         };
         

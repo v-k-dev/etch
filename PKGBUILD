@@ -1,5 +1,5 @@
 pkgname=etch
-pkgver=0.1.0
+pkgver=1.0.0
 pkgrel=1
 pkgdesc="A minimal, fast, and reliable USB/ISO writer for Linux"
 arch=('x86_64' 'aarch64')
@@ -18,7 +18,7 @@ makedepends=(
   'pkg-config'
   'libxcb'
 )
-source=("git+${url}.git#branch=main-stable")
+source=("git+${url}.git#tag=v${pkgver}")
 sha256sums=('SKIP')
 
 build() {
