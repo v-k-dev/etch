@@ -8,6 +8,17 @@
   />
 </div>
 
+<p align="center">
+  <img width="671" height="483" alt="image"
+       src="https://github.com/user-attachments/assets/1772f4e5-3d34-4d7f-8ccd-1e325c8fb98e" />
+</p>
+
+<p align="center">
+  <img width="670" height="506" alt="image"
+       src="https://github.com/user-attachments/assets/0874a8e8-a2f1-4b0f-9448-b55d93a9dfd3" />
+</p>
+
+
 
 **Correctness over convenience. No fake progress. Just write.**
 
