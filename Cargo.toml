@@ -1,6 +1,6 @@
 [package]
 name = "etch"
-version = "1.0.0"
+version = "0.2.2" # Auto-generated at compile time from git tags/commits
 edition = "2021"
 authors = ["Aaron"]
 description = "A transparent, trustworthy ISO-to-USB writer for Linux"
